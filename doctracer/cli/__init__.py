@@ -1,16 +1,15 @@
 import click
 from doctracer.cli.extract import extract
-# Import other subcommands as needed
-# from doctracer.cli.run import run
+from doctracer.cli.track import track
 
 @click.group()
 def cli():
     """Doctracer command line interface."""
     pass
 
-# Add subcommands to the main CLI group
+# Register subcommands
 cli.add_command(extract, name='extract')
-# cli.add_command(run, name='run')  # Uncomment and implement when ready
+cli.add_command(track,   name='track')
 
 if __name__ == "__main__":
     cli()
