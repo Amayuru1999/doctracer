@@ -9,7 +9,7 @@ import base64
 
 class ExtraGazetteTableProcessor(BaseGazetteProcessor):
     def _initialize_executor(self) -> PromptExecutor:
-        return PromptExecutor(ServiceProvider.OPENAI_VISION, AIModelProvider.GPT_4O_MINI, SimpleMessageConfig())
+        return PromptExecutor(ServiceProvider.OPENAI_VISION, AIModelProvider.GPT_4_1_NANO, SimpleMessageConfig())
 
     def _extract_metadata(self, gazette_text: str) -> str:
         metadata_prompt = PromptCatalog.get_prompt(PromptCatalog.METADATA_EXTRACTION, gazette_text)
