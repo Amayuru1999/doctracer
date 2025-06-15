@@ -1,8 +1,11 @@
 neo4j
-pytest
+pytest>=7.0.0
 pandas
-click
+click>=8.0.0
 flask
 flask-cors
 pytesseract
 pdf2image
+pydantic>=2.0.0
+python-dateutil>=2.8.2
+deepdiff>=6.3.0

@@ -1,19 +1,6 @@
 {
-  "gazette_id": "UNKNOWN",
-  "published_date": "1970-01-01",
-  "ministers": [
-    {
-      "name": "Minister of Finance",
-      "departments": [],
-      "laws": [],
-      "functions": []
-    }
-  ]
-}
-
-{
-  "gazette_id": "UNKNOWN",
-  "published_date": "1970-01-01",
+  "gazette_id": "2297/78",
+  "published_date": "2022-09-16",
   "ministers": [
     {
       "name": "Minister of Investment Promotion",

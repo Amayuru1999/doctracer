@@ -1,130 +1,219 @@
-# doctracer
+# DocTracer - Gazette Change Tracking System
 
-## Prerequisites
+DocTracer is a powerful system for tracking and analyzing changes in government gazettes. It helps you monitor modifications in ministerial appointments, departments, laws, and functions across different gazette publications.
 
+## Features
+
+- Track changes between different gazette publications
+- Monitor ministerial appointments (additions, removals, modifications)
+- Track changes in departments, laws, and functions
+- Generate detailed change reports
+- Export changes in JSON format
+- Command-line interface for easy usage
+- Python API for programmatic access
+
+## Installation
+
+1. Clone the repository:
 ```bash
-mamba create -n doctracer_env python=3.9
+git clone https://github.com/yourusername/doctracer.git
+cd doctracer
 ```
 
-To install required libraries run:
-
+2. Create and activate a virtual environment:
 ```bash
-pip install -e .
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-Also add your OpenAI API key:
-
+3. Install dependencies:
 ```bash
-export OPENAI_API_KEY=`openai_key`
+pip install -r requirements.txt
 ```
 
-### Setup Neo4j
+## Usage
 
-#### Environment Variables
+### Command Line Interface
 
-Before using the `Neo4jInterface`, ensure the following environment variables are set:
-
-- `NEO4J_URI`: The URI of your Neo4j database.
-- `NEO4J_USER`: The username for your Neo4j database.
-- `NEO4J_PASSWORD`: The password for your Neo4j database.
-
-You can set these variables in your shell like this:
+The CLI tool allows you to track changes between two gazette files:
 
 ```bash
-export NEO4J_URI=bolt://localhost:7687
-export NEO4J_USER=neo4j_username
-export NEO4J_PASSWORD=your_password
+python -m doctracer.cli.track_changes old_gazette.json new_gazette.json
 ```
 
-```bash
-docker build --build-arg NEO4J_USER=$NEO4J_USER --build-arg NEO4J_PASSWORD=$NEO4J_PASSWORD -t doctracer_neo4j .
-```
+#### Options
 
-Ensure you have a `.env` file in your project directory with the following content:
+- `--output` or `-o`: Save the changes to a JSON file
+  ```bash
+  python -m doctracer.cli.track_changes old_gazette.json new_gazette.json --output changes.json
+  ```
 
-```plaintext
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password
-```
+- `--summary-only`: Show only the summary of changes
+  ```bash
+  python -m doctracer.cli.track_changes old_gazette.json new_gazette.json --summary-only
+  ```
 
+### Gazette File Format
 
-#### Running the Docker Container
+Gazette files should be in JSON format with the following structure:
 
-To run the Docker container with the environment variables from the `.env` file, use the following command:
-
-```bash
-docker run -p 7474:7474 -p 7687:7687 --name doctracer_neo4j_server \
-    --env-file .env \
-    -v neo4j_data:/data doctracer_neo4j:latest
-```
-
-```bash
-docker exec -it doctracer_neo4j_server bash
-```
-
-```bash
-neo4j-admin set-initial-password test
-```
-
-## Running Doctracer
-
-```bash
-$ doctracer --help
-Usage: doctracer [OPTIONS] COMMAND [ARGS]...
-
-  Doctracer command line interface.
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  extract  Extract information from gazette PDFs.
-```
-
-To test extragazette amendment extraction try:
-
-```bash
-doctracer extract --type extragazette_amendment --input data/testdata/sample_gazette.pdf --output output.json
-```
-
-To test extragazette table extraction try:
-
-```bash
-doctracer extract --type extragazette_table --input data/gzt_images --output output.txt
-```
-
-```bash
+```json
 {
-  "metadata": {
-    "Gazette ID": "2382/35",
-    "Gazette Published Date": "2024-05-03",
-    "Gazette Published by": "Authority"
-  },
-  "changes": {
-    "RENAME": [],
-    "MERGE": [],
-    "MOVE": [],
-    "ADD": [
-      {
-        "Parent Name": "Minister of Defence",
-        "Child Name": "National Hydrographic Act No. 7 of 2024",
-        "Type": "legislation",
-        "Date": "2024-05-03"
-      },
-      {
-        "Parent Name": "Minister of Education",
-        "Child Name": "Formulation and implementation of a national policy for pre-schools",
-        "Type": "policy",
-        "Date": "2024-05-03"
-      }
-    ],
-    "TERMINATE": [
-      {
-        "Type": "policy",
-        "Date": "2024-05-03"
-      }
+    "gazette_id": "2023-01",
+    "published_date": "2023-01-01",
+    "ministers": [
+        {
+            "name": "John Smith",
+            "departments": ["Finance", "Education"],
+            "laws": ["Law A", "Law B"],
+            "functions": ["Budget Management", "Policy Development"]
+        }
     ]
-  }
 }
 ```
+
+### Python API
+
+You can also use the system programmatically:
+
+```python
+from doctracer.models.gazette import GazetteData, MinisterEntry
+from doctracer.services.gazette_change_tracker import GazetteChangeTracker
+from datetime import date
+
+# Create gazette data
+old_gazette = GazetteData(
+    gazette_id="2023-01",
+    published_date=date(2023, 1, 1),
+    ministers=[
+        MinisterEntry(
+            name="John Smith",
+            departments=["Finance", "Education"],
+            laws=["Law A", "Law B"],
+            functions=["Budget Management", "Policy Development"]
+        )
+    ]
+)
+
+new_gazette = GazetteData(
+    gazette_id="2023-02",
+    published_date=date(2023, 2, 1),
+    ministers=[
+        MinisterEntry(
+            name="John Smith",
+            departments=["Finance", "Education", "Technology"],
+            laws=["Law A", "Law D"],
+            functions=["Budget Management", "Digital Transformation"]
+        )
+    ]
+)
+
+# Track changes
+tracker = GazetteChangeTracker()
+changes = tracker.compare_gazettes(old_gazette, new_gazette)
+
+# Access the changes
+print(changes.summary)  # Get a human-readable summary
+print(changes.dict())   # Get the full change data as a dictionary
+```
+
+### Change Types
+
+The system tracks the following types of changes:
+
+1. **Minister Changes**:
+   - Added: New ministers appointed
+   - Removed: Ministers removed from office
+   - Modified: Changes in existing ministers' roles
+
+2. **Department Changes**:
+   - Added: New departments assigned
+   - Removed: Departments removed
+   - Modified: Changes in department assignments
+
+3. **Law Changes**:
+   - Added: New laws assigned
+   - Removed: Laws removed
+   - Modified: Changes in law assignments
+
+4. **Function Changes**:
+   - Added: New functions assigned
+   - Removed: Functions removed
+   - Modified: Changes in function assignments
+
+### Example Output
+
+The system generates both a summary and detailed changes:
+
+```
+Gazette Changes Summary:
+=======================
+Modified Minister: John Smith
+  Department changes: Technology (added)
+  Law changes: Law B (removed), Law D (added)
+  Function changes: Policy Development (removed), Digital Transformation (added)
+Removed Minister: Jane Doe
+Added Minister: Robert Johnson
+
+Detailed Changes:
+================
+Minister: John Smith
+Change Type: modified
+
+Department Changes:
+- Technology: added
+  New value: Technology
+
+Law Changes:
+- Law B: removed
+  Old value: Law B
+- Law D: added
+  New value: Law D
+
+Function Changes:
+- Policy Development: removed
+  Old value: Policy Development
+- Digital Transformation: added
+  New value: Digital Transformation
+```
+
+## Development
+
+### Project Structure
+
+```
+doctracer/
+├── models/
+│   ├── gazette.py
+│   └── gazette_change.py
+├── services/
+│   └── gazette_change_tracker.py
+├── cli/
+│   └── track_changes.py
+└── examples/
+    ├── track_gazette_changes.py
+    ├── gazette_2023_01.json
+    └── gazette_2023_02.json
+```
+
+### Running Tests
+
+```bash
+python -m pytest tests/
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact the maintainers.
