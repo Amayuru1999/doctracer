@@ -12,7 +12,7 @@ _METADATA_PROMPT_TEMPLATE: str = """
     Sample JSON Output:
     {{"Gazette ID":"2303/17","Gazette Published Date":"2022-10-26","Gazette Published by":"Authority"}}
     """
-
+'''
 _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
     You are an assistant tasked with extracting changes from a government gazette document. Based on the provided text, identify and list the following operation types along with their details:
     - RENAME
@@ -31,6 +31,44 @@ _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
     "ADD":[{{"Parent Name":"Ministry X","Child Name":"Dept. Z","Type":"department","Date":"2022-10-26"}}],
     "TERMINATE":[{{"Type":"minister","Date":"2022-10-26"}}]}}
     """
+'''
+
+_CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
+    You are an assistant tasked with analyzing changes in a government gazette. Your job is to extract details of removals and additions **without making assumptions about movement or relationships**.
+
+    Return a JSON object with two main keys: "REMOVED" and "ADDED".
+
+    Each section must include:
+    - "Minister": the name of the minister being updated.
+    - "Departments": list of departments removed from or added to that minister.
+    - "Laws": list of laws removed from or added to that minister.
+    - "Responsibilities": only for ADDED section; list of new responsibilities if mentioned.
+
+    **DO NOT connect removed items to added items. Treat them independently.**
+
+    Return only valid JSON. Do not wrap your output in markdown or triple backticks.
+
+    Input Text:
+    {gazette_text}
+
+    Sample JSON Output:
+    {{
+    "REMOVED": {{
+        "Minister": "Minister of Finance, Economic Stabilization and National Policies",
+        "Departments": ["Sri Lanka Export Development Board"],
+        "Laws": ["Export Development Act No. 40 of 1979"]
+    }},
+    "ADDED": {{
+        "Minister": "Minister of Investment Promotion",
+        "Departments": ["Sri Lanka Export Development Board"],
+        "Laws": ["Export Development Act No. 40 of 1979"],
+        "Responsibilities": ["Development of Colombo Port City Special Economic Zone"]
+    }}
+    }}
+"""
+
+
+
 
 _CHANGES_TABLE_PROMPT_TEMPLATE: str = """
         What are the ministers found in the image? There will always be at least one minister. Use this information to find the minister(s):
