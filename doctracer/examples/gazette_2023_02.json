@@ -1,0 +1,18 @@
+{
+    "gazette_id": "2023-02",
+    "published_date": "2023-02-01",
+    "ministers": [
+        {
+            "name": "John Smith",
+            "departments": ["Finance", "Education", "Technology"],
+            "laws": ["Law A", "Law D"],
+            "functions": ["Budget Management", "Digital Transformation"]
+        },
+        {
+            "name": "Robert Johnson",
+            "departments": ["Health", "Social Services"],
+            "laws": ["Law C", "Law E"],
+            "functions": ["Healthcare Management", "Social Welfare"]
+        }
+    ]
+} 
