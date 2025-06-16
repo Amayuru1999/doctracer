@@ -16,6 +16,7 @@ Also add your OpenAI API key:
 
 ```bash
 export OPENAI_API_KEY=`openai_key`
+$env:OPENAI_API_KEY="your key"
 ```
 
 ### Setup Neo4j
@@ -94,6 +95,12 @@ To test extragazette table extraction try:
 ```bash
 doctracer extract --type extragazette_table --input data/gzt_images --output output.txt
 doctracer extract --type extragazette_table --input data/gzt_images --output output/table/output.txt
+```
+
+To test extragazette changes extraction try:
+
+```bash
+doctracer track --old output/amendment/old.json --new output/amendment/new.json --output output/amendment/diff.json --to-neo4j
 ```
 
 ```bash

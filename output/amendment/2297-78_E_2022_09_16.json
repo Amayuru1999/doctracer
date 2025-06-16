@@ -18,7 +18,7 @@
     "MOVE": [],
     "ADD": [
       {
-        "Type": "Development Project",
+        "Type": "Project",
         "Parent Name": "Minister of Investment Promotion",
         "New Entity": "Development of Colombo Port City Special Economic Zone as an International Business and Services Hub",
         "Effective Date": "2022-09-16"
@@ -50,21 +50,21 @@
       },
       {
         "Type": "Item",
-        "Previous Name": "Items 26, 50 and 51",
+        "Previous Name": "Items 26, 50, and 51",
         "Effective Date": "2022-09-16"
       },
       {
-        "Type": "Item",
+        "Type": "Act",
         "Previous Name": "Sri Lanka Export Development Act No. 40 of 1979",
         "Effective Date": "2022-09-16"
       },
       {
-        "Type": "Item",
+        "Type": "Act",
         "Previous Name": "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
         "Effective Date": "2022-09-16"
       },
       {
-        "Type": "Item",
+        "Type": "Act",
         "Previous Name": "Colombo Port City Economic Commission Act, No. 11 of 2021",
         "Effective Date": "2022-09-16"
       }

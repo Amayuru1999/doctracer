@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "Gazette No": "2205/14",
+    "Published Date": "2020-12-11",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2020/12/2205-14_E.pdf",
+    "Amends": {
+      "Gazette No": "2187/27",
+      "Published Date": "2020-08-09",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2020/8/2187-27_E.pdf"
+    }
+  },
+  "changes": {
+    "RENAME": [
+      {
+        "Type": "State Minister",
+        "Previous Name": "State Minister of Prison Reforms & Prisoners\u2019 Rehabilitation",
+        "New Name": "State Minister of Prison Management & Prisoners\u2019 Rehabilitation",
+        "Effective Date": "2020-12-09"
+      }
+    ],
+    "ADD": [
+      {
+        "Type": "State Minister",
+        "Parent Name": "Minister of Health",
+        "New Entity": "State Minister of Primary Health Care, Epidemics and COVID Disease Control",
+        "Effective Date": "2020-12-09"
+      }
+    ]
+  }
+}
