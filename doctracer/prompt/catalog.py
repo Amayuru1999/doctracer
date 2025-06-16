@@ -72,42 +72,42 @@ _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
 '''
 
 _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
-You are an assistant tasked with analyzing changes in a government gazette. Your job is to extract details of removals and additions **without making assumptions about movement or relationships**.
+    You are an assistant tasked with analyzing changes in a government gazette. Your job is to extract details of removals and additions **without making assumptions about movement or relationships**.
 
-Changes may appear in bullet points or be grouped under headings like "Column I", "Column II", "Column III". Identify removed and added items accurately even if they appear as numbered or bulleted list items.
+    Changes may appear in bullet points or be grouped under headings like "Column I", "Column II", "Column III". Identify removed and added items accurately even if they appear as numbered or bulleted list items.
 
-Return a JSON object with two main keys: "REMOVED" and "ADDED".
+    Return a JSON object with two main keys: "REMOVED" and "ADDED".
 
-Each section must include:
-- "Minister": the name of the minister being updated.
-- "Departments": list of departments removed from or added to that minister.
-    - If the gazette mentions removal of items by number only (e.g., “items 26, 50 and 51” in Column II), include those item numbers as strings in the "Departments" list.
-- "Laws": list of laws removed from or added to that minister.
-- "Responsibilities": only for the ADDED section; list of new responsibilities if mentioned.
+    Each section must include:
+    - "Minister": the name of the minister being updated.
+    - "Departments": list of departments removed from or added to that minister.
+        - If the gazette mentions removal of items by number only (e.g., “items 26, 50 and 51” in Column II), include those item numbers as strings in the "Departments" list.
+    - "Laws": list of laws removed from or added to that minister.
+    - "Responsibilities": only for the ADDED section; list of new responsibilities if mentioned.
 
-**DO NOT connect removed items to added items. Treat them independently.**
+    **DO NOT connect removed items to added items. Treat them independently.**
 
-Return only valid JSON. Do not wrap your output in markdown or triple backticks.
+    Return only valid JSON. Do not wrap your output in markdown or triple backticks.
 
-Input Text:
-{gazette_text}
+    Input Text:
+    {gazette_text}
 
-Sample JSON Output:
-{{
-  "REMOVED": {{
-    "Minister": "Minister of Finance, Economic Stabilization and National Policies",
-    "Departments": ["26", "50", "51"],
-    "Laws": [
-      "Sri Lanka Export Development Act No. 40 of 1979",
-      "Greater Colombo Economic Commission Law No. 4 of 1978",
-      "Colombo Port City Economic Commission Act, No. 11 of 2021"
-    ]
-  }},
-  "ADDED": {{
-    "Minister": "Minister of Investment Promotion",
-    "Departments": ["Sri Lanka Export Development Board"],
-    "Laws": ["Export Development Act No. 40 of 1979"],
-    "Responsibilities": ["Development of Colombo Port City Special Economic Zone"]
+    Sample JSON Output:
+    {{
+    "REMOVED": {{
+        "Minister": "Minister of Finance, Economic Stabilization and National Policies",
+        "Departments": ["26", "50", "51"],
+        "Laws": [
+        "Sri Lanka Export Development Act No. 40 of 1979",
+        "Greater Colombo Economic Commission Law No. 4 of 1978",
+        "Colombo Port City Economic Commission Act, No. 11 of 2021"
+        ]
+    }},
+    "ADDED": {{
+        "Minister": "Minister of Investment Promotion",
+        "Departments": ["Sri Lanka Export Development Board"],
+        "Laws": ["Export Development Act No. 40 of 1979"],
+        "Responsibilities": ["Development of Colombo Port City Special Economic Zone"]
   }}
 }}
 """
