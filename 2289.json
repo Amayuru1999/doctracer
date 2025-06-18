@@ -1,14 +1,12 @@
 {
-  "metadata": {
-    "Gazette ID": "2289/43",
-    "Gazette Published Date": "2022-07-22",
-    "Gazette Published by": "Authority"
-  },
-  "changes": {
-    "RENAME": [],
-    "MERGE": [],
-    "MOVE": [],
-    "ADD": [],
-    "TERMINATE": []
-  }
+  "gazette_id": "2289/43",
+  "published_date": "2022-07-22",
+  "ministers": [
+    {
+      "name": "Minister of Finance",
+      "departments": [],
+      "laws": [],
+      "functions": []
+    }
+  ]
 }
