@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "Gazette No": "1905/4",
+    "Published Date": "2015-03-09",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-4_E.pdf",
+    "Amends": {
+      "Gazette No": "1897/15",
+      "Published Date": "2015-01-18",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": {
+    "RENAME": [
+      {
+        "Type": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "Previous Name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "New Name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Home Affairs & Fisheries",
+        "Previous Name": "Minister of Home Affairs & Fisheries",
+        "New Name": "Minister of Home Affairs & Fisheries",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Food Security",
+        "Previous Name": "Minister of Food Security",
+        "New Name": "Minister of Food Security",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "Previous Name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "New Name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Finance",
+        "Previous Name": "Minister of Finance",
+        "New Name": "Minister of Finance",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Health & Indigenous Medicine",
+        "Previous Name": "Minister of Health & Indigenous Medicine",
+        "New Name": "Minister of Health & Indigenous Medicine",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Housing & Samurdhi",
+        "Previous Name": "Minister of Housing & Samurdhi",
+        "New Name": "Minister of Housing & Samurdhi",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Tourism & Sports",
+        "Previous Name": "Minister of Tourism & Sports",
+        "New Name": "Minister of Tourism & Sports",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Industry & Commerce",
+        "Previous Name": "Minister of Industry & Commerce",
+        "New Name": "Minister of Industry & Commerce",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Minister of Education",
+        "Previous Name": "Minister of Education",
+        "New Name": "Minister of Education",
+        "Effective Date": "2015-03-06"
+      }
+    ],
+    "MERGE": [],
+    "MOVE": [],
+    "ADD": [
+      {
+        "Type": "Subject/Department",
+        "Parent Name": "Column II",
+        "New Entity": "Department of Registration of Persons",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Subject/Department",
+        "Parent Name": "Column II",
+        "New Entity": "Department of Management Services",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Subject/Department",
+        "Parent Name": "Minister of Health & Indigenous Medicine",
+        "New Entity": "Sri Lanka Thriposha Ltd",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Subject/Department",
+        "Parent Name": "Minister of Housing & Samurdhi",
+        "New Entity": "National Engineering Research and Development Centre",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Subject/Department",
+        "Parent Name": "Minister of Tourism & Sports",
+        "New Entity": "Convention against Doping in Sports Act, No. 33 of 2013",
+        "Effective Date": "2015-03-06"
+      },
+      {
+        "Type": "Subject/Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "Sri Lanka Handicrafts Board (Laksala)",
+        "Effective Date": "2015-03-06"
+      }
+    ],
+    "TERMINATE": []
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "metadata": {
+    "Gazette No": "1896/28",
+    "Published Date": "2015-01-10",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1896-28_E.pdf",
+    "Amends": {}
+  },
+  "changes": {
+    "RENAME": [],
+    "MERGE": [],
+    "MOVE": [],
+    "ADD": [
+      {
+        "Type": "Minister",
+        "Parent Name": "President",
+        "New Entity": "Minister of Defence",
+        "Effective Date": "2015-01-10"
+      },
+      {
+        "Type": "Minister",
+        "Parent Name": "President",
+        "New Entity": "Minister of Finance & Planning",
+        "Effective Date": "2015-01-10"
+      },
+      {
+        "Type": "Minister",
+        "Parent Name": "President",
+        "New Entity": "Minister of Mass Media and Information",
+        "Effective Date": "2015-01-10"
+      }
+    ],
+    "TERMINATE": []
+  }
+}

@@ -6,7 +6,7 @@ from doctracer.neo4j_interface import Neo4jInterface
 
 
 @click.command("track")
-@click.option("--old",     type=click.Path(exists=True), required=True, help="Path to old gazette JSON")
+@click.option("--old",     type=click.Path(exists=False), required=False, help="Path to old gazette JSON")
 @click.option("--new",     type=click.Path(exists=True), required=True, help="Path to new gazette JSON")
 @click.option("--output",  type=click.Path(),            help="Save diff JSON to this file")
 @click.option("--to-neo4j/--no-neo4j", default=False,   help="Also push changes to Neo4j")

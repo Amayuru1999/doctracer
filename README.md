@@ -49,7 +49,6 @@ NEO4J_USER=neo4j
 NEO4J_PASSWORD=your_password
 ```
 
-
 #### Running the Docker Container
 
 To run the Docker container with the environment variables from the `.env` file, use the following command:
@@ -105,12 +104,14 @@ doctracer track --old output/amendment/old.json --new output/amendment/new.json 
 
 ```bash
 {
-  "metadata": {
+  "metadata": 
+  {
     "Gazette ID": "2382/35",
     "Gazette Published Date": "2024-05-03",
     "Gazette Published by": "Authority"
   },
-  "changes": {
+  "changes": 
+  {
     "RENAME": [],
     "MERGE": [],
     "MOVE": [],
@@ -136,4 +137,5 @@ doctracer track --old output/amendment/old.json --new output/amendment/new.json 
     ]
   }
 }
+
 ```

@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "Gazette No": "1909/54",
+    "Published Date": "2015-04-10",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/4/1909-54_E.pdf",
+    "Amends": {
+      "Gazette No": "1897/15",
+      "Published Date": "2015-01-18",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": {
+    "RENAME": [
+      {
+        "Type": "Minister",
+        "Previous Name": "Minister of Public Administration, Provincial Councils , Local Government and Democratic Governance",
+        "New Name": "Minister of Public Administration, Local Government and Democratic Governance",
+        "Effective Date": "2015-03-22"
+      },
+      {
+        "Type": "Minister",
+        "Previous Name": "Minister of Resettlement, Reconstruction and Hindu Religious Affairs",
+        "New Name": "Minister of Resettlement, Reconstruction and Hindu Religious Affairs",
+        "Effective Date": "2015-03-22"
+      },
+      {
+        "Type": "Department",
+        "Previous Name": "Muslim Religious Affairs and Posts",
+        "New Name": "Department of Muslim Religious and Cultural Affairs",
+        "Effective Date": "2015-03-22"
+      }
+    ],
+    "MERGE": [],
+    "MOVE": [],
+    "ADD": [
+      {
+        "Type": "Minister",
+        "Parent Name": "Minister of Skills Development and Vocational Training",
+        "New Entity": "Minister of Provincial Councils and Regional Development",
+        "Effective Date": "2015-03-22"
+      },
+      {
+        "Type": "Minister",
+        "Parent Name": "Minister of Skills Development and Vocational Training",
+        "New Entity": "Minister of Rural Economic Affairs",
+        "Effective Date": "2015-03-22"
+      }
+    ],
+    "TERMINATE": []
+  }
+}

@@ -18,25 +18,25 @@
     "MOVE": [],
     "ADD": [
       {
-        "Type": "Project",
+        "Type": "Development Project",
         "Parent Name": "Minister of Investment Promotion",
-        "New Entity": "Development of Colombo Port City Special Economic Zone as an International Business and Services Hub",
+        "New Entity": "Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement.",
         "Effective Date": "2022-09-16"
       },
       {
-        "Type": "Entity",
+        "Type": "Organization",
         "Parent Name": "Minister of Investment Promotion",
         "New Entity": "Sri Lanka Export Development Board",
         "Effective Date": "2022-09-16"
       },
       {
-        "Type": "Entity",
+        "Type": "Organization",
         "Parent Name": "Minister of Investment Promotion",
         "New Entity": "Board of Investment of Sri Lanka",
         "Effective Date": "2022-09-16"
       },
       {
-        "Type": "Entity",
+        "Type": "Organization",
         "Parent Name": "Minister of Investment Promotion",
         "New Entity": "Colombo Port City Economic Commission",
         "Effective Date": "2022-09-16"
@@ -50,7 +50,17 @@
       },
       {
         "Type": "Item",
-        "Previous Name": "Items 26, 50, and 51",
+        "Previous Name": "Item 26",
+        "Effective Date": "2022-09-16"
+      },
+      {
+        "Type": "Item",
+        "Previous Name": "Item 50",
+        "Effective Date": "2022-09-16"
+      },
+      {
+        "Type": "Item",
+        "Previous Name": "Item 51",
         "Effective Date": "2022-09-16"
       },
       {
