@@ -1,0 +1,720 @@
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Defence",
+      "departments": [
+        "Sri Lanka Army",
+        "Sri Lanka Navy",
+        "Sri Lanka Air Force",
+        "Department of Civil Security"
+      ],
+      "laws": [
+        "Army Act, No. 17 of 1949",
+        "Navy Act, No. 34 of 1950",
+        "Air Force Act, No. 41 of 1949",
+        "Api Wenuwen Api Fund Act, No. 6 of 2008",
+        "Chief of Defence Staff Act, No. 35 of 2009"
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects in regard to the subjects of Defence, and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Defence",
+      "departments": [
+        "Sir John Kotelawala Defence University",
+        "Defence Services Command and Staff College",
+        "Ranaviru Seva Authority",
+        "Defence Services School",
+        "National Cadet Corps",
+        "National Defence Fund",
+        "State Intelligence Service",
+        "Coast Guard Department of Sri Lanka",
+        "Lanka Logistics Limited",
+        "Rakna Arakshaka Lanka Ltd."
+      ],
+      "laws": [
+        "Defence Services Command and Staff College Act, No. 5 of 2008",
+        "Department of Coast Guard Act, No. 41 of 2009",
+        "Explosives Act, No. 21 of 1956",
+        "Firearms Ordinance No. 33 of 1916",
+        "Firing Ranges and Military Training Act",
+        "Mobilization of Supplementary Force Act, No. 40 of 1985",
+        "Offensive Weapons Act, No. 18 of 1966",
+        "Piracy Act, No. 9 of 2001",
+        "Prevention of Terrorism Act, No. 48 of 1979",
+        "Private Security Agencies Act, No. 45 of 1998",
+        "Public Security Ordinance",
+        "Ranaviru Seva Authority Act, No. 54 of 1999",
+        "Sir John Kotelawala Defence Academy Act, No. 68 of 1981",
+        "Suppression of Terrorist Bombings Act, No. 11 of 1999",
+        "Suppression of Unlawful Acts Against the Safety of Maritime Navigation Act, No. 42 of 2000",
+        "All other legislations pertaining to the subjects specified in Columns I and II, and not specifically brought under the purview of any other Minister"
+      ],
+      "functions": [
+        "Provide for the defence of the country through the facilitation of the functioning of the Armed Services",
+        "Maintenance of internal security",
+        "Defence and internal security related intelligence services",
+        "Relations with visiting Armed Forces",
+        "Matters relating to veteran and disabled soldiers",
+        "Explosives and firearms",
+        "Maintenance of Light Houses (other than those belonging to the Ports Authority)",
+        "Provision of defence education and post-service education for Defence services personnel",
+        "Higher Education for defence services personnel",
+        "Matters relating to private security services",
+        "Rescue operations and administration of Coast Guard Service",
+        "All other subjects that come under the purview of Institutions listed in Column II"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Mahaweli Development & Environment",
+      "departments": [
+        "Mahaweli Authority of Sri Lanka and its Subsidiary Companies and Associates (except Mahaweli Livestock Enterprise Company Ltd.)",
+        "Central Engineering Consultancy Bureau (CECB)",
+        "Moragahakanda & Kalu Ganga Reservoir Project",
+        "Dam Safety & Water Resources Planning Project",
+        "Mahaweli Consolidation Project (System B Rehabilitation)",
+        "Udawalawe Left Bank Project",
+        "Uma Oya Development Project",
+        "Department of Forests",
+        "Central Environmental Authority",
+        "Geological Survey and Mines Bureau",
+        "GSMB Technical Services (Pvt) Ltd.",
+        "State Timber Corporation",
+        "Marine Environment Protection Authority",
+        "National Gem and Jewellery Authority"
+      ],
+      "laws": [
+        "Mahaweli Authority of Sri Lanka Act, No. 23 of 1979",
+        "Forest Ordinance (Chap. 453)",
+        "Marine Pollution Prevention Act, No. 35 of 2008",
+        "Minerals and Minerals Act, No. 33 of 1992",
+        "National Environmental Act, No. 47 of 1980",
+        "National Heritage Wilderness Areas Act, No. 3 of 1988",
+        "National Gem & Jewellery Authority Act",
+        "Coast Conservation Act, No. 57 of 1981",
+        "All other legislations pertaining to the subjects specified in Column I and II, and not specifically brought under the purview of any other Minister."
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects in regard to subjects of development associated with the Mahaweli & Environment and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II",
+        "Mahaweli Development Programme",
+        "Activities relating to the Mahaweli Authority Act and activities related to Agencies established under the Act",
+        "Compensation for Mahaweli farmers",
+        "Preservation of the environment for the present and future generations",
+        "Formulation of policies and plans in respect of environmental protection and management",
+        "Forests and forestry",
+        "Protection and conservation of forest, fauna and flora",
+        "Promote commercial forestry in view of meeting the timber requirement of the country",
+        "Urban solid waste management",
+        "Formulation and effective implementation of programmes to combat pollution of the environment",
+        "Prevention of marine pollution",
+        "Regulation and promotion of the Gem and Jewellery industry and trade"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Mahaweli Development & Environment",
+      "departments": [
+        "Gem and Jewellery Research Institute",
+        "Lanka Timber Plant and Industries",
+        "Coast Conservation Department"
+      ],
+      "laws": [],
+      "functions": [
+        "Coast conservation and protection",
+        "All other subjects that come under the purview of Institutions listed in Column II",
+        "Supervision of the Institutions listed in Column II"
+      ]
+    },
+    {
+      "name": "Minister of Policy Planning, Economic Affairs, Child, Youth & Cultural Affairs",
+      "departments": [
+        "Department of National Planning",
+        "Department of External Resources",
+        "Department of Census and Statistics",
+        "Department of National Physical Planning",
+        "Department of Policy Studies",
+        "National Operations Room",
+        "Central Bank of Sri Lanka",
+        "Securities and Exchange Commission",
+        "Public Utilities Commission of Sri Lanka",
+        "Credit Information Bureau",
+        "Employees Trust Fund",
+        "National Insurance Trust Fund",
+        "Rural Resuscitation Fund"
+      ],
+      "laws": [
+        "Foreign Loans Act, No. 29 of 1957",
+        "Census Act",
+        "Institute of Policy Studies of Sri Lanka Act, No. 35 of 1988",
+        "Monetary Law Act",
+        "Exchange Control Act",
+        "Banking Act, No. 30 of 1988",
+        "Recovery of Loans by Banks (Special Provisions) Act, No. 4 of 1990",
+        "Pradeshiya Sanwardana Bank Act, No. 41 of 2008",
+        "Securities and Exchange Commission of Sri Lanka Act, No. 36 of 1991",
+        "Public Utilities Commission of Sri Lanka Act, No. 37 of 2002",
+        "Credit Information Bureau of Sri Lanka Act, No. 181 of 1994",
+        "Employees' Trust Fund Act, No. 46 of 1980",
+        "Employees' Trust Fund (Special Provisions) Act, No. 19 of 1995",
+        "National Insurance Trust Fund Act, No. 28 of 2006",
+        "Voluntary Social Service Organizations (Registration & Supervision) Act, No. 33 of 1980",
+        "National Child Protection Act, No. 50 of 1998",
+        "Adoption of Children Ordinance",
+        "Children and Young Persons Ordinance"
+      ],
+      "functions": [
+        "Formulation of national economic and monetary policies and strategies, and formulation of policies and programmes in regard to child, youth & cultural affairs, and subjects that come under the purview of Departments, Statutory Institutions & Public Corporations listed in Column II",
+        "Preparation of national development and public investment programmes and projects",
+        "Formulation of monetary policies and macroeconomic management in coordination with the Central Bank of Sri Lanka",
+        "Coordination of public and private sector activities and facilitation of the private sector for economic development",
+        "Co-ordination with international agencies and mobilization of foreign resources for economic development",
+        "Liaising with donor agencies and international financial institutions",
+        "Control of insurance industry and its related laws",
+        "Direct implementation and direction of all Regional Development Programmes (including District Development Programmes)"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Policy Planning, Economic Affairs, Child, Youth & Cultural Affairs",
+      "departments": [
+        "Jandariya Fund (Gramodaya Mandala Fund)",
+        "Secretariat for Non-Governmental Organizations",
+        "Department of Probation and Childcare Services",
+        "National Child Protection Authority",
+        "Children's Secretariat",
+        "National Youth Services Council",
+        "National Youth Corps",
+        "Youth Employment Network",
+        "International Centre for Training of Rural Leaders",
+        "Youth Welfare Fund",
+        "National Youth Awards Authority",
+        "National Youth Services Co-operative Ltd.",
+        "Human Resources Development Council",
+        "Department of Cultural Affairs",
+        "Department of Archaeology",
+        "Department of National Museums",
+        "Department of National Archives"
+      ],
+      "laws": [
+        "National Human Resources Development Council of Sri Lanka Act, No. 18 of 1997",
+        "National Youth Service Council Act, No. 69 of 1979",
+        "Youth Corps Act, No. 21 of 2002",
+        "Cultural Property Act, No. 73 of 1988",
+        "Antiquities Ordinance",
+        "National Archives Law No. 48 of 1973",
+        "Tower Hall Theatre Foundation Act No. 1 of 1978",
+        "Central Cultural Fund Act, No. 57 of 1980",
+        "Galle Heritage Foundation Act, No. 7 of 1994",
+        "Sigiriya Heritage Foundation Act, No. 62 of 1998",
+        "Arts Council of Ceylon Act",
+        "All other legislations pertaining to the subjects specified in Column II, and not specifically brought under the purview of any other Minister."
+      ],
+      "functions": [
+        "Preparation of the National Physical Plan and Regional Physical Plans",
+        "Constitutional Affairs",
+        "Formulation of policies and programmes on early childhood caring and development with the objective of fostering a physically and mentally healthy child, co-ordinating, monitoring and following up such activities with the provincial level committees",
+        "Formulation and implementation of plans, programmes and projects to provide equal opportunities for unprotected children while promoting and preserving their rights in keeping with national policies and international standards",
+        "Implementation of the Children's Charter",
+        "Implementation of the Sevana Sarana Foster-Parent Scheme",
+        "Formulation of voluntary national services schemes for youth",
+        "Development of entrepreneurship skills among unemployed youth",
+        "Youth development activities",
+        "Fostering the national culture in Sri Lanka in all its aspects",
+        "Foreign cultural relations",
+        "Promotion of modern and traditional arts and crafts",
+        "Fostering and promotion of drama, music and dance"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Policy Planning, Economic Affairs, Child, Youth & Cultural Affairs",
+      "departments": [
+        "Tower Hall Theatre Foundation",
+        "Public Performance Board",
+        "National Performing Arts Centre",
+        "National Arts Council",
+        "Central Cultural Fund",
+        "Galle Heritage Foundation",
+        "Gramodya Folk Arts Centre"
+      ],
+      "laws": [],
+      "functions": [
+        "Compilation of Sinhala Encyclopedia, Sinhala Dictionary and Mahawansa",
+        "Promotion of a high aesthetic sense in the youth",
+        "Conservation of historical, archaeological and cultural heritage",
+        "All other subjects that come under the purview of Institutions listed in Column II",
+        "Supervision of the Institutions listed in Column II"
+      ]
+    },
+    {
+      "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+      "departments": [
+        "Department of Police",
+        "Department of Immigration and Emigration",
+        "National Dangerous Drugs Control Board",
+        "National Disaster Management Council",
+        "Disaster Management Centre",
+        "National Disaster Relief Services Centre",
+        "Department of Meteorology",
+        "Department of Christian Religious Affairs"
+      ],
+      "laws": [
+        "Police Ordinance",
+        "Immigrants and Emigrants Act, No. 20 of 1948",
+        "Citizenship Act, No. 18 of 1948",
+        "Grant of Citizenship to Persons of Indian Origin Act",
+        "Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988",
+        "Grant of Citizenship to Stateless Persons Act, No. 5 of 1986",
+        "Extradition Law, No. 8 of 1977",
+        "Convention against Illicit Traffic in Narcotic Drugs and Psychotropic Substances Act, No. 1 of 2008",
+        "Drug Dependent Persons (Treatment and Rehabilitation) Act, No. 54 of 2007",
+        "National Dangerous Drugs Control Board Act, No. 11 of 1984",
+        "Sri Lanka Disaster Management Act, No. 13 of 2005"
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects in relation to the subjects of Law & Order, Disaster Management and inculcation of religious values in people to create a virtuous society, and subjects that come under the purview of Departments, Statutory Institutions & Public Corporations listed in Column II",
+        "Maintenance of Law and Order",
+        "Traffic Control",
+        "Matters relating to Immigration and Emigration",
+        "Matters relating to Sri Lankan Citizenship, and Extradition",
+        "Prevention of the use of dangerous drugs, and their control",
+        "Co-ordination and management of relief activities pertaining to natural and man-made disasters"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+      "departments": [
+        "Department of Disaster Management",
+        "National Emergency Operations Centre"
+      ],
+      "laws": [
+        "Disaster Management Act No. 13 of 2005",
+        "The Christian Affairs Act"
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects for disaster mitigation, response and recovery",
+        "Formulation of national disaster management, Plan and the National emergency operation Plan based on the national policy",
+        "Initiate and co-ordinate foreign aided projects for disaster mitigation, response and recovery",
+        "Liaise with ministries, government authorities and agencies, private sector agencies, and NGOs and INGOs to ensure timely execution of above activities",
+        "Co-ordination of awareness programmes on natural disasters and man-made disasters",
+        "Provision of relief during disasters due to flood, droughts, epidemic diseases and other exceptional causes",
+        "Implementation of measures for rescue operations during natural and man-made disasters",
+        "Early warning systems",
+        "Meteorological surveys and research",
+        "Implementation and monitoring of programmes in respect of christian religious affairs",
+        "All other subjects that come under the purview of Institutions listed in Column II",
+        "Supervision of the Institutions listed in Column II"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "**Minister of Home Affairs & Fisheries**",
+      "departments": [
+        "All District Secretariats",
+        "All Divisional Secretariats",
+        "Department of Registration of Persons",
+        "Department of Registrar General",
+        "Department of Fisheries and Aquatic Resources",
+        "National Aquaculture Development Authority",
+        "Ceylon Fishery Harbours Corporation",
+        "Cey-Nor Foundation Ltd.",
+        "Ceylon Fisheries Corporation",
+        "National Aquatic Resources Research and Development Agency"
+      ],
+      "laws": [
+        "Transfer of Powers (Divisional Secretaries) Act, No. 58 of 1992",
+        "Registration of Persons Act, No. 32 of 1968",
+        "Births & Deaths Registration Act",
+        "Kandyan Marriage and Divorce Act",
+        "Muslim Marriage and Divorce Act",
+        "Notaries Ordinance",
+        "Registration of Documents Ordinance",
+        "Sri Lanka Ordinary Marriage Registration Ordinance",
+        "Holidays Act, No. 29 of 1971",
+        "Fisheries and Aquatic Resources Act, No. 02 of 1996",
+        "Fishermen's Pension and Social Security Benefits Scheme Act, No. 23 of 1990",
+        "National Aquaculture Development Authority of Sri Lanka Act, No. 53 of 1998",
+        "National Aquatic Resources Research and Development Agency Act, No. 54 of 1981",
+        "All other legislation pertaining to the subjects specified in Column I and II, and not specifically brought under the purview of any other Minister."
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects in regard to the subjects of Home Affairs, Fisheries & Aquatic Resources Development and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II.",
+        "General supervision and direction of officers in District Secretariats and Divisional Secretariats in respect of subjects not specifically assigned to other Ministries.",
+        "Registration of Persons",
+        "Public Ceremonies",
+        "Development and management of marine, brackish water and freshwater fisheries.",
+        "Management and/or operation of state owned fishing craft.",
+        "Development and Management of fisheries in the exclusive economic zone.",
+        "Establishment, maintenance and management of Fishery Harbours and Anchorages.",
+        "Establishment and operation of ice plants, cold rooms and other infrastructure facilities required for the fishery industry.",
+        "Development of living and non-living national aquatic resources.",
+        "Distribution and marketing of fish and fish products.",
+        "Manufacture, importation and distribution of fishing crafts and fishing gear.",
+        "Development and management of aquaculture, including marine fish farming.",
+        "All other subjects that come under the purview of Institutions listed in Column II.",
+        "Supervision of the Institutions listed in Column II."
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Food Security",
+      "departments": [
+        "Department of Measurement Units, Standards and Services",
+        "Department of Food Commissioner",
+        "Department of Co-operative Development (Registrar of Co-operative Societies)",
+        "Co-operative Employees Commission",
+        "Internal Trade Department",
+        "Consumer Affairs Authority",
+        "National Institute of Co-operative Development",
+        "Lanka Sathosa Ltd.",
+        "Lanka General Trading Company Ltd.",
+        "Co-operative Wholesale Establishment",
+        "Regional Economic Centers",
+        "Paddy Marketing Board"
+      ],
+      "laws": [
+        "Consumer Affairs Authority Act, No. 9 of 2003",
+        "Consumer Protection Act, No. 1 of 1979",
+        "Co-operative Employees Commission Act, No. 12 of 1972",
+        "Co-operative Societies Act, No. 5 of 1972",
+        "Co-operative Wholesale Establishment Act",
+        "Enforcement of the Licensing of Traders Act",
+        "Measurement Units Standards & Services Act, No. 35 of 1995",
+        "National Institute of Co-operative Development (Incorporation) Act",
+        "Weights and Measures Ordinance",
+        "Paid Marketing Board Act",
+        "Sri Lanka Institute of Marketing (Incorporation) Act, No. 41 of 1980",
+        "All other legislations pertaining to the subjects specified in Column I and II, and not specifically brought under the purview of any other Minister"
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects to ensure adequate and uninterrupted food supply at reasonable prices and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II",
+        "Formulation and implementation of National Price Policy pertaining to consumer goods",
+        "Ensure availability of food and other essential items",
+        "Implement measures for consumer protection",
+        "Ensure purchase of agricultural products at reasonable prices",
+        "All other subjects that come under the purview of institutions listed in Column II",
+        "Supervision of the institutions listed in Column II"
+      ]
+    },
+    {
+      "name": "Minister of Foreign Affairs",
+      "departments": [
+        "Diplomatic Missions Abroad",
+        "Indian Ocean Marine Affairs Co-operation",
+        "Laksman Kadirgamar Institute of International Relations and Strategic Studies",
+        "Information and Communication Technology Agency"
+      ],
+      "laws": [
+        "Consular Functions Act, No. 4 of 1981",
+        "Diplomatic Privileges Act, No. 9 of 1966",
+        "Information and Communication Technology Act, No. 27 of 2003",
+        "Electronic Transactions Act, No. 19 of 2006",
+        "All other legislations pertaining to the subjects specified in Column I and II, and not specifically brought under the purview of any other Minister"
+      ],
+      "functions": [
+        "Formulation and Implementation of policies, plans and programmes in respect of Foreign Affairs and Telecommunications, and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II",
+        "Promotion of a favourable image of Sri Lanka abroad",
+        "Counteracting hostile propaganda against Sri Lanka"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Foreign Affairs",
+      "departments": [
+        "Sri Lanka Telecom Ltd. and its Subsidiaries and Associates",
+        "Department of Telecommunications (under liquidation)",
+        "Information Technology Parks (other than Malambe Information Technology Park)"
+      ],
+      "laws": [],
+      "functions": [
+        "Maintenance of diplomatic and consular relations with foreign countries and negotiations of treaties, agreements and conventions.",
+        "Provision of diplomatic immunities and privileges.",
+        "Assisting in the promotion of external trade and tourism.",
+        "Implementation of computer literacy improvement programmes.",
+        "Promotion of good governance in the public sector by encouraging the utilization of information and communication technology.",
+        "All other subjects that come under the purview of Institutions listed in Column II."
+      ]
+    },
+    {
+      "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+      "departments": [
+        "Department of Management Services",
+        "Sri Lanka Institute of Development Administration",
+        "Distance Learning Centre Ltd.",
+        "Productivity Secretariat",
+        "Department of Official Languages",
+        "Official Languages Commission",
+        "National Institute of Language Education and Training"
+      ],
+      "laws": [
+        "Compulsory Public Service Act",
+        "Sri Lanka Institute of Development Administration Act, No. 9 of 1982",
+        "Official Languages Act, No. 33 of 1956",
+        "Official Languages Commission Act, No. 18 of 1991",
+        "National Institute of Language Education and Training Act, No. 26 of 2007",
+        "Widowers’ and Orphans’ Pension Act",
+        "Widows’ and Orphans’ Pension Scheme (Armed Forces) Act",
+        "Public Service Pensioners’ Trust Fund Act No. 40 of 1999"
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects in regard to the subjects of Public Administration, Provincial Councils, Local Government & Democratic Governance and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II.",
+        "Administration of the Combined Services.",
+        "Functions under the Establishments Code.",
+        "Administration and personnel management relating to the following All Island Services."
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+      "departments": [
+        "Public Service Pensioners' Trust Fund",
+        "Local Loans and Development Fund",
+        "Sri Lanka Institute of Local Governance"
+      ],
+      "laws": [
+        "Government Quarters (Recovery of Possession) Act",
+        "Public Service Provident Fund Ordinance",
+        "Prize Competitions Act, No. 37 of 1957",
+        "Municipal Council Ordinance",
+        "Pradeshiya Sabhas Act, No. 15 of 1987",
+        "Provincial Councils Act, No. 42 of 1987",
+        "Provincial Councils (Payment of Salaries & Allowances) Act, No. 37 of 1988",
+        "Sri Lanka Institute of Local Governance Act",
+        "Urban Councils Ordinance",
+        "Gramodaya Mandala Act, No. 28 of 1982",
+        "Local Loans and Development Fund Act, No. 22 of 1916",
+        "All other legislations pertaining to the subjects specified in Column I and II, and not specifically brought under the purview of any other Minister."
+      ],
+      "functions": [
+        "Sri Lanka Planning Service",
+        "Sri Lanka Engineering Service",
+        "Sri Lanka Scientific Service",
+        "Sri Lanka Architectural Service",
+        "Sri Lanka Technological Service",
+        "Cadre management and advisory services on fixing of salaries",
+        "Public service training",
+        "Preparation and implementation of policies and programmes for improving national productivity",
+        "Formulation and implementation of plans, programmes and projects in respect of national languages and social integration",
+        "Implementation of the Pensions Minute",
+        "Matters relating to all Government Pension Schemes",
+        "Allocation and administration of Government Quarters",
+        "Promotion of good governance in the public sector in order to achieve development targets",
+        "Introduction of modern governance concepts",
+        "Formulation and implementation of policies to create a public service that gives pride of place to people's aspirations with the aim of producing strong and capable citizens",
+        "All matters relating to Provincial Councils",
+        "Government functions relating to Local Authorities",
+        "Grant of loans to Local Authorities for public utility works",
+        "Training of Members, Officers and Employees of Provincial Councils and Local Government Authorities",
+        "Conduct of research on all aspects of Provincial and Local Government Administration",
+        "All other subjects that come under the purview of institutions listed in Column II",
+        "Supervision of the Institutions listed in Column II"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Buddha Sasana",
+      "departments": [
+        "Department of Buddhist Affairs",
+        "Buddha Sasana Fund",
+        "International Buddhist Centre"
+      ],
+      "laws": [
+        "Buddha Sasana Fund Act, No. 35 of 1990",
+        "Buddhist Temporalities Ordinance",
+        "All other legislations pertaining to the subjects specified in Column I and II, and not specifically brought under the purview of any other Minister."
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects to inculcate religious values among people in order to create a virtuous society",
+        "Implementation of appropriate programmes and projects to protect and foster the Buddha Sasana",
+        "Assisting in the propagation of the Buddha Dhamma",
+        "Servicing the Supreme Advisory Council",
+        "All other subjects that come under the purview of Institutions listed in Column II",
+        "Supervision of the Institutions listed in Column II"
+      ]
+    },
+    {
+      "name": "Minister of Plantation Industries",
+      "departments": [
+        "Department of Rubber Development",
+        "National Institute of Plantation Management",
+        "Sri Lanka Tea Board",
+        "Tea Small Holdings Development Authority",
+        "Tea and Rubber Estates (Control and Fragmentation) Board",
+        "Tea Shakthi Fund",
+        "Kalubovila Tea Factory Ltd.",
+        "Thuruwasigama Ru",
+        "Tea Research Institute",
+        "Rubber Research Institute",
+        "Coconut Cultivation Board",
+        "Coconut Development Authority"
+      ],
+      "laws": [
+        "National Institute of Plantation Management Act, No. 45 of 1979",
+        "Sri Lanka Tea Board Act, No. 11 of 1990",
+        "Rubber Replanting Subsidy Act, No. 36 of 1983",
+        "Rubber Research Ordinance No. 1 of 1930",
+        "Rubber Control Act, No. 11 of 1956",
+        "Tea (Tax and Control of Exports) Act, No. 16 of 1959",
+        "Tea and Rubber Estates (Control of Fragmentation) Act, No. 2 of 1958",
+        "Tea Control Act, No. 51 of 1957",
+        "Tea Shakthi Fund Act, No. 47 of 2000",
+        "Tea Small Holdings Development Act, No. 35 of 1975",
+        "Tea Subsidy Act, No. 12 of 1958",
+        "Thuruwasigama Fund Act, No. 23 of 2000"
+      ],
+      "functions": [
+        "Formulation of policies and programmes in regard to subjects of Plantation Industry and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II",
+        "Issuance of licences related to Tea and Rubber",
+        "Issuance of permits for export of tea",
+        "Issuance of licences related to fragmentation of rubber estates, and their control",
+        "Optimum utilization of plantation lands through multiple cropping and integrated farming, and increasing production and employment thereby",
+        "Matters relating to the development, promotion and research of the tea, rubber and coconut industry"
+      ]
+    }
+  ]
+}
+
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Plantation Industries",
+      "departments": [
+        "Coconut Research Institute",
+        "Sri Lanka Rubber Manufacturing and Export Corporation",
+        "BCC Company Ltd.",
+        "Janatha Estate Development Board",
+        "Elkaduwa Plantation Ltd.",
+        "Sri Lanka State Plantation Corporation",
+        "Kurunegala Plantation Ltd.",
+        "Chilaw Plantation Ltd.",
+        "Hingurana Sugar Industries Ltd.",
+        "Lanka Sugar (Private) Company Ltd.",
+        "Gal Oya Plantation (Private) Company",
+        "Sugarcane Research Institute",
+        "Sri Lanka Cashew Corporation"
+      ],
+      "laws": [
+        "Tea Research Board Act, No. 52 of 1993",
+        "Coconut Cultivation Board Act, No. 466 of 1971",
+        "Coconut Development (Special Provisions) Act, No. 45 of 1981",
+        "Coconut Development Act, No. 46 of 1971",
+        "Coconut Fibre Act, No. 17 of 1967",
+        "Coconut Products Ordinance No. 13 of 1935",
+        "Coconut Research Board Act, No. 37 of 1950",
+        "Sugarcane Research Institute Act, No. 75 of 1981",
+        "All other legislations pertaining to the subjects specified in Column II and not specifically budget under the purview of any other Minister."
+      ],
+      "functions": [
+        "Direction and supervision of activities carried out by the Competent Authorities appointed in respect of underutilized assets of Pelwatte Sugar Industries Ltd. and Sevanagala Sugar Industries Ltd.",
+        "Supervision, co-ordination, provision of guidance and introduction of structural adjustments to enterprises listed in Column II.",
+        "Management and protection of state resources in relation to the Sugar Industry.",
+        "All other subjects that come under the purview of Institutions listed in Column II."
+      ]
+    },
+    {
+      "name": "Minister of Finance",
+      "departments": [
+        "General Treasury",
+        "Department of Fiscal Policy",
+        "Department of National Budget",
+        "Department of Public Enterprises",
+        "Department of Public Finance",
+        "Department of Legal Affairs",
+        "Department of Internal Revenue"
+      ],
+      "laws": [
+        "Appropriation Acts",
+        "Betting and Gaming Levy Act, No.40 of 1998",
+        "Customs Ordinance",
+        "Debits Tax Act, No. 12 of 2007",
+        "Development Lotteries Board Act, 20 of 1997",
+        "Economic Service Charge Act",
+        "Public Service Mutual Provident Association Ordinance No. 5 of 1891",
+        "Excise (Special Provisions) Act, No. 13 of 1998",
+        "Excise Ordinance (Chapter 52)",
+        "Finance Companies Act, No. 78 of 1988"
+      ],
+      "functions": [
+        "Formulation of policies and programmes in regard to the subjects of Finance & Taxation and all subjects that come under the purview of Departments, Statutory Institutions & Public Corporations listed in Column II.",
+        "Formulation of fiscal and micro fiscal management policies.",
+        "Preparation of the annual budget and management of financial resources.",
+        "Execution of the National budget and enforcement of budgetary and financial controls."
+      ]
+    }
+  ]
+}
+

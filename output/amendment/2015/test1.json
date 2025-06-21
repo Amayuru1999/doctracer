@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "Gazette No": "1913/4",
+    "Published Date": "2015-05-05",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/5/1913-4_E.pdf",
+    "Amends": {
+      "Gazette No": "1897/15",
+      "Published Date": "2015-01-18",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": {
+    "RENAME": [],
+    "MERGE": [],
+    "MOVE": [],
+    "ADD": [
+      {
+        "Type": "Minister of Skills Development and Vocational Training",
+        "Parent Name": "Minister of Skills Development and Vocational Training",
+        "New Entity": "National Institute of Business Management",
+        "Effective Date": "2015-04-24"
+      },
+      {
+        "Type": "Minister of Skills Development and Vocational Training",
+        "Parent Name": "Minister of Skills Development and Vocational Training",
+        "New Entity": "University of Vocational Technology",
+        "Effective Date": "2015-04-24"
+      },
+      {
+        "Type": "Minister of Skills Development and Vocational Training",
+        "Parent Name": "Minister of Skills Development and Vocational Training",
+        "New Entity": "National Institute of Fisheries and Nautical Engineering (Ocean University)",
+        "Effective Date": "2015-04-24"
+      },
+      {
+        "Type": "Minister of Rural Economic Affairs",
+        "Parent Name": "Minister of Rural Economic Affairs",
+        "New Entity": "Ape Gama",
+        "Effective Date": "2015-04-24"
+      },
+      {
+        "Type": "Minister of Rural Economic Affairs",
+        "Parent Name": "Minister of Rural Economic Affairs",
+        "New Entity": "SME Venture Capital Company",
+        "Effective Date": "2015-04-24"
+      },
+      {
+        "Type": "Minister of Rural Economic Affairs",
+        "Parent Name": "Minister of Rural Economic Affairs",
+        "New Entity": "SME Authority",
+        "Effective Date": "2015-04-24"
+      },
+      {
+        "Type": "Minister of Rural Economic Affairs",
+        "Parent Name": "Minister of Rural Economic Affairs",
+        "New Entity": "National Enterprise Development Authority",
+        "Effective Date": "2015-04-24"
+      }
+    ],
+    "TERMINATE": []
+  }
+}

@@ -61,39 +61,40 @@ _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
 """
 
 _CHANGES_TABLE_PROMPT_TEMPLATE: str = """
-    You are an assistant tasked with identifying and extracting detailed ministerial information from a Sri Lankan Government Gazette document. Based on the provided text or table, extract each minister and their associated sections:
+    What are the ministers found in the image? There will always be at least one minister. Use this information to find the minister(s):
+    - The minister begins with a number (example 1. Minister of Defence)
+    - The minister is in the format "Minister of ..."
+    - The minister is in bold
+    - The minister is not found inside any table or columns
 
-    For each minister:
-    - ID (e.g., "10.0", if available)
-    - Name (must match format "Minister of ...")
-    - Functions (listed under headings like "Functions", "Special Priorities", etc.)
-    - Departments, Statutory Institutions and Public Corporations
-    - Laws, Acts and Ordinances to be Implemented
-    - Page Start / Page End (if available)
+    Also retrieve lists of the 'subjects and functions', 'departments, statutory institutions and public corporations' and 'laws, acts and ordinances to be implemented' in this image for each minister identified. If there are none in either column leave the list empty for that column.
 
-    Return your result as a clean JSON object with no formatting or escape characters.
+    Return the information as a JSON object, for example:
 
-    Example Output:
-    {{
-        "ministers": [
-            {{
-                "Name": "Minister of Defence",
-                "Functions": ["Ensure national security",
-                        "Coordinate armed forces",
-                        "Develop defense policies"],
-                "Departments": [
+    {
+        "ministers": 
+        [
+            {
+                "name": "Minister of Defence",
+                "functions": [
+                    "Ensure national security",
+                    "Coordinate armed forces",
+                    "Develop defense policies"
+                ],
+                "departments": [
                     "Office of the Chief of Defence Staff",
-                        "Sri Lanka Army",
-                        "Sri Lanka Navy"
+                    "Sri Lanka Army",
+                    "Sri Lanka Navy"
                 ],
-                "Laws": [
-                   "National Security Act No. 45 of 2003",
-                        "Military Ordinance No. 12 of 1945"
-                ],
-            }}
+                "laws": [
+                    "National Security Act No. 45 of 2003",
+                    "Military Ordinance No. 12 of 1945"
+                ]
+            },
         ]
-    }}
- Don't add any extra text such as ```json so that i can directly save the response to a json file.
+    }
+
+    Don't add any extra text such as ```json so that i can directly save the response to a json file.
 """
 
 class PromptCatalog(Enum):

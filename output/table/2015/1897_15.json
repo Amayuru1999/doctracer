@@ -1,0 +1,26 @@
+{
+  "gazette_id": "UNKNOWN",
+  "published_date": "1970-01-01",
+  "ministers": [
+    {
+      "name": "Minister of Defence",
+      "departments": [
+        "Sri Lanka Army",
+        "Sri Lanka Navy",
+        "Sri Lanka Air Force",
+        "Department of Civil Security"
+      ],
+      "laws": [
+        "Army Act, No. 17 of 1949",
+        "Navy Act, No. 34 of 1950",
+        "Air Force Act, No. 41 of 1949",
+        "Api Wenuwen Api Fund Act, No. 60 of 2008",
+        "Chief of Defence Staff Act, No. 35 of 2009"
+      ],
+      "functions": [
+        "Formulation of policies, programmes and projects in regard to the subjects of Defence, and all subjects that come under the purview of Departments, Statutory Institutions and Public Corporations listed in Column II"
+      ]
+    }
+  ]
+}
+
