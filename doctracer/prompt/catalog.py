@@ -7,13 +7,13 @@ _METADATA_PROMPT_TEMPLATE: str = """
     - Published By
     - Gazette Type
     - Language
-    - PDF URL (Use the year and month from the Published Date. For months 1-9, use a single-digit month in the URL path. For example, for Published Date '2020-04-22', the PDF URL should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-21_E.pdf')
+    - PDF URL (Use the year and month from the Published Date. For months 1-9, use a single-digit month in the URL path. Also, use the Gazette No. For months 1-9, if the Gazette No. contains single-digit after "/", use double-digits to create PDF URL. For example, for Published Date '2020-04-22' and Gazette No '2277/2, the PDF URL should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-02_E.pdf')
     - Amends (Gazette No, Published Date, PDF URL)
 
-After extracting this metadata, if an Amends PDF URL is present, trigger a recursive extraction step to:
-- Download and extract text from the amended gazette PDF
-- Extract its metadata and changes using this same prompt suite
-- Link the amended gazette data back to the current gazette metadata
+    After extracting this metadata, if an Amends PDF URL is present, trigger a recursive extraction step to:
+    - Download and extract text from the amended gazette PDF
+    - Extract its metadata and changes using this same prompt suite
+    - Link the amended gazette data back to the current gazette metadata
 
     Ensure the JSON string is compact, without any additional formatting or escape characters.
     Don't include unnecessary backward slashes or forward slashes unless the data contains them. 
@@ -61,7 +61,16 @@ _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
 """
 
 _CHANGES_TABLE_PROMPT_TEMPLATE: str = """
-    What are the ministers found in the image? There will always be at least one minister. Use this information to find the minister(s):
+    You are an assistant tasked with extracting metadata from a government gazette document images. Using the provided images, identify and return the following information in a compact JSON string:
+    - gazette_id
+    - published_date
+    - published_by
+    - gazette_type
+    - language
+    - pdf_url (Use the year and month from the published_date. For months 1-9, use a single-digit month in the url path. Also, use the gazette_id For months 1-9, if the gazette_id contains single-digit after "/", use double-digits to create pdf_url. For example, for published_date '2020-04-22' and gazette_id '2277/2, the pdf_url should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-02_E.pdf')
+    - amends (Gazette No, Published Date, PDF URL)
+
+    After extracting this metadata, you should find what are the ministers found in the image? There will always be at least one minister. Use this information to find the minister(s):
     - The minister begins with a number (example 1. Minister of Defence)
     - The minister is in the format "Minister of ..."
     - The minister is in bold
@@ -69,9 +78,13 @@ _CHANGES_TABLE_PROMPT_TEMPLATE: str = """
 
     Also retrieve lists of the 'subjects and functions', 'departments, statutory institutions and public corporations' and 'laws, acts and ordinances to be implemented' in this image for each minister identified. If there are none in either column leave the list empty for that column.
 
+    Aggregate all pages into a single JSON result.
+
     Return the information as a JSON object, for example:
 
     {
+        "gazette_id": "2303/17",
+        "published_date": "2022-10-26",
         "ministers": 
         [
             {
