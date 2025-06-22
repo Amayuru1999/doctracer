@@ -5,45 +5,37 @@
     "Gazette Published by": "Authority"
   },
   "changes": {
-    "REMOVED": [
-      {
-        "Minister": "Minister of Finance",
-        "Departments": [],
-        "Laws": [],
-        "Responsibilities": []
-      },
-      {
-        "Minister": "State Minister of Paddy and Grains, Organic Food, Vegetables, Fruits, Chilies, Onion and Potato Cultivation Promotion, Seed Production and Advanced Technology Agriculture",
-        "Departments": [],
-        "Laws": [],
-        "Responsibilities": []
-      },
-      {
-        "Minister": "State Minister of Production, Supply and Regulation of Organic and Natural Fertilizer",
-        "Departments": [],
-        "Laws": [],
-        "Responsibilities": []
-      }
-    ],
-    "ADDED": [
-      {
-        "Minister": "State Minister of Promoting the Production & Regulating the Supply of Organic Fertilizer, and Paddy & Grains, Organic Foods, Vegetables, Fruits, Chillies, Onion and Potato Cultivation Promoting, Seed Production and Advanced Technology Agriculture",
-        "Departments": [],
-        "Laws": [],
-        "Responsibilities": [
-          "Assisting in the formulation of policies in relation to the subject of Promoting the Production & Regulating the Supply of Organic Fertilizer",
-          "Formulating methodologies for the timely distribution of technological crop systems, quality seeds, plants and fertilizer",
-          "Encouraging local production of organic fertilizer using local materials to international standards",
-          "Implementing a reasonable pricing policy that satisfies the local farmer and consumer",
-          "Developing crop harvest collecting and processing centres to add value to agricultural produce and export"
-        ]
-      },
-      {
-        "Minister": "Minister of Agriculture",
-        "Departments": [],
-        "Laws": [],
-        "Responsibilities": []
-      }
-    ]
+    "REMOVED": {
+      "Minister": "Minister of Finance",
+      "Departments": [],
+      "Laws": [],
+      "Responsibilities": []
+    },
+    "ADDED": {
+      "Minister": "State Minister of Promoting the Production & Regulating the Supply of Organic Fertilizer, and Paddy & Grains, Organic Foods, Vegetables, Fruits, Chillies, Onion and Potato Cultivation Promoting, Seed Production and Advanced Technology Agriculture",
+      "Departments": [
+        "National Fertilizer Secretariat",
+        "Ceylon Fertilizer Company Ltd.",
+        "Colombo Commercial Fertilizer Company",
+        "National Hunger Eradication Campaign Board of Sri Lanka (National Food Promotion Board)",
+        "Divisional Economic Centres",
+        "Department of Agrarian Development",
+        "Institute of Post-Harvest Technology"
+      ],
+      "Laws": [
+        "Control of Pesticides Act, No. 33 of 1980",
+        "Plant Protection Act, No. 35 of 1999",
+        "Regulation of Fertilizer Act, No. 68 of 1988",
+        "National Hunger Eradication Campaign Act No. 18 of 1973",
+        "Gramodaya Mandala Act, No. 28 of 1982",
+        "Agrarian Development Act, No. 46 of 2000",
+        "Felling of Trees (Control) Act, No. 9 of 1951",
+        "Seed Act, No. 22 of 2003",
+        "Soil Conservation (Amendment) Act, No. 24 of 1996"
+      ],
+      "Responsibilities": [
+        "Assisting in the formulation of policies in relation to the subject of Promoting the Production & Regulating the Supply of Organic Fertilizer, and Paddy & Grains, Organic Foods, Vegetables, Fruits, Chillies, Onion and Potato Cultivation Promoting, Seed Production and Advanced Technology Agriculture"
+      ]
+    }
   }
 }
