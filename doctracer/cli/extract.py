@@ -77,3 +77,5 @@ def extract(processor_type: str, input_path: str, output_path: str):
                     file.write(f"{response}\n\n")  # Write the response followed by a new line
         
         click.echo(f"✓ Processed all files in the directory. Results saved to {output_path}")
+
+       

@@ -9,6 +9,8 @@ from doctracer.prompt.provider import ServiceProvider, AIModelProvider
 
 class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
 
+    
+
     def _initialize_executor(self) -> PromptExecutor:
         return PromptExecutor(
             ServiceProvider.OPENAI,
@@ -48,3 +50,6 @@ class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
             "changes":  changes
         }
         return json.dumps(output, indent=2)
+    
+
+    
