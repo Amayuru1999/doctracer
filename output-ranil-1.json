@@ -1,0 +1,68 @@
+{
+  "metadata": {
+    "Gazette ID": "2297/78",
+    "Gazette Published Date": "2022-09-16",
+    "Gazette Published by": "Authority"
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "heading_number": "02.0",
+        "heading_name": "Minister of Finance, Economic Stabilization and National Policies",
+        "deleted_sections": [
+          "item 32",
+          "items 26, 50 and 51",
+          "Sri Lanka Export Development Act No. 40 of 1979",
+          "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
+          "Colombo Port City Economic Commission Act, No. 11 of 2021"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "heading_number": "06.0",
+        "heading_name": "Minister of Investment Promotion",
+        "subjects_and_functions": [
+          "Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement."
+        ]
+      }
+    },
+    {
+      "operation_type": "RENAMING",
+      "details": {
+        "heading_number": "06.0",
+        "heading_name": "Minister of Investment Promotion",
+        "new_number": "12",
+        "items": [
+          "items 11 and 12 re-numbered as numbers 12 and 13"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "heading_number": "06.0",
+        "heading_name": "Minister of Investment Promotion",
+        "subjects_and_functions": [
+          "Sri Lanka Export Development Board",
+          "Board of Investment of Sri Lanka",
+          "Colombo Port City Economic Commission"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "heading_number": "06.0",
+        "heading_name": "Minister of Investment Promotion",
+        "subjects_and_functions": [
+          "Sri Lanka Export Development Act No. 40 of 1979",
+          "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
+          "Colombo Port City Economic Commission Act, No. 11 of 2021"
+        ]
+      }
+    }
+  ]
+}
