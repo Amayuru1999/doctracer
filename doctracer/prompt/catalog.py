@@ -27,7 +27,7 @@ _METADATA_PROMPT_TEMPLATE: str = """
 
 _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
     You are an assistant tasked with extracting changes from a government gazette document. Based on the provided text, identify and list the following operation types along with their details:
-    - RENAME
+    - RENAME (Add only if the Previous Name and New Name are difference)
     - MERGE
     - MOVE
     - ADD
@@ -52,7 +52,7 @@ _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
 
     Sample JSON Output:
     {{
-        "RENAME": [{{"Type":"Minister","Previous Name":"No. 03. Minister of Technology","New Name":"No. 03. Minister of Technology","Effective Date":"2022-10-26","Clause ID":"8.2","Reason":"Updated title"}}],
+        "RENAME": [{{"Type":"Minister","Previous Name":"No. 03. Minister of Technology","New Name":"No. 03. Minister of Science","Effective Date":"2022-10-26","Clause ID":"8.2","Reason":"Updated title"}}],
         "MERGE": [{{"Type":"Department merge", "Previous Names":["Dept. A", "Dept. B"],"New Name":"Dept. AB","Effective Date":"2022-10-26"}}],
         "MOVE": [{{"Type":"Department", "Previous Parent Name":"Ministry X","New Parent Name":"Ministry Y","Which Child is Moving":"Dept. Z","Effective Date":"2022-10-26"}}],
         "ADD": [{{"Type":"Minister","Parent Name":"Minister X","New Entity":"Ministry Y","Effective Date":"2022-10-26","Clause ID":"8.4","Reason":"To address needs"}}],

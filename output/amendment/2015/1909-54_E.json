@@ -22,14 +22,14 @@
       },
       {
         "Type": "Minister",
-        "Previous Name": "Minister of Resettlement, Reconstruction and Hindu Religious Affairs",
-        "New Name": "Minister of Resettlement, Reconstruction and Hindu Religious Affairs",
+        "Previous Name": "Minister of Muslim Religious Affairs and Posts",
+        "New Name": "Minister of Muslim Religious and Cultural Affairs",
         "Effective Date": "2015-03-22"
       },
       {
-        "Type": "Department",
-        "Previous Name": "Muslim Religious Affairs and Posts",
-        "New Name": "Department of Muslim Religious and Cultural Affairs",
+        "Type": "Minister",
+        "Previous Name": "Minister of Skills Development and Vocational Training",
+        "New Name": "Minister of Provincial Councils and Regional Development",
         "Effective Date": "2015-03-22"
       }
     ],
@@ -44,8 +44,14 @@
       },
       {
         "Type": "Minister",
-        "Parent Name": "Minister of Skills Development and Vocational Training",
+        "Parent Name": "Minister of Provinicial Councils and Regional Development",
         "New Entity": "Minister of Rural Economic Affairs",
+        "Effective Date": "2015-03-22"
+      },
+      {
+        "Type": "Minister",
+        "Parent Name": "Minister of Special Projects",
+        "New Entity": "Minister of Special Projects",
         "Effective Date": "2015-03-22"
       }
     ],
