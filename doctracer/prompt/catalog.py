@@ -602,13 +602,79 @@ _CHANGES_TABLE_PROMPT_TEMPLATE: str = """
 
         Don't add any extra text such as ```json so that i can directly save the response to a json file.
     """
+
+
+_CHANGES_TABLE_EXTRACTION_FROM_TEXT: str = """
+    You are given layout-aware extracted text from a Sri Lankan Government Gazette.
+    Extract information into the following JSON structure:
+
+    {{
+    "gazette_id": "UNKNOWN",
+    "published_date": "1970-01-01",
+    "ministers": [
+    {{
+      "name": "...",
+      "departments": [...],
+      "laws": [...],
+      "functions": [...]
+    }}
+    ]
+    }}
     
+        
+    ## Extraction Guidelines:
+
+    1. Only consider sections that appear in **tables** or table-like layout.
+    2. A new minister always starts with their **title or name** (e.g., "Minister of Finance").
+    3. Each minister section usually contains **three columns**: 
+    - Column I: Duties & Functions
+    - Column II: Departments, Statutory Institutions & Public Corporations
+    - Column III: Laws and Ordinance to be Implemented
+
+    4. Do **not** summarize or skip any item. Extract all rows exactly as listed.
+    5. If any section (departments, laws, or functions) is **missing**, return an empty list for that field.
+    6. The same minister might appear in multiple tables — group all such rows under a **single minister entry** in the output JSON.
+
+
+    Preserve full names of departments, laws, and functions. Do not summarize or skip.
+    If a section is not present, leave it as an empty list.
+    
+    Do not include triple backticks or wrap your response in a code block.
+    Return only valid JSON.
+
+    Text:
+    {gazette_text}
+    """
+
+
+# class PromptCatalog(Enum):
+#     METADATA_EXTRACTION = "metadata_extraction"
+#     CHANGES_AMENDMENT_EXTRACTION = "changes_amendment_extraction"
+#     CHANGES_TABLE_EXTRACTION = "changes_table_extraction"
+#     # Add more prompts as needed
+
+#     @staticmethod
+#     def get_prompt(prompt_type, gazette_text=None):
+#         if prompt_type == PromptCatalog.METADATA_EXTRACTION:
+#             if gazette_text is None:
+#                 raise ValueError("The 'gazette_text' parameter is required for METADATA_EXTRACTION.")
+#             return _METADATA_PROMPT_TEMPLATE.format(gazette_text=gazette_text)
+        
+#         elif prompt_type == PromptCatalog.CHANGES_AMENDMENT_EXTRACTION:
+#             if gazette_text is None:
+#                 raise ValueError("The 'gazette_text' parameter is required for CHANGES_AMENDMENT_EXTRACTION.")
+#             return _CHANGES_AMENDMENT_PROMPT_TEMPLATE.format(gazette_text=gazette_text)
+#         elif prompt_type == PromptCatalog.CHANGES_TABLE_EXTRACTION:
+#             # No gazette_text needed for this prompt
+#             return _CHANGES_TABLE_PROMPT_TEMPLATE
+#         else:
+#             raise ValueError(f"Unsupported prompt type: {prompt_type}")
 
 class PromptCatalog(Enum):
     METADATA_EXTRACTION = "metadata_extraction"
     CHANGES_AMENDMENT_EXTRACTION = "changes_amendment_extraction"
     CHANGES_TABLE_EXTRACTION = "changes_table_extraction"
-    # Add more prompts as needed
+    CHANGES_TABLE_EXTRACTION_FROM_TEXT = "changes_table_extraction_from_text"  # ✅ New prompt type
 
     @staticmethod
     def get_prompt(prompt_type, gazette_text=None):
@@ -616,14 +682,20 @@ class PromptCatalog(Enum):
             if gazette_text is None:
                 raise ValueError("The 'gazette_text' parameter is required for METADATA_EXTRACTION.")
             return _METADATA_PROMPT_TEMPLATE.format(gazette_text=gazette_text)
-        
+
         elif prompt_type == PromptCatalog.CHANGES_AMENDMENT_EXTRACTION:
             if gazette_text is None:
                 raise ValueError("The 'gazette_text' parameter is required for CHANGES_AMENDMENT_EXTRACTION.")
             return _CHANGES_AMENDMENT_PROMPT_TEMPLATE.format(gazette_text=gazette_text)
+
         elif prompt_type == PromptCatalog.CHANGES_TABLE_EXTRACTION:
-            # No gazette_text needed for this prompt
+            # No gazette_text needed
             return _CHANGES_TABLE_PROMPT_TEMPLATE
+
+        elif prompt_type == PromptCatalog.CHANGES_TABLE_EXTRACTION_FROM_TEXT:  # ✅ New case
+            if gazette_text is None:
+                raise ValueError("The 'gazette_text' parameter is required for CHANGES_TABLE_EXTRACTION_FROM_TEXT.")
+            return _CHANGES_TABLE_EXTRACTION_FROM_TEXT.format(gazette_text=gazette_text)
+
         else:
             raise ValueError(f"Unsupported prompt type: {prompt_type}")
-

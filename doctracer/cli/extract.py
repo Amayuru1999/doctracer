@@ -57,23 +57,13 @@ def extract(processor_type: str, input_path: str, output_path: str):
 
     # For 'extragazette_table', process all files in a directory
     elif processor_type == 'extragazette_table':
-        if not input_path.is_dir():
-            raise click.BadParameter("Input must be a directory for 'extragazette_table'")
-        
-        # Sort images lexicographically by filename
-        image_filenames = sorted(
-            [f for f in os.listdir(input_path) if f.lower().endswith(('.jpg', '.jpeg', '.png'))]
-        )
+        if not input_path.is_file():
+            raise click.BadParameter("Input must be a single PDF file for 'extragazette_table'")
 
-        results = {}
-
-        for image_filename in image_filenames:
-            print(f"Processing file: {os.path.join(input_path, image_filename)}\n")  # Print the current file being processed
-            processor = processor_class(os.path.join(input_path, image_filename))
-            results[image_filename] = processor.process_gazettes()
+        processor = processor_class(input_path)
+        output: str = processor.process_gazettes()
 
         with open(output_path, 'w', encoding='utf-8') as file:
-            for image, response in results.items():
-                    file.write(f"{response}\n\n")  # Write the response followed by a new line
-        
-        click.echo(f"✓ Processed all files in the directory. Results saved to {output_path}")
+            file.write(output)
+
+        click.echo(f"✓ Processed. Results saved to {output_path}")
