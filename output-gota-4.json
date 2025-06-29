@@ -1,0 +1,405 @@
+{
+  "metadata": {
+    "Gazette ID": "",
+    "Gazette Published Date": "",
+    "Gazette Published by": ""
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "heading_number": "3.0",
+        "heading_name": "Minister of Finance",
+        "deleted_sections": [
+          "Purview",
+          "Subjects & Functions",
+          "Special Priorities",
+          "Related Institutional and Legal Framework"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "heading_number": "3.0",
+        "heading_name": "Minister of Economic Policies & Plan Implementation",
+        "purview": "Planning and implementation of relevant policies, in order to accelerate economic development and social progress based on the National Policy Statement: 'Vistas of Prosperity and Splendour'.",
+        "subjects_and_functions": [
+          "Formulating policies in relation to the subject of economic policies and plan implementation in conformity , with the prescribed Laws, Acts and Ordinances, implementation of projects under the national budget, state Investment and National Development Programme, and formulating, implementing, monitoring and evaluating policies, programmes and projects, related to subjects and functions under below-mentioned State Corporations and Statutory Institutions for 'economic policies & plan implementation' based on the  national  policies  implemented by the government, and in accordance with the policy statement 'Vistas of Prosperity and Splendour'.",
+          "Facilitating of carrying out relevant development activities while coordinating all ministries with the Presidential Task Force for Economic Revival and Poverty Alleviation and the Presidential Task Force for transform Sri Lanka into a Green Socio economy with Sustainable Solutions for Climate Changes.",
+          "Coordinating with the Presidential Task Force for Gama Samaga Pilisandara Rural Development.",
+          "Monitoring and reviewing the cost of living and the flow of goods and services among the community of consumer, making periodic requests to the Cabinet Committee on Cost of Living to ensure that consumers as well as local producers and suppliers to receive goods and services at the reasonable prices.",
+          "Implementing people-centric development activities by coordinating the development activities of District and Divisional Development Committees and Provincial Councils."
+        ],
+        "special_priorities": [
+          "Formulation and implementation of national development programmes and projects to achieve the sustainable development goals in accordance with the Policy Statement; 'Vistas of Prosperity and Splendour'",
+          "Formulation of national policies",
+          "Co-ordination of State, Private and Co-operative sectors for facilitating the private sector participation in economic development",
+          "Implementation of rural and regional economic development policies and strategies.",
+          "Co-ordination of all Ministries and other relevant institutions for directing the infrastructure development, investment promotion, regulation of organic fertilizer production and other Government flagship development programmes towards the expected goals.",
+          "Take necessary measures to consolidate International Banks, funds and local Banks to uplift the rural and regional economy while strengthening grass root level network of service delivery network."
+        ],
+        "related_institutional_and_legal_framework": {
+          "departments_and_institutions": [
+            "National Planning Department",
+            "Department of Census and Statistics",
+            "Institute of Policy Studies",
+            "Sustainable Development Council",
+            "Office of Comptroller General",
+            "Department of Valuation",
+            "Sri Lanka Accounting and Auditing Standard Monitoring Board",
+            "Public Utilities Commission of Sri Lanka",
+            "Welfare Benefits Board",
+            "Public Service Mutual Provident Fund"
+          ],
+          "laws_and_ordinances": [
+            "Census Ordinance (Chapter 143)",
+            "Institute of Policy Studies of Sri Lanka Act No. 53 of 1988",
+            "The Sustainable Development Act No. 19 of 2017",
+            "Sri Lanka Accounting and Auditing Standards Act, No. 15 of 1995",
+            "Public Utilities Commission of Sri Lanka Act, No. 35 of 2002",
+            "Welfare Benefits Act, No. 24 of 2002",
+            "Public Service Mutual Provident Association Ordinance, No. 5 of 1891",
+            "Strategic Development Project Act No. 14 of 2008"
+          ]
+        }
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "heading_number": "5.1",
+        "heading_name": "State Minister of Urban Development, Waste Disposal and Community Cleanliness",
+        "updated_content": {
+          "subjects_and_functions": [
+            "Assisting in the formulation of policies in relation to the subject of Urban Development, Waste Disposal and Community Cleanliness for the creation of 'Modern Cities and Clean Country' under the direction and guidance of the Minister of Urban Development and Housing in conformity with the prescribed Laws, Acts and Ordinances and implementing, projects under the National Budget, State Investment and National Development Programme, and implementing, monitoring and evaluating subjects and functions of the below-mentioned Departments, State Corporations and Statutory Organizations."
+          ],
+          "special_priorities": [
+            "Socially empowering urban labour force by development of fully-fledged housing complexes for shanty dwellers and low income recipients",
+            "Coordinating the provision of long term credit facilities for construction of housing complexes with modern amenities for middle income recipients in Colombo and suburbs",
+            "Flood control and provision of urban vehicle parks, shopping complexes, fitness centres, entertainment facilities",
+            "Replacement of old storied buildings by new storied buildings",
+            "Providing new houses for urban shanty dwellers via urban housing schemes and community facilities",
+            "Provision of new housing projects and credit facilities to resolve housing problems of the middle class families",
+            "Introducing storied housing schemes on reasonable rental basis for those seeking temporary residency on rent basis",
+            "Incentivizing investors in launching new housing projects by providing lands at concessionary prices to housing construction companies",
+            "Introducing urban forest gardens, urban and suburban parks, water parks and green stretches on either side of the roads",
+            "Introducing an efficient mechanism for the management of urban waste and sewerage and establishing a methodology for recycling water",
+            "Adopting measures to prevent haphazard disposal of waste by installing waste disposal yards and sanitary waste holdings jointly with several local government bodies",
+            "Formulating legal methodologies for the disposal of hospital and factory waste in accordance with the disposal of technical and electronic waste",
+            "Adopting measures to prevent the disposal of waste in an irresponsible manner",
+            "Formulating a programme to regulate all urban construction in term of urban development plans",
+            "It is a basic feature of all urban construction projects to provide for vehicle parks and access facilities for the disable people."
+          ],
+          "related_institutional_and_legal_framework": {
+            "departments_and_institutions": [
+              "Urban Development Authority",
+              "Urban Settlement Development Authority",
+              "Condominium Management Authority",
+              "Selendiva Investments Limited"
+            ],
+            "laws_and_ordinances": [
+              "Urban Development Authority Act, No. 41 of 1978",
+              "Urban Development Projects (Special Provisions) Act, No. 2 of 1980",
+              "Urban Settlement Development Authority Act No. 36 of 2008",
+              "Apartment Ownership Act No. 11 of 1973",
+              "Apartment Ownership (Special Provisions) Act, No. 23 of 2018",
+              "Apartment Ownership (Special Provisions) Act No. 04, 1999",
+              "Common Amenities Board Act, No. 10 of 1973"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "heading_number": "5.4",
+        "heading_name": "State Minister of Coast Conservation & Low-Lying Lands Development",
+        "subjects_and_functions": [
+          "Assisting in the formulation of policies in relation to the subject of Coast Conservation & Low-Lying Lands Development for the creation of 'Protection of Marine Resources and Low-Lying Lands Development' under the direction and guidance of the Minister of Urban Development and Housing in conformity with the prescribed Laws, Acts and Ordinances and implementing, projects under the National Budget, State Investment and National Development Programme, and implementing, monitoring and evaluating subjects and functions of the below-mentioned Departments, State Corporations and Statutory Organizations."
+        ],
+        "special_priorities": [
+          "Introducing an appropriate work plan for the prevention of ocean-related environment pollution",
+          "Adopting measures to prevent sea erosion",
+          "Implementing ocean cleanliness programmes for the prevention of damage caused to the coastal belt and sea bed by the disposal of plastic waste",
+          "Implementation of low-lying land areas development programmes aimed at constructing housing units that are not vulnerable to floods and environment protection."
+        ],
+        "related_institutional_and_legal_framework": {
+          "departments_and_institutions": [
+            "Sri Lanka Land Reclamation Development Corporation and their subsidiaries and related institutions",
+            "Marine Environment Protection Authority",
+            "Department of Coast Conservation and Coastal Resource Management"
+          ],
+          "laws_and_ordinances": [
+            "Sri Lanka Land Reclamation and Development Corporation Act, No. 15 of 1968",
+            "Marine Pollution Prevention Act, No. 35 of 2008",
+            "Coast Conservation Act, No. 57 of 1981"
+          ]
+        }
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "heading_number": "6.0",
+        "heading_name": "Minister of Finance",
+        "updated_content": {
+          "purview": "Responsibilities in relation to macro-economic policies, annual budget and Appropriation Acts, public financial management, local and foreign savings and investments, public debts, banking, finance and insurance activities, international financial cooperation and directing social security and economic development activities.",
+          "subjects_and_functions": [
+            "Providing policy guidance to relevant State Ministries, and formulating policies in relation to the subject of Finance in conformity with the prescribed Laws, Acts and Ordinances, implementation of projects, under the national budget, state Investment and National Development Programme, and formulating, implementing, monitoring and evaluating policies, programmes and projects, related to subjects and functions under below-mentioned Departments, State Corporations and Statutory Institutions for the creation of a 'People Centric Economy' based on the national policies implemented by the government, and in line with the policy statement 'Vistas of Prosperity and Splendour'."
+          ],
+          "special_priorities": [
+            "Establishing a sustained, high economic growth rate that distributes benefits to all, covers all provinces, and minimizes income disparities",
+            "Reducing unemployment giving priority to low income earners and increasing per capita income",
+            "Ensuring price stability by maintaining annual average inflation rate at a low level",
+            "Reducing uncertainties in public revenue policies by reducing budget deficit and public debt",
+            "Expanding financial resources and economic needs by maintaining loan interest rate at a lower level",
+            "Stabilizing the interest rates, financial and balance of payment policies in order to ensure that the exchange value of the rupee is maintained at a stable level.",
+            "Introducing measures to promote domestic production, empower low-income earners and incentivize investments",
+            "Expanding the business environment for the domestic business community in a manner that would provide benefits to general public.",
+            "Strengthening public enterprises.",
+            "Strengthening the institutional structure required for the efficient management of state revenue and expenditure"
+          ],
+          "related_institutional_and_legal_framework": {
+            "departments_and_institutions": [
+              "General Treasury",
+              "Department of Fiscal Policy",
+              "Department of National Budget",
+              "Department of Management Services",
+              "Department of External Resources",
+              "Department of Public Finance",
+              "Department of Treasury Operations",
+              "Department of Public Accounts",
+              "Department of Trade and Investment Policies",
+              "Department of Information Technology Management",
+              "Department of Legal Affairs",
+              "Department of Management Auditing",
+              "Department of Development Finance",
+              "Department of Inland Revenue",
+              "Sri Lanka Customs",
+              "Department of Excise",
+              "National Lotteries Board",
+              "Development Lotteries Board",
+              "Import and Export Control Department",
+              "Central Bank of Sri Lanka",
+              "All State Banks, Financial, Insurance and their subsidiaries and related institutions",
+              "Sri Lanka Insurance Board",
+              "Sri Lanka Insurance Corporation and its subsidiaries and affiliated companies",
+              "Credit Information Bureau",
+              "Department of Registrar Companies",
+              "Security and Exchange Commission of Sri Lanka",
+              "Sri Lanka Export Credit Insurance",
+              "Lady Lochore Fund",
+              "Strike, Riot, Civil Commotion and Terrorism Fund",
+              "National Insurance Trust Fund",
+              "Employees' Trust Fund",
+              "Shrama Vasana Fund",
+              "National Health Development Fund",
+              "Kidney Fund",
+              "Tea Shakthi Fund",
+              "Kapruka Fund",
+              "Public Service Pensioners' Trust Fund",
+              "Buddha Sasana Fund",
+              "Buddhist Renaissance Fund",
+              "Skills Development Fund Ltd.",
+              "Local Loans and Development Fund",
+              "Inventors' Fund",
+              "Thurusaviya Fund",
+              "Central Cultural Fund",
+              "Department of Telecommunications",
+              "Wildlife Trust",
+              "Sri Lanka Media Training Institute",
+              "Internal Trade Department",
+              "Pulse Crops, Grain Research and Production Authority",
+              "Janatha Fertilizer Enterprises Ltd",
+              "Protection of Children National Trust Fund"
+            ],
+            "laws_and_ordinances": [
+              "Appropriation Acts",
+              "Customs Ordinance, No. 17 of 1956",
+              "Foreign Loans Act, No. 29 of 1957",
+              "Debits Tax Act, No. 12 of 2007",
+              "Betting and Gaming Levy Act, No. 40 of 1998",
+              "Economic Service Charge Act, No. 13 of 2006",
+              "Excise Ordinance (Chapter 52)",
+              "Finance Leasing Act, No. 56 of 2000",
+              "Financial Transactions Reporting Act, No. 6 of 2006",
+              "Public Fiscal Management (Responsibility) Act, No. 3 of 2003",
+              "Inland Revenue Act, No. 10 of 2006",
+              "Regulation of Insurance Industry Act, No. 43 of 2000",
+              "Lady Lochore Fund Act, No. 38 of 1951",
+              "Local Treasury Bills Ordinance, No. 38 of 1923",
+              "Nation Building Tax Act, No. 9 of 2009",
+              "Business Names Act, No. 7 of 1987",
+              "Companies Act No. 7 of 2007",
+              "Trade Marks Act No. 30 of 1964",
+              "Cheetus Ordinance No. 61 of 1935",
+              "Public Contract Act No. 3 of 1987",
+              "Prevention of Money Laundering Act, No. 5 of 2006",
+              "Import and Export (Control) Act, No. 1 of 1969",
+              "Stamp Duty (Special Provisions) Act, No. 12 of 2006",
+              "Stamps Duty Act, No. 43 of 1982",
+              "Value Added Tax Act, No. 14 of 2002",
+              "Finance Act, No. 38 of 1971",
+              "Environment Conservation Levy Act, No. 26 of 2008",
+              "Tax Appeals Commission Act, No. 23 of 2008",
+              "Development Lotteries Board Act, No. 20 of 1997",
+              "Sri Lanka Export Credit Insurance Act, No. 15 of 1978",
+              "Monetary Law Act No. 58 of 1949",
+              "National Savings Bank Act, No. 30 of 1971",
+              "People\u2019s Bank Act, No. 29 of 1961",
+              "Bank of Ceylon Ordinance No. 53 of 1938",
+              "Banking Act, No. 30 of 1988",
+              "Recovery of loans by Banks (Special Provisions) Act, No. 4 of 1990",
+              "Securities and Exchange Commission of Sri Lanka Act, No. 36 of 1987",
+              "National Insurance Trust Fund Act, No. 28 of 2006",
+              "Employees' Trust Fund (Special Provisions) Act (No. 19 of 1993)",
+              "Employees Trust Fund Act, No. 46 of 1980",
+              "Excise (Special Provisions) Act, No. 13 of 1989",
+              "Registered Stock and Securities Ordinance No. 07 of 1937",
+              "Payment and Settlement Systems Act, No. 28 of 2005",
+              "Finance Business Act, No. 42 of 2011",
+              "Foreign Exchange Act, No. 12 of 2017",
+              "Insurance Corporation Act, No. 02 of 1961",
+              "Shrama Vasana Fund Act No. 12 of 1998",
+              "Tea Shakthi Fund Act, No. 47 of 2000",
+              "Kapruka Fund Act, No. 31 of 2005",
+              "Central Cultural Fund Act No. 57 of 1980",
+              "Local loans and Development Fund Act No. 22 of 1916",
+              "Thurusaviya Fund Act, No. 23 of 2000",
+              "Credit Information Bureau of Sri Lanka Act, No. 18 of 1990",
+              "Rehabilitation of the Visually Handicapped Trust Fund Act No. 9 of 1992"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "operation_type": "RENUMBERING",
+      "details": {
+        "previous_number": "3.1",
+        "new_number": "6.1",
+        "heading_name": "State Minister of Money and Capital Market and State Enterprise Reforms"
+      }
+    },
+    {
+      "operation_type": "RENUMBERING",
+      "details": {
+        "previous_number": "3.2",
+        "new_number": "6.2",
+        "heading_name": "State Minister of Samurdhi, Household Economy, Micro Finance, Self Employment and Business Development"
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "heading_number": "15.0",
+        "heading_name": "Minister of Agriculture",
+        "updated_content": {
+          "related_institutional_and_legal_framework": {
+            "departments_and_institutions": [
+              "Agriculture and Agrarian Insurance Board",
+              "Department of Agriculture",
+              "Janatha Estate Development Board",
+              "Lanka Phosphate Company Ltd.",
+              "Paddy Marketing Board",
+              "Hector Kobbekaduwa Agrarian Research and Training Institute",
+              "Sri Lanka Council for Agricultural Research Policy"
+            ],
+            "laws_and_ordinances": [
+              "Agricultural and Agrarian Insurance Act, No. 20 of 1999",
+              "Paddy Marketing Board Act, No. 14 of 1971",
+              "Agrarian Research and Training Institute Act, No. 5 of 1972",
+              "Sri Lanka Council For Agricultural Research Policy Act, No. 47 of 1987"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "heading_number": "15.1",
+        "heading_name": "State Minister of Paddy and Grains, Organic Food, Vegetables, Fruits, Chilies, Onion and Potato Cultivation Promotion, Seed Production and Advanced Technology Agriculture",
+        "deleted_sections": [
+          "Subjects & Functions",
+          "Special Priorities",
+          "Related Institutional and Legal Framework"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "heading_number": "15.2",
+        "heading_name": "State Minister of Production, Supply and Regulation of Organic and Natural Fertilizer",
+        "deleted_sections": [
+          "Subjects & Functions",
+          "Special Priorities",
+          "Related Institutional and Legal Framework"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "heading_number": "15.1",
+        "heading_name": "State Minister of Promoting the Production & Regulating the Supply of Organic Fertilizer, and Paddy & Grains, Organic Foods, Vegetables, Fruits, Chillies, Onion and Potato Cultivation Promoting, Seed Production and Advanced Technology Agriculture",
+        "subjects_and_functions": [
+          "Assisting in the formulation of policies in relation to the subject of Promoting the Production & Regulating the Supply of Organic Fertilizer, and Paddy & Grains, Organic Foods, Vegetables, Fruits, Chillies, Onion and Potato Cultivation Promoting, Seed Production and Advanced Technology Agriculture for 'Incentivizing the use of eco-friendly organic fertilizer of high standard and agricultural industry of high technology' under the direction and guidance of the Minister of Agriculture in conformity with the prescribed Laws, Acts and Ordinances and implementing, projects under the National Budget, State Investment and National Development Programme, and implementing, monitoring and evaluating subjects and functions of the below-mentioned Departments, State Corporations and Statutory Organizations."
+        ],
+        "special_priorities": [
+          "Formulating methodologies for the timely distribution of technological crop systems, quality seeds, plants and fertilizer of standardized quality for major crops including paddy and grain varieties, pepper, cloves and cocoa as well as vegetable, fruit and home garden crops",
+          "Encouraging local production of organic fertilizer using local materials to international standards and production of other high quality fertilizers within the country",
+          "Implementing a reasonable pricing policy that satisfies the local farmer and consumer and a crop diversification programme in co-ordination with all related institutions",
+          "Implementing programmes to encourage the use of organic fertilizer and production of toxin free food",
+          "Implementing the programme to develop Samurdhi and low income home gardens to promote the consumption of organic vegetables and fruits at household level",
+          "Minimizing the import of dried chilies, maize, soya, green gram and cowpea, onions and potatoes by increasing the domestic production of such crops",
+          "Implementing a mechanism to provide facilities for storage of surplus production and for value-added product exports",
+          "Developing crop harvest collecting and processing centres to add value to agricultural produce and export",
+          "Implementing a programme to promote vegetable and fruit related export product industries",
+          "Introducing a domestic seed policy for production of quality seed to international standards",
+          "Regulate seed imports within accepted Sri Lanka Standards certification to ensure the quality of imported seeds",
+          "Encouraging the private sector to provide quality seeds and planting materials",
+          "Introducing high-yielding seed and plant varieties of indigenous genetic quality that are resistant to diseases and climate changes",
+          "Developing government farms and seed production farms",
+          "Taking steps to raise awareness among the farmers subsequent to a comprehensive study on groundwater, ground preparations, selecting seeds and plants, fertilizing, pre and post-harvest adopting latest technological methodologies on a regional basis",
+          "Directing value added agricultural production by the adoption of the knowledge, technological equipment, and by utilization of lands and financial contribution for technology-based agriculture",
+          "Implementing a programme to prevent wastages associated with harvesting, transportation and unloading by the adoption of the latest technical methods in collaboration with the state and private sectors",
+          "Maximizing economic benefits of water consumption with the introduction of high yielding methodologies by the economical use of water"
+        ],
+        "related_institutional_and_legal_framework": {
+          "departments_and_institutions": [
+            "National Fertilizer Secretariat",
+            "Ceylon Fertilizer Company Ltd.",
+            "Colombo Commercial Fertilizer Company",
+            "National Hunger Eradication Campaign Board of Sri Lanka (National Food Promotion Board)",
+            "Divisional Economic Centres",
+            "Department of Agrarian Development",
+            "Institute of Post-Harvest Technology"
+          ],
+          "laws_and_ordinances": [
+            "Control of Pesticides Act, No. 33 of 1980",
+            "Plant Protection Act, No. 35 of 1999",
+            "Regulation of Fertilizer Act, No. 68 of 1988",
+            "National Hunger Eradication Campaign Board of Sri Lanka Act No. 18 of 1973",
+            "Gramodaya Mandala Act, No. 28 of 1982",
+            "Agrarian Development Act, No. 46 of 2000",
+            "Felling of Trees (Control) Act, No. 9 of 1951",
+            "Seed Act, No. 22 of 2003",
+            "Soil Conservation (Amendment) Act, No. 24 of 1996"
+          ]
+        }
+      }
+    },
+    {
+      "operation_type": "RENUMBERING",
+      "details": {
+        "previous_number": "15.1",
+        "new_number": "15.1",
+        "heading_name": "State Minister of Promoting the Production & Regulating the Supply of Organic Fertilizer, and Paddy & Grains, Organic Foods, Vegetables, Fruits, Chillies, Onion and Potato Cultivation Promoting, Seed Production and Advanced Technology Agriculture"
+      }
+    }
+  ]
+}
