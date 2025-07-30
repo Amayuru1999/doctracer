@@ -2,13 +2,13 @@ from enum import Enum
 
 _METADATA_PROMPT_TEMPLATE: str = """
     You are an assistant tasked with extracting metadata from a government gazette document. Using the provided text, identify and return the following information in a compact JSON string:
-    - Gazette No
-    - Published Date
-    - Published By
-    - Gazette Type
-    - Language
-    - PDF URL (Use the year and month from the Published Date. For months 1-9, use a single-digit month in the URL path. Also, use the Gazette No. For months 1-9, if the Gazette No. contains single-digit after "/", use double-digits to create PDF URL. For example, for Published Date '2020-04-22' and Gazette No '2277/2, the PDF URL should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-02_E.pdf')
-    - Amends (Gazette No, Published Date, PDF URL)
+    - gazette_no
+    - published_date
+    - published_by
+    - gazette_type
+    - language
+    - pdf_url (Use the year and month from the published_date. For months 1-9, use a single-digit month in the pdf_url path. Also, use the gazette_no. For months 1-9, if the gazette_no. contains single-digit after "/", use double-digits to create pdf_url. For example, for published_date '2020-04-22' and gazette_no '2277/2, the pdf_url should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-02_E.pdf')
+    - amends (gazette_no, published_date, pdf_url)
 
     After extracting this metadata, if an Amends PDF URL is present, trigger a recursive extraction step to:
     - Download and extract text from the amended gazette PDF
@@ -22,41 +22,48 @@ _METADATA_PROMPT_TEMPLATE: str = """
     {gazette_text}
 
     Sample JSON Output:
-    {{"Gazette No":"2303/17","Published Date":"2022-10-26","Published By":"Authority","Gazette Type":"Extraordinary","Language":"English","PDF URL":"https://documents.gov.lk/view/extra-gazettes/2022/10/2303-17_E.pdf","Amends":{{"Gazette No":"2276/24","Published Date":"2021-06-19", "PDF URL":"https://documents.gov.lk/view/extra-gazettes/2021/6/2276-24_E.pdf"}}}}
+    {{
+        "gazette_no": "1905/4",
+        "published_date": "2015-03-09",
+        "published_by": "Authority",
+        "gazette_type": "Extraordinary",
+        "language": "English",
+        "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
+        "amends": {{
+            "gazette_no": "1897/15",
+            "published_date": "2015-01-18",
+            "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+        }}
+    }}
 """
 
 _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
     You are an assistant tasked with extracting changes from a government gazette document. Based on the provided text, identify and list the following operation types along with their details:
-    - RENAME (Add only if the Previous Name and New Name are difference)
-    - MERGE
-    - MOVE
-    - ADD
-    - TERMINATE
-
-    For each change, include the following (as applicable):
-    - Type
-    - Previous Name
-    - New Name
-    - Parent Name
-    - Previous Parent Name
-    - New Parent Name
-    - New Entity
-    - Effective Date
-    - Clause ID (if present)
-    - Reason (if mentioned or implied)
+    - addition 
+    - substitution
+    - omission
 
     Use natural labels such as "Previous Name", "Clause ID", etc. Ensure the JSON is compact and free of unnecessary escape characters or formatting.
+
+    Followings are include in each change (as applicable)
+    - clause_id
+    - heading_no
+    - heading
+    - column_no
+    - adding_after
+    - new_items/new acts (if column_no is 3 give "new_acts". otherwise use "new_items")
+    - items_out/acts_out (if column_no is 3 give "acts_out". otherwise use "items_out")
+    - items_in/acts_in (if column_no is 3 give "acts_in". otherwise use "items_in")
+    - omitted_items/omitted_acts (if column_no is 3 give "omitted_acts". otherwise use "omitted_items")
 
     Input Text:
     {gazette_text}
 
     Sample JSON Output:
     {{
-        "RENAME": [{{"Type":"Minister","Previous Name":"No. 03. Minister of Technology","New Name":"No. 03. Minister of Science","Effective Date":"2022-10-26","Clause ID":"8.2","Reason":"Updated title"}}],
-        "MERGE": [{{"Type":"Department merge", "Previous Names":["Dept. A", "Dept. B"],"New Name":"Dept. AB","Effective Date":"2022-10-26"}}],
-        "MOVE": [{{"Type":"Department", "Previous Parent Name":"Ministry X","New Parent Name":"Ministry Y","Which Child is Moving":"Dept. Z","Effective Date":"2022-10-26"}}],
-        "ADD": [{{"Type":"Minister","Parent Name":"Minister X","New Entity":"Ministry Y","Effective Date":"2022-10-26","Clause ID":"8.4","Reason":"To address needs"}}],
-        "TERMINATE": [{{"Type":"minister","Date":"2022-10-26"}}]
+        "addition": [{{"clause_id":"1b", "heading_no": "No. 04", "heading":"Minister of Public Order, Disaster Management & Christian Affairs","column_no":"Column 2","adding_after":"item 8","new_items":["9. Department of Registration of Persons"]}}],
+        "substitution": [{{"clause_id":"1b", "heading_no": "No. 04", "heading":"Minister of Public Order, Disaster Management & Christian Affairs", "column_no":"Column 1","items_out":["item 18", "item 19"],"items_in":["18. Registration of Persons", "19. All other subjects that come under the purview of Institutions listed in Column 2", "20. Supervision of the Institutions listed in Column 2"]}}],
+        "omission": [{{"clause_id":"2c", "heading_no": "No. 05", "heading":"Minister of Home Affairs & Fisheries", "column_no":"Column 3","omitted_acts":"Registration of Persons Act, No. 32 of 1968"}}],
     }}
 """
 

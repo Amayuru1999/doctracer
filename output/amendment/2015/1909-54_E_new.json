@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "gazette_no": "1909/54",
+    "published_date": "2015-04-10",
+    "published_by": "Authority",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/4/1909-54_E.pdf",
+    "amends": {
+      "gazette_no": "1897/15",
+      "published_date": "2015-01-18",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": {
+    "addition": [
+      {
+        "clause_id": "6",
+        "heading_no": "No. 39",
+        "heading": "Minister of Skills Development and Vocational Training",
+        "column_no": "Column 1",
+        "adding_after": "after Column III",
+        "new_items": [
+          "(41) Minister of Rural Economic Affairs"
+        ]
+      }
+    ],
+    "substitution": [
+      {
+        "clause_id": "5a",
+        "heading_no": "No. 31",
+        "heading": "Minister of Muslim Religious Affairs and Posts",
+        "column_no": "Column 2",
+        "items_out": [
+          "item 1"
+        ],
+        "items_in": [
+          "1. Department of Muslim Religious and Cultural Affairs"
+        ]
+      }
+    ],
+    "omission": [
+      {
+        "clause_id": "1",
+        "heading_no": "No. 3",
+        "heading": "Minister of Policy Planning, Economic Affairs, Child, Youth and Cultural Affairs",
+        "column_no": "Column 2",
+        "omitted_items": [
+          "items 13",
+          "items 14",
+          "items 15",
+          "items 23",
+          "items 38"
+        ]
+      },
+      {
+        "clause_id": "3",
+        "heading_no": "No. 23",
+        "heading": "Minister of Industry and Commerce",
+        "column_no": "Column 1",
+        "omitted_items": [
+          "items 11",
+          "items 12"
+        ]
+      },
+      {
+        "clause_id": "3",
+        "heading_no": "No. 23",
+        "heading": "Minister of Industry and Commerce",
+        "column_no": "Column 2",
+        "omitted_items": [
+          "items 8",
+          "items 14",
+          "items 28",
+          "items 33",
+          "items 34",
+          "items 35"
+        ]
+      },
+      {
+        "clause_id": "3",
+        "heading_no": "No. 23",
+        "heading": "Minister of Industry and Commerce",
+        "column_no": "Column 3",
+        "omitted_acts": [
+          "Textile Training and Services Institute Act, No. 03 of 1984",
+          "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
+          "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "gazette_no": "1913/4",
+    "published_date": "2015-05-05",
+    "published_by": "Authority",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/5/1913-04_E.pdf",
+    "amends": {
+      "gazette_no": "1897/15",
+      "published_date": "2015-01-18",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": {
+    "addition": [
+      {
+        "clause_id": "5a",
+        "heading_no": "No. 39",
+        "heading": "Minister of Skills Development and Vocational Training",
+        "column_no": "Column II",
+        "adding_after": "item 8",
+        "new_items": [
+          "9. National Institute of Business Management",
+          "10. University of Vocational Technology",
+          "11. National Institute of Fisheries and Nautical Engineering (Ocean University)"
+        ]
+      },
+      {
+        "clause_id": "5b",
+        "heading_no": "No. 39",
+        "heading": "Minister of Skills Development and Vocational Training",
+        "column_no": "Column III",
+        "adding_after": "Sri Lanka Vocational Training Authority Act, No. 12 of 1995",
+        "new_items": [
+          "National Institute of Business Management Act, No. 23 of 1976",
+          "Sri Lanka Ocean University Act, No. 31 of 2014",
+          "University of Vocational Technology Act, No. 31 of 2008"
+        ]
+      },
+      {
+        "clause_id": "6a",
+        "heading_no": "No. 41",
+        "heading": "Minister of Rural Economic Affairs",
+        "column_no": "Column II",
+        "adding_after": "item 10",
+        "new_items": [
+          "11.Ape Gama",
+          "12.SME Venture Capital Company",
+          "13.SME Authority",
+          "14.National Enterprise Development Authority"
+        ]
+      },
+      {
+        "clause_id": "6b",
+        "heading_no": "No. 41",
+        "heading": "Minister of Rural Economic Affairs",
+        "column_no": "Column III",
+        "adding_after": "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996",
+        "new_items": [
+          "National Enterprise Development Authority Act, No. 17 of 2006"
+        ]
+      }
+    ],
+    "omission": [
+      {
+        "clause_id": "1a",
+        "heading_no": "No. 16",
+        "heading": "Minister of Highways and Investment Promotion",
+        "column_no": "Column II",
+        "omitted_items": [
+          "item 4",
+          "item 5"
+        ]
+      },
+      {
+        "clause_id": "2a",
+        "heading_no": "No. 21",
+        "heading": "Minister of Tourism and Sports",
+        "column_no": "Column II",
+        "omitted_items": [
+          "item 9"
+        ]
+      },
+      {
+        "clause_id": "3a",
+        "heading_no": "No. 23",
+        "heading": "Minister of Industry and Commerce",
+        "column_no": "Column II",
+        "omitted_items": [
+          "item 5"
+        ]
+      },
+      {
+        "clause_id": "3b",
+        "heading_no": "No. 23",
+        "heading": "Minister of Industry and Commerce",
+        "column_no": "Column III",
+        "omitted_acts": "National Enterprise Development Authority Act, No. 17 of 2006"
+      },
+      {
+        "clause_id": "4a",
+        "heading_no": "No. 35",
+        "heading": "Minister of Higher Education and Research",
+        "column_no": "Column II",
+        "omitted_items": [
+          "item 16",
+          "item 17",
+          "item 18"
+        ]
+      },
+      {
+        "clause_id": "4b",
+        "heading_no": "No. 35",
+        "heading": "Minister of Higher Education and Research",
+        "column_no": "Column III",
+        "omitted_acts": [
+          "National Institute of Business Management Act, No. 23 of 1976",
+          "Sri Lanka Ocean University Act, No. 31 of 2014",
+          "University of Vocational Technology Act, No. 31 of 2008"
+        ]
+      }
+    ]
+  }
+}
