@@ -31,18 +31,14 @@ class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
         return self.executor.execute_prompt(PromptConfigChat(prompt=prompt))
 
     def process_gazettes(self) -> str:
-        # 1. Read PDF text
         text = extract_text_from_pdfplumber(self.pdf_path)
 
-        # 2. Call the LLM twice
         raw_meta    = self._extract_metadata(text)
         raw_changes = self._extract_changes(text)
 
-        # 3. Parse into Python objects
         metadata = json.loads(raw_meta)
         changes  = json.loads(raw_changes)
 
-        # 4. Combine and return as one JSON string
         output = {
             "metadata": metadata,
             "changes":  changes
