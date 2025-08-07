@@ -34,9 +34,31 @@ class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
         # 1. Read PDF text
         text = extract_text_from_pdfplumber(self.pdf_path)
 
+        if not text.strip():
+            raise ValueError("Extracted text from PDF is empty.")
+
         # 2. Call the LLM twice
         raw_meta    = self._extract_metadata(text)
         raw_changes = self._extract_changes(text)
+
+        if not raw_meta or not raw_changes:
+            raise ValueError("Received empty response for metadata or changes extraction.")
+        
+        # Debug: print the raw responses
+        print("Raw Meta Response:", raw_meta)
+        print("Raw Changes Response:", raw_changes)
+
+        try:
+            metadata = json.loads(raw_meta)
+        except json.JSONDecodeError:
+            print("Failed to parse metadata response.")
+            metadata = {}
+
+        try:
+            changes = json.loads(raw_changes)
+        except json.JSONDecodeError:
+            print("Failed to parse changes response.")
+            changes = {}
 
         # 3. Parse into Python objects
         metadata = json.loads(raw_meta)

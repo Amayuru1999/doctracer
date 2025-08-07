@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "Gazette No": "1905/4",
+    "Published Date": "2015-03-09",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "Sinhala",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
+    "Amends": {
+      "Gazette No": "1897/15",
+      "Published Date": "2015-01-18",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": {
+    "RENAME": [
+      {
+        "Type": "Minister of Food Security",
+        "Previous Name": "Minister of Food Security (No. 6)",
+        "New Name": "Minister of Food Security (No. 6)",
+        "Effective Date": "2015-03-09"
+      }
+    ],
+    "MERGE": [],
+    "MOVE": [],
+    "ADD": [
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "New Entity": "Department of Registration of Persons",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Finance",
+        "New Entity": "Department of Management Services",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Health & Indigenous Medicine",
+        "New Entity": "Sri Lanka Thriposha Ltd",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Housing & Samurdhi",
+        "New Entity": "National Engineering Research and Development Centre",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "Sri Lanka Handicrafts Board (Laksala)",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "National Design Center",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "National Craft Council",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "Consumer Affairs Authority",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "Lanka Sathosa Ltd",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "Lanka General Trading Company Ltd",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Department",
+        "Parent Name": "Minister of Industry & Commerce",
+        "New Entity": "Co-operative Wholesale Establishment",
+        "Effective Date": "2015-03-09"
+      }
+    ],
+    "TERMINATE": [
+      {
+        "Type": "Minister of Home Affairs & Fisheries",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Minister of Food Security",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Minister of Tourism & Sports",
+        "Effective Date": "2015-03-09"
+      },
+      {
+        "Type": "Minister of Education",
+        "Effective Date": "2015-03-09"
+      }
+    ]
+  }
+}

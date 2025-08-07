@@ -1,0 +1,35 @@
+{
+  "metadata": {
+    "Gazette No": "2096/61",
+    "Published Date": "2018-11-09",
+    "Published By": "Authority",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2018/11/2096-61_E.pdf",
+    "Amends": {
+      "Gazette No": "2096/17",
+      "Published Date": "2018-11-05",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2018/11/2096-17_E.pdf"
+    }
+  },
+  "changes": {
+    "RENAME": [],
+    "MERGE": [],
+    "MOVE": [],
+    "ADD": [
+      {
+        "Type": "Item",
+        "Parent Name": "Minister of Defence",
+        "New Entity": "Matters relating to the Government printing and publications",
+        "Effective Date": "2018-11-09"
+      },
+      {
+        "Type": "Item",
+        "Parent Name": "Minister of Defence",
+        "New Entity": "Department of Government Printing",
+        "Effective Date": "2018-11-09"
+      }
+    ],
+    "TERMINATE": []
+  }
+}
