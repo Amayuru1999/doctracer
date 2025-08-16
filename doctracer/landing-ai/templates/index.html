@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Gazette Structure Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            margin-bottom: 40px;
+        }
+
+        .upload-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .file-upload-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .file-upload.dragover {
+            border-color: #667eea;
+            background-color: #f0f4ff;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .file-upload h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .file-upload p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .selected-file {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #2d5a2d;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .results-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .summary-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .summary-card p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .structure-section {
+            margin-top: 30px;
+        }
+
+        .structure-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        .impact-section {
+            margin-top: 30px;
+            background: #fff7e6;
+            border-left: 4px solid #f5a623;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .impact-card {
+            background: #fff;
+            border: 1px solid #f0e6d6;
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .minister-list {
+            list-style: none;
+        }
+
+        .minister-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .minister-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .minister-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .minister-details span {
+            margin-right: 15px;
+        }
+
+        .error-message {
+            background: #ffe6e6;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #d63031;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #2d5a2d;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2d5a2d;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .file-upload-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Government Gazette Structure Analyzer</h1>
+            <p>Upload base and amendment gazettes to view the current government structure</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2>📄 Upload Government Gazettes</h2>
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-upload-container">
+                        <div class="file-upload" onclick="document.getElementById('baseGazette').click()">
+                            <div class="file-upload-icon">📋</div>
+                            <h3>Base Gazette</h3>
+                            <p>Upload the base government structure gazette (PDF)</p>
+                            <input type="file" id="baseGazette" name="base_gazette" accept=".pdf" required>
+                            <div id="baseFileInfo" class="selected-file" style="display: none;"></div>
+                        </div>
+
+                        <div class="file-upload" onclick="document.getElementById('amendmentGazette').click()">
+                            <div class="file-upload-icon">📝</div>
+                            <h3>Amendment Gazette</h3>
+                            <p>Upload the amendment gazette (PDF)</p>
+                            <input type="file" id="amendmentGazette" name="amendment_gazette" accept=".pdf" required>
+                            <div id="amendmentFileInfo" class="selected-file" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="upload-btn" id="uploadBtn">
+                        🔍 Analyze Government Structure
+                    </button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing gazettes... This may take a few minutes.</p>
+                </div>
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+
+            <div class="results-section" id="resultsSection">
+                <h2>📊 Analysis Results</h2>
+                
+                <div class="summary-cards" id="summaryCards"></div>
+                
+                <div class="structure-section">
+                    <h3>👥 Current Government Structure</h3>
+                    
+                    <div id="ministersSection">
+                        <h4>Ministers</h4>
+                        <ul class="minister-list" id="ministersList"></ul>
+                    </div>
+                    
+                    <div id="stateMinistersSection">
+                        <h4>State Ministers</h4>
+                        <ul class="minister-list" id="stateMinistersList"></ul>
+                    </div>
+                </div>
+
+                <div class="impact-section" id="impactSection" style="display:none;">
+                    <h3>🧭 Amendment Impact</h3>
+                    <div class="impact-grid">
+                        <div class="impact-card">
+                            <h4>Ministers</h4>
+                            <div id="impactMinistersAdded"></div>
+                            <div id="impactMinistersRemoved"></div>
+                        </div>
+                        <div class="impact-card">
+                            <h4>State Ministers</h4>
+                            <div id="impactStateMinistersAdded"></div>
+                            <div id="impactStateMinistersRemoved"></div>
+                        </div>
+                        <div class="impact-card" style="grid-column: 1 / -1;">
+                            <h4>Modified Portfolios</h4>
+                            <div id="impactModified"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File upload handling
+        document.getElementById('baseGazette').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('baseFileInfo').textContent = `Selected: ${file.name}`;
+                document.getElementById('baseFileInfo').style.display = 'block';
+            }
+        });
+
+        document.getElementById('amendmentGazette').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('amendmentFileInfo').textContent = `Selected: ${file.name}`;
+                document.getElementById('amendmentFileInfo').style.display = 'block';
+            }
+        });
+
+        // Drag and drop functionality
+        const fileUploads = document.querySelectorAll('.file-upload');
+        fileUploads.forEach(upload => {
+            upload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            upload.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            upload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type === 'application/pdf') {
+                        const input = this.querySelector('input[type="file"]');
+                        input.files = files;
+                        input.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const baseFile = document.getElementById('baseGazette').files[0];
+            const amendmentFile = document.getElementById('amendmentGazette').files[0];
+            
+            if (!baseFile || !amendmentFile) {
+                showError('Please select both base and amendment gazette files.');
+                return;
+            }
+            
+            formData.append('base_gazette', baseFile);
+            formData.append('amendment_gazette', amendmentFile);
+            
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('Analysis completed successfully!');
+                    displayResults(result.summary, result.amendment_impact);
+                } else {
+                    showError(result.error || 'An error occurred during analysis.');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('uploadBtn').disabled = false;
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        function displayResults(summary, impact) {
+            const resultsSection = document.getElementById('resultsSection');
+            const summaryCards = document.getElementById('summaryCards');
+            
+            // Display summary cards
+            summaryCards.innerHTML = `
+                <div class="summary-card">
+                    <h3>📋 Base Gazette</h3>
+                    <p><strong>ID:</strong> ${summary.base_gazette.id}</p>
+                    <p><strong>Date:</strong> ${summary.base_gazette.date}</p>
+                    <p><strong>Ministers:</strong> ${summary.base_gazette.ministers_count}</p>
+                    <p><strong>State Ministers:</strong> ${summary.base_gazette.state_ministers_count}</p>
+                </div>
+                <div class="summary-card">
+                    <h3>📝 Amendment Gazette</h3>
+                    <p><strong>ID:</strong> ${summary.amendment_gazette.id}</p>
+                    <p><strong>Date:</strong> ${summary.amendment_gazette.date}</p>
+                </div>
+                <div class="summary-card">
+                    <h3>🏛️ Current Structure</h3>
+                    <p><strong>Ministers:</strong> ${summary.current_structure.ministers_count}</p>
+                    <p><strong>State Ministers:</strong> ${summary.current_structure.state_ministers_count}</p>
+                </div>
+            `;
+            
+            // Display ministers
+            const ministersList = document.getElementById('ministersList');
+            ministersList.innerHTML = '';
+            
+            if (summary.current_structure.ministers.length > 0) {
+                summary.current_structure.ministers.forEach(minister => {
+                    const li = document.createElement('li');
+                    li.className = 'minister-item';
+                    li.innerHTML = `
+                        <div class="minister-name">${minister.name}</div>
+                        <div class="minister-details">
+                            <span>📁 Departments: ${minister.departments.length}</span>
+                            <span>⚖️ Laws: ${minister.laws.length}</span>
+                            <span>🔧 Functions: ${minister.functions.length}</span>
+                        </div>
+                    `;
+                    ministersList.appendChild(li);
+                });
+            } else {
+                ministersList.innerHTML = '<li class="minister-item">No ministers found</li>';
+            }
+            
+            // Display state ministers
+            const stateMinistersList = document.getElementById('stateMinistersList');
+            stateMinistersList.innerHTML = '';
+            
+            if (summary.current_structure.state_ministers.length > 0) {
+                summary.current_structure.state_ministers.forEach(minister => {
+                    const li = document.createElement('li');
+                    li.className = 'minister-item';
+                    li.innerHTML = `
+                        <div class="minister-name">${minister.name}</div>
+                        <div class="minister-details">
+                            <span>📁 Departments: ${minister.departments.length}</span>
+                            <span>⚖️ Laws: ${minister.laws.length}</span>
+                            <span>🔧 Functions: ${minister.functions.length}</span>
+                        </div>
+                    `;
+                    stateMinistersList.appendChild(li);
+                });
+            } else {
+                stateMinistersList.innerHTML = '<li class="minister-item">No state ministers found</li>';
+            }
+            
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Impact
+            if (impact) {
+                document.getElementById('impactSection').style.display = 'block';
+                const fmtList = (title, items) => items && items.length ? `<p><strong>${title} (${items.length})</strong>: ${items.join(', ')}</p>` : '';
+                document.getElementById('impactMinistersAdded').innerHTML = fmtList('Added', impact.ministers_added || []);
+                document.getElementById('impactMinistersRemoved').innerHTML = fmtList('Removed', impact.ministers_removed || []);
+                document.getElementById('impactStateMinistersAdded').innerHTML = fmtList('Added', impact.state_ministers_added || []);
+                document.getElementById('impactStateMinistersRemoved').innerHTML = fmtList('Removed', impact.state_ministers_removed || []);
+
+                const mod = [];
+                (impact.modified_ministers || []).forEach(m => {
+                    mod.push(`<div><strong>${m.name}</strong>` +
+                        `${m.departments.added.length || m.departments.removed.length ? `<div>Departments: +${m.departments.added.length} / -${m.departments.removed.length}</div>` : ''}` +
+                        `${m.laws.added.length || m.laws.removed.length ? `<div>Laws: +${m.laws.added.length} / -${m.laws.removed.length}</div>` : ''}` +
+                        `${m.functions.added.length || m.functions.removed.length ? `<div>Functions: +${m.functions.added.length} / -${m.functions.removed.length}</div>` : ''}` +
+                        `</div>`);
+                });
+                (impact.modified_state_ministers || []).forEach(m => {
+                    mod.push(`<div><strong>${m.name} (State)</strong>` +
+                        `${m.departments.added.length || m.departments.removed.length ? `<div>Departments: +${m.departments.added.length} / -${m.departments.removed.length}</div>` : ''}` +
+                        `${m.laws.added.length || m.laws.removed.length ? `<div>Laws: +${m.laws.added.length} / -${m.laws.removed.length}</div>` : ''}` +
+                        `${m.functions.added.length || m.functions.removed.length ? `<div>Functions: +${m.functions.added.length} / -${m.functions.removed.length}</div>` : ''}` +
+                        `</div>`);
+                });
+                document.getElementById('impactModified').innerHTML = mod.length ? mod.join('') : '<p>No portfolio-level modifications detected.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
