@@ -1,6 +1,6 @@
 {
   "schema_name": "DoclingDocument",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "name": "2297-78_E_2022_09_16",
   "origin": {
     "mimetype": "application/pdf",
@@ -286,9 +286,9 @@
         }
       ],
       "orig": "(1)   With reference to the Heading, No. '02.  Minister of  Finance, Economic Stabilization and National Policies' of the said notification, as follows:-",
-      "text": "(1)   With reference to the Heading, No. '02.  Minister of  Finance, Economic Stabilization and National Policies' of the said notification, as follows:-",
-      "enumerated": false,
-      "marker": "-"
+      "text": "  With reference to the Heading, No. '02.  Minister of  Finance, Economic Stabilization and National Policies' of the said notification, as follows:-",
+      "enumerated": true,
+      "marker": "(1)"
     },
     {
       "self_ref": "#/texts/3",
@@ -317,7 +317,7 @@
       "orig": "(a) In Column I thereof, by omitting item 32 ;",
       "text": "(a) In Column I thereof, by omitting item 32 ;",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/4",
@@ -671,10 +671,10 @@
           ]
         }
       ],
-      "orig": "I fldgi ( ^ & fPoh - YS% ,xld m%cd;dka;s%l iudcjd\u00a7 ckrcfha w;s \u00fafYI .ei\u00dc m;%h - 2022'09'16 I Part I : Sec. (I) - GAZETTE EXTRAORDINARY OF THE DEMOCRATIC SOCIALIST REPUBLIC OF SRI LANKA - 16.09.2022 2a",
-      "text": "I fldgi ( ^ & fPoh - YS% ,xld m%cd;dka;s%l iudcjd\u00a7 ckrcfha w;s \u00fafYI .ei\u00dc m;%h - 2022'09'16 I Part I : Sec. (I) - GAZETTE EXTRAORDINARY OF THE DEMOCRATIC SOCIALIST REPUBLIC OF SRI LANKA - 16.09.2022 2a",
+      "orig": "I fldgi ( ^ I & fPoh - YS% ,xld m%cd;dka;s%l iudcjd\u00a7 ckrcfha w;s \u00fafYI .ei\u00dc m;%h - 2022'09'16 Part I : Sec. (I) - GAZETTE EXTRAORDINARY OF THE DEMOCRATIC SOCIALIST REPUBLIC OF SRI LANKA - 16.09.2022 2a",
+      "text": "I fldgi ( ^ I & fPoh - YS% ,xld m%cd;dka;s%l iudcjd\u00a7 ckrcfha w;s \u00fafYI .ei\u00dc m;%h - 2022'09'16 Part I : Sec. (I) - GAZETTE EXTRAORDINARY OF THE DEMOCRATIC SOCIALIST REPUBLIC OF SRI LANKA - 16.09.2022 2a",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/17",
@@ -731,7 +731,7 @@
       "orig": "(c) In Column III thereof, by omitting the following items;",
       "text": "(c) In Column III thereof, by omitting the following items;",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/19",
@@ -758,9 +758,9 @@
         }
       ],
       "orig": "\u00b7 Sri Lanka Export Development Act No. 40 of 1979",
-      "text": "\u00b7 Sri Lanka Export Development Act No. 40 of 1979",
+      "text": "Sri Lanka Export Development Act No. 40 of 1979",
       "enumerated": false,
-      "marker": "-"
+      "marker": "\u00b7"
     },
     {
       "self_ref": "#/texts/20",
@@ -787,9 +787,9 @@
         }
       ],
       "orig": "\u00b7 Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
-      "text": "\u00b7 Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
+      "text": "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
       "enumerated": false,
-      "marker": "-"
+      "marker": "\u00b7"
     },
     {
       "self_ref": "#/texts/21",
@@ -816,9 +816,9 @@
         }
       ],
       "orig": "\u00b7 Colombo Port City Economic Commission Act, No. 11 of 2021",
-      "text": "\u00b7 Colombo Port City Economic Commission Act, No. 11 of 2021",
+      "text": "Colombo Port City Economic Commission Act, No. 11 of 2021",
       "enumerated": false,
-      "marker": "-"
+      "marker": "\u00b7"
     },
     {
       "self_ref": "#/texts/22",
@@ -840,14 +840,14 @@
           },
           "charspan": [
             0,
-            119
+            120
           ]
         }
       ],
-      "orig": "(2) With reference to the Heading, No. '06.  Minister of  Investment Promotion' of the said  notification, as follows:-",
-      "text": "(2) With reference to the Heading, No. '06.  Minister of  Investment Promotion' of the said  notification, as follows:-",
-      "enumerated": false,
-      "marker": "-"
+      "orig": "(2)  With reference to the Heading, No. '06.  Minister of  Investment Promotion' of the said  notification, as follows:-",
+      "text": " With reference to the Heading, No. '06.  Minister of  Investment Promotion' of the said  notification, as follows:-",
+      "enumerated": true,
+      "marker": "(2)"
     },
     {
       "self_ref": "#/texts/23",
@@ -876,7 +876,7 @@
       "orig": "(a) In Column I thereof, by insertion of the following items immediately after item 10;",
       "text": "(a) In Column I thereof, by insertion of the following items immediately after item 10;",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/24",
@@ -903,9 +903,9 @@
         }
       ],
       "orig": "11. Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement.",
-      "text": "11. Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement.",
-      "enumerated": false,
-      "marker": "-"
+      "text": "Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement.",
+      "enumerated": true,
+      "marker": "11."
     },
     {
       "self_ref": "#/texts/25",
@@ -934,7 +934,7 @@
       "orig": "(b) In Column I thereof, re-numbering of items 11 and 12 respectively, as numbers 12 and 13;",
       "text": "(b) In Column I thereof, re-numbering of items 11 and 12 respectively, as numbers 12 and 13;",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/26",
@@ -963,7 +963,7 @@
       "orig": "(c) In Column II thereof, by insertion of  the following items immediately after item 4;",
       "text": "(c) In Column II thereof, by insertion of  the following items immediately after item 4;",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/27",
@@ -990,9 +990,9 @@
         }
       ],
       "orig": "5. Sri Lanka Export Development Board",
-      "text": "5. Sri Lanka Export Development Board",
-      "enumerated": false,
-      "marker": "-"
+      "text": "Sri Lanka Export Development Board",
+      "enumerated": true,
+      "marker": "5."
     },
     {
       "self_ref": "#/texts/28",
@@ -1019,9 +1019,9 @@
         }
       ],
       "orig": "6. Board of Investment of Sri Lanka",
-      "text": "6. Board of Investment of Sri Lanka",
-      "enumerated": false,
-      "marker": "-"
+      "text": "Board of Investment of Sri Lanka",
+      "enumerated": true,
+      "marker": "6."
     },
     {
       "self_ref": "#/texts/29",
@@ -1048,9 +1048,9 @@
         }
       ],
       "orig": "7. Colombo Port City Economic Commission",
-      "text": "7. Colombo Port City Economic Commission",
-      "enumerated": false,
-      "marker": "-"
+      "text": "Colombo Port City Economic Commission",
+      "enumerated": true,
+      "marker": "7."
     },
     {
       "self_ref": "#/texts/30",
@@ -1079,7 +1079,7 @@
       "orig": "(d) In Column III thereof, by insertion the following items after the item 'Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988';",
       "text": "(d) In Column III thereof, by insertion the following items after the item 'Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988';",
       "enumerated": false,
-      "marker": "-"
+      "marker": ""
     },
     {
       "self_ref": "#/texts/31",
@@ -1106,9 +1106,9 @@
         }
       ],
       "orig": "\u00b7 Sri Lanka Export Development Act No. 40 of 1979",
-      "text": "\u00b7 Sri Lanka Export Development Act No. 40 of 1979",
+      "text": "Sri Lanka Export Development Act No. 40 of 1979",
       "enumerated": false,
-      "marker": "-"
+      "marker": "\u00b7"
     },
     {
       "self_ref": "#/texts/32",
@@ -1135,9 +1135,9 @@
         }
       ],
       "orig": "\u00b7 Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
-      "text": "\u00b7 Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
+      "text": "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
       "enumerated": false,
-      "marker": "-"
+      "marker": "\u00b7"
     },
     {
       "self_ref": "#/texts/33",
@@ -1164,9 +1164,9 @@
         }
       ],
       "orig": "\u00b7 Colombo Port City Economic Commission Act, No. 11 of 2021",
-      "text": "\u00b7 Colombo Port City Economic Commission Act, No. 11 of 2021",
+      "text": "Colombo Port City Economic Commission Act, No. 11 of 2021",
       "enumerated": false,
-      "marker": "-"
+      "marker": "\u00b7"
     },
     {
       "self_ref": "#/texts/34",
@@ -1239,9 +1239,9 @@
           "page_no": 1,
           "bbox": {
             "l": 264.69744873046875,
-            "t": 754.898063659668,
-            "r": 324.8946838378906,
-            "b": 671.1621704101562,
+            "t": 754.8980484008789,
+            "r": 324.89471435546875,
+            "b": 671.1621856689453,
             "coord_origin": "BOTTOMLEFT"
           },
           "charspan": [
