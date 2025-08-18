@@ -27,3 +27,25 @@ Relationships
 (Minister)-[:RESPONSIBLE_FOR_LAW]->(Law)
 
 (Minister)-[:PERFORMS_FUNCTION]->(Function)
+
+
+from datetime import datetime
+
+for minister in data.get("ministers", []):
+    session.run("""
+        MERGE (m:Minister {name: $name})
+        SET m.heading_number = $heading_number,
+            m.gazette_id = $gazette_id,
+            m.appointed_by = $appointed_by,
+            m.tenure_start = $tenure_start,
+            m.tenure_end = COALESCE(m.tenure_end, null),
+            m.ministry_category = $category,
+            m.timestamp_loaded = $timestamp
+    """, 
+    name=minister["name"],
+    heading_number=minister.get("heading_number", None),
+    gazette_id=data["gazette_id"],
+    appointed_by=data.get("president", None),
+    tenure_start=data.get("published_date", None),
+    category=minister.get("category", None),
+    timestamp=datetime.now().isoformat())

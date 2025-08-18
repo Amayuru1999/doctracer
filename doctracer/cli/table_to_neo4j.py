@@ -24,14 +24,32 @@ def load_data(json_path):
         # Create Gazette node
         session.run("""
             MERGE (g:Gazette {gazette_id: $gazette_id})
-            SET g.published_date = $published_date
-        """, gazette_id=data["gazette_id"], published_date=data["published_date"])
+            SET g.published_date = $published_date,
+                g.published_by = $published_by,
+                g.president = $president,
+                g.gazette_type = $gazette_type,
+                g.language = $language,
+                g.pdf_url = $pdf_url
+                    
+        """, 
+            gazette_id=data["gazette_id"], 
+            published_date=data.get("published_date"),
+            published_by=data.get("published_by"),
+            president=data.get("president"),
+            gazette_type=data.get("gazette_type"),
+            language=data.get("language"),
+            pdf_url=data.get("pdf_url")
+            )
 
         # Process Ministers
         for minister in data.get("ministers", []):
             session.run("""
                 MERGE (m:Minister {name: $name})
-            """, name=minister["name"])
+                SET  m.heading_number = $heading_number
+            """, 
+                name=minister["name"],
+                heading_number=minister.get("heading_number")
+            )
 
             # Link Gazette -> Minister
             session.run("""
