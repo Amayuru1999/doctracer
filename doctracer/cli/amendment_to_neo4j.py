@@ -11,7 +11,7 @@ PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
 
-def update_graph_from_amendment(json_path):
+def load_amendment_data(json_path):
     if not os.path.exists(json_path):
         raise FileNotFoundError(f"❌ File not found: {json_path}")
 
@@ -88,4 +88,4 @@ if __name__ == "__main__":
     parser.add_argument("--input", required=True, help="Path to amendment JSON file")
     args = parser.parse_args()
 
-    update_graph_from_amendment(args.input)
+    load_amendment_data(args.input)

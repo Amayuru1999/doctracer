@@ -13,7 +13,7 @@ PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
 
-def load_data(json_path):
+def load_base_data(json_path):
     if not os.path.exists(json_path):
         raise FileNotFoundError(f"❌ File not found: {json_path}")
 
@@ -182,4 +182,4 @@ if __name__ == "__main__":
     parser.add_argument("--input", required=True, help="Path to the JSON file")
     args = parser.parse_args()
 
-    load_data(args.input)
+    load_base_data(args.input)
