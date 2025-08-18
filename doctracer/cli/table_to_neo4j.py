@@ -45,54 +45,135 @@ def load_data(json_path):
         for minister in data.get("ministers", []):
             session.run("""
                 MERGE (m:Minister {name: $name})
-                SET  m.heading_number = $heading_number
+                SET m.heading_number = $heading_number,
+                    m.gazette_id = $gazette_id,
+                    m.appointed_by = $appointed_by,
+                    m.tenure_start = $tenure_start
             """, 
                 name=minister["name"],
-                heading_number=minister.get("heading_number")
+                heading_number=minister.get("heading_number"),
+                gazette_id=data["gazette_id"],
+                appointed_by=data.get("president", None),
+                tenure_start=data.get("published_date", None)
             )
 
             # Link Gazette -> Minister
             session.run("""
                 MATCH (g:Gazette {gazette_id: $gazette_id})
                 MATCH (m:Minister {name: $name})
-                MERGE (g)-[:HAS_MINISTER]->(m)
-            """, gazette_id=data["gazette_id"], name=minister["name"])
-
+                MERGE (g)-[r:HAS_MINISTER]->(m)
+                SET r.published_date = $published_date,
+                    r.gazette_type = $gazette_type,
+                    r.published_by = $published_by,
+                    r.president = $president
+            """, 
+            gazette_id=data["gazette_id"],
+            name=minister["name"],
+            published_date=data.get("published_date"),
+            gazette_type=data.get("gazette_type"),
+            published_by=data.get("published_by"),
+            president=data.get("president")
+            )
+            
             # Departments
             for dept in minister.get("departments", []):
                 session.run("""
                     MERGE (d:Department {name: $dept_name})
-                """, dept_name=dept)
+                    SET d.gazette_id = $gazette_id,
+                        d.appointed_by = $appointed_by,
+                        d.tenure_start = $tenure_start
+                """, 
+                dept_name=dept,
+                gazette_id=data["gazette_id"],
+                appointed_by=data.get("president", None),
+                tenure_start=data.get("published_date", None)
+                )
 
                 session.run("""
                     MATCH (m:Minister {name: $name})
                     MATCH (d:Department {name: $dept_name})
-                    MERGE (m)-[:OVERSEES_DEPARTMENT]->(d)
-                """, name=minister["name"], dept_name=dept)
+                    MERGE (m)-[r:OVERSEES_DEPARTMENT]->(d)
+                    SET r.gazette_id = $gazette_id,
+                        r.published_date = $published_date,
+                        r.gazette_type = $gazette_type,
+                        r.published_by = $published_by,
+                        r.president = $president
+                """, 
+                name=minister["name"],
+                dept_name=dept,
+                gazette_id=data["gazette_id"],
+                published_date=data.get("published_date"),
+                gazette_type=data.get("gazette_type"),
+                published_by=data.get("published_by"),
+                president=data.get("president")
+                )
 
             # Laws
             for law in minister.get("laws", []):
                 session.run("""
                     MERGE (l:Law {name: $law_name})
-                """, law_name=law)
+                    SET l.gazette_id = $gazette_id,
+                        l.appointed_by = $appointed_by,
+                        l.tenure_start = $tenure_start
+                """, 
+                law_name=law,
+                gazette_id=data["gazette_id"],
+                appointed_by=data.get("president", None),
+                tenure_start=data.get("published_date", None)
+                )
 
                 session.run("""
                     MATCH (m:Minister {name: $name})
                     MATCH (l:Law {name: $law_name})
-                    MERGE (m)-[:RESPONSIBLE_FOR_LAW]->(l)
-                """, name=minister["name"], law_name=law)
+                    MERGE (m)-[r:RESPONSIBLE_FOR_LAW]->(l)
+                    SET r.gazette_id = $gazette_id,
+                        r.published_date = $published_date,
+                        r.gazette_type = $gazette_type,
+                        r.published_by = $published_by,
+                        r.president = $president
+                """, 
+                name=minister["name"], 
+                law_name=law,
+                gazette_id=data["gazette_id"],
+                published_date=data.get("published_date"),
+                gazette_type=data.get("gazette_type"),
+                published_by=data.get("published_by"),
+                president=data.get("president")
+                )
 
             # Functions
             for func in minister.get("functions", []):
                 session.run("""
                     MERGE (f:Function {description: $func_desc})
-                """, func_desc=func)
+                    SET f.gazette_id = $gazette_id,
+                        f.appointed_by = $appointed_by,
+                        f.tenure_start = $tenure_start
+                """, 
+                func_desc=func,
+                gazette_id=data["gazette_id"],
+                appointed_by=data.get("president", None),
+                tenure_start=data.get("published_date", None)
+                )
 
                 session.run("""
                     MATCH (m:Minister {name: $name})
                     MATCH (f:Function {description: $func_desc})
-                    MERGE (m)-[:PERFORMS_FUNCTION]->(f)
-                """, name=minister["name"], func_desc=func)
+                    MERGE (m)-[r:PERFORMS_FUNCTION]->(f)
+                    SET r.gazette_id = $gazette_id,
+                        r.published_date = $published_date,
+                        r.gazette_type = $gazette_type,
+                        r.published_by = $published_by,
+                        r.president = $president                    
+                            
+                """, 
+                name=minister["name"], 
+                func_desc=func,
+                gazette_id=data["gazette_id"],
+                published_date=data.get("published_date"),
+                gazette_type=data.get("gazette_type"),
+                published_by=data.get("published_by"),
+                president=data.get("president")
+                )
 
     print(f"✅ Data from {json_path} loaded into Neo4j.")
 
