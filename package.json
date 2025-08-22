@@ -1,6 +1,20 @@
 {
+  "name": "doctracer",
+  "version": "1.0.0",
+  "description": "Government Structure Change Tracker",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "frontend:install": "cd frontend && npm install",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build"
+  },
   "dependencies": {
     "pdfjs-dist": "^4.9.155",
     "react-router-dom": "^7.0.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3"
   }
 }

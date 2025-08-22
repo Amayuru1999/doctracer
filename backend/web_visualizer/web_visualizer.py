@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+from flask_cors import CORS
 import json
 import os
 from neo4j import GraphDatabase
@@ -8,6 +9,15 @@ from datetime import datetime, date
 load_dotenv()
 
 app = Flask(__name__)
+
+# Configure CORS
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Neo4j connection
 URI = os.getenv("NEO4J_URI")
@@ -42,27 +52,30 @@ def convert_neo4j_types(obj):
         return obj
 
 def get_government_tree():
-    """Get government structure as a tree for visualization - only ministries"""
+    """Get government structure as a tree for visualization - ministries with departments"""
     
     try:
         with driver.session() as session:
-            # Get base structure - only ministries
+            # Get base structure with departments
             base_data = session.run("""
                 MATCH (g:BaseGazette)-[:HAS_MINISTER]->(m:BaseMinister)
-                RETURN g, m
+                OPTIONAL MATCH (m)-[:OVERSEES_DEPARTMENT]->(d:BaseDepartment)
+                RETURN g, m, collect(d) as departments
                 ORDER BY m.name
             """).data()
             
-            # Get amendment structure - only ministries
+            # Get amendment structure with departments
             amendment_data = session.run("""
                 MATCH (g:AmendmentGazette)-[:HAS_MINISTER]->(m:AmendmentMinister)
-                RETURN g, m
+                OPTIONAL MATCH (m)-[:OVERSEES_DEPARTMENT]->(d:AmendmentDepartment)
+                RETURN g, m, collect(d) as departments
                 ORDER BY m.name
             """).data()
         
         # Build tree structure
         tree = {
             "name": "Government Structure",
+            "type": "root",
             "children": []
         }
         
@@ -74,8 +87,18 @@ def get_government_tree():
                 ministers_base[minister_name] = {
                     "name": minister_name,
                     "type": "minister",
-                    "source": "base"
+                    "source": "base",
+                    "departments": []
                 }
+            
+            # Add departments
+            for dept in record['departments']:
+                if dept and dept['name']:
+                    ministers_base[minister_name]["departments"].append({
+                        "name": dept['name'],
+                        "type": "department",
+                        "source": "base"
+                    })
         
         # Process amendment data
         ministers_amendment = {}
@@ -85,8 +108,18 @@ def get_government_tree():
                 ministers_amendment[minister_name] = {
                     "name": minister_name,
                     "type": "minister",
-                    "source": "amendment"
+                    "source": "amendment",
+                    "departments": []
                 }
+            
+            # Add departments
+            for dept in record['departments']:
+                if dept and dept['name']:
+                    ministers_amendment[minister_name]["departments"].append({
+                        "name": dept['name'],
+                        "type": "department",
+                        "source": "amendment"
+                    })
         
         # Merge and mark changes
         all_ministers = set(ministers_base.keys()) | set(ministers_amendment.keys())
@@ -94,19 +127,60 @@ def get_government_tree():
         for minister_name in sorted(all_ministers):
             minister_node = {
                 "name": minister_name,
-                "type": "minister"
+                "type": "minister",
+                "children": []
             }
             
             # Check if minister exists in both
             if minister_name in ministers_base and minister_name in ministers_amendment:
                 minister_node["source"] = "both"
                 minister_node["status"] = "unchanged"
+                
+                # Merge departments
+                base_depts = {d['name']: d for d in ministers_base[minister_name]["departments"]}
+                amendment_depts = {d['name']: d for d in ministers_amendment[minister_name]["departments"]}
+                
+                all_dept_names = set(base_depts.keys()) | set(amendment_depts.keys())
+                
+                for dept_name in sorted(all_dept_names):
+                    dept_node = {"name": dept_name, "type": "department"}
+                    
+                    if dept_name in base_depts and dept_name in amendment_depts:
+                        dept_node["source"] = "both"
+                        dept_node["status"] = "unchanged"
+                    elif dept_name in base_depts:
+                        dept_node["source"] = "base"
+                        dept_node["status"] = "removed"
+                    else:
+                        dept_node["source"] = "amendment"
+                        dept_node["status"] = "added"
+                    
+                    minister_node["children"].append(dept_node)
+                    
             elif minister_name in ministers_base:
                 minister_node["source"] = "base"
                 minister_node["status"] = "removed"
+                # Add base departments as removed
+                for dept in ministers_base[minister_name]["departments"]:
+                    dept_node = {
+                        "name": dept['name'],
+                        "type": "department",
+                        "source": "base",
+                        "status": "removed"
+                    }
+                    minister_node["children"].append(dept_node)
             else:
                 minister_node["source"] = "amendment"
                 minister_node["status"] = "added"
+                # Add amendment departments as added
+                for dept in ministers_amendment[minister_name]["departments"]:
+                    dept_node = {
+                        "name": dept['name'],
+                        "type": "department",
+                        "source": "amendment",
+                        "status": "added"
+                    }
+                    minister_node["children"].append(dept_node)
             
             tree["children"].append(minister_node)
         
@@ -121,38 +195,104 @@ def get_government_tree():
         }
 
 def get_changes_summary():
-    """Get summary of changes for the dashboard - ministries only"""
+    """Get summary of changes for the dashboard - showing actual changes"""
     
     try:
         with driver.session() as session:
-            # Count nodes by source - only ministries
+            # Count nodes by type and source
             node_counts = session.run("""
                 MATCH (n) 
-                WHERE n:BaseGazette OR n:BaseMinister 
-                   OR n:AmendmentGazette OR n:AmendmentMinister
-                RETURN labels(n)[0] as NodeType, n.source as Source, count(n) as Count
+                WHERE n:BaseGazette OR n:BaseMinister OR n:BaseDepartment OR n:BaseLaw OR n:BaseFunction
+                   OR n:AmendmentGazette OR n:AmendmentMinister OR n:AmendmentDepartment OR n:AmendmentLaw OR n:AmendmentFunction
+                WITH labels(n) as labels
+                UNWIND labels as label
+                WITH label
+                WHERE label IN ['BaseGazette', 'AmendmentGazette', 'BaseMinister', 'AmendmentMinister', 
+                               'BaseDepartment', 'AmendmentDepartment', 'BaseLaw', 'AmendmentLaw',
+                               'BaseFunction', 'AmendmentFunction']
+                WITH 
+                    CASE 
+                        WHEN label CONTAINS 'Base' THEN 'base'
+                        WHEN label CONTAINS 'Amendment' THEN 'amendment'
+                    END as source,
+                    CASE
+                        WHEN label CONTAINS 'Minister' THEN 'Minister'
+                        WHEN label CONTAINS 'Department' THEN 'Department'
+                        WHEN label CONTAINS 'Law' THEN 'Law'
+                        WHEN label CONTAINS 'Function' THEN 'Function'
+                        WHEN label CONTAINS 'Gazette' THEN 'Gazette'
+                    END as nodeType
+                RETURN nodeType as NodeType, source as Source, count(*) as Count
                 ORDER BY NodeType, Source
             """).data()
             
-            # Count changes - only minister additions/removals
-            changes = session.run("""
-                MATCH (n:AmendmentMinister)
-                WHERE n.source = 'amendment'
-                RETURN 'ADDED' as Status, count(n) as Count
-                UNION ALL
-                MATCH (n:BaseMinister)
+            # Count actual changes at different levels
+            changes = []
+            
+            # Department changes
+            dept_changes = session.run("""
+                // Added departments
+                MATCH (ad:AmendmentDepartment)
                 WHERE NOT EXISTS {
-                    MATCH (m:AmendmentMinister {name: n.name})
+                    MATCH (bd:BaseDepartment {name: ad.name})
                 }
-                RETURN 'REMOVED' as Status, count(n) as Count
+                RETURN 'ADDED_DEPARTMENTS' as Status, count(ad) as Count
+                UNION ALL
+                // Removed departments
+                MATCH (bd:BaseDepartment)
+                WHERE NOT EXISTS {
+                    MATCH (ad:AmendmentDepartment {name: bd.name})
+                }
+                RETURN 'REMOVED_DEPARTMENTS' as Status, count(bd) as Count
+                UNION ALL
+                // Added laws
+                MATCH (al:AmendmentLaw)
+                WHERE NOT EXISTS {
+                    MATCH (bl:BaseLaw {name: al.name})
+                }
+                RETURN 'ADDED_LAWS' as Status, count(al) as Count
+                UNION ALL
+                // Removed laws
+                MATCH (bl:BaseLaw)
+                WHERE NOT EXISTS {
+                    MATCH (al:AmendmentLaw {name: bl.name})
+                }
+                RETURN 'REMOVED_LAWS' as Status, count(bl) as Count
+                UNION ALL
+                // Added functions
+                MATCH (af:AmendmentFunction)
+                WHERE NOT EXISTS {
+                    MATCH (bf:BaseFunction {description: af.description})
+                }
+                RETURN 'ADDED_FUNCTIONS' as Status, count(af) as Count
+                UNION ALL
+                // Removed functions
+                MATCH (bf:BaseFunction)
+                WHERE NOT EXISTS {
+                    MATCH (af:AmendmentFunction {description: bf.description})
+                }
+                RETURN 'REMOVED_FUNCTIONS' as Status, count(bf) as Count
             """).data()
             
-            # Get recent amendments - only ministries
+            changes.extend(dept_changes)
+            
+            # Get recent amendments with actual changes
             recent = session.run("""
                 MATCH (n) 
                 WHERE n.amendment_date IS NOT NULL
-                AND n:AmendmentMinister
-                RETURN n.name as Name, n.amendment_date as Date, labels(n)[0] as Type
+                AND (n:AmendmentDepartment OR n:AmendmentLaw OR n:AmendmentFunction)
+                AND NOT EXISTS {
+                    MATCH (base)
+                    WHERE (base:BaseDepartment AND base.name = n.name)
+                       OR (base:BaseLaw AND base.name = n.name)
+                       OR (base:BaseFunction AND base.description = n.description)
+                }
+                RETURN n.name as Name, n.amendment_date as Date, 
+                       CASE 
+                           WHEN n:AmendmentDepartment THEN 'Department'
+                           WHEN n:AmendmentLaw THEN 'Law'
+                           WHEN n:AmendmentFunction THEN 'Function'
+                       END as Type
                 ORDER BY n.amendment_date DESC
                 LIMIT 10
             """).data()
