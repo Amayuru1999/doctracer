@@ -1,0 +1,10 @@
+mcp>=1.0.0
+openai>=1.60.0
+anthropic>=0.7.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.5.0
+python-multipart>=0.0.6
+neo4j>=5.10.0
+click>=8.0.0
+deepdiff>=6.3.0

@@ -66,7 +66,7 @@ pip install -r requirements_web.txt
 python web_visualizer.py
 ```
 
-Then open `http://localhost:5000` in your browser.
+Then open `http://localhost:5001` in your browser.
 
 ### **Features of the Web UI**
 - **Interactive Tree**: Click to expand/collapse nodes
