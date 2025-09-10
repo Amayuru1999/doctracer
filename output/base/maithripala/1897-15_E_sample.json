@@ -9,8 +9,8 @@
 
   "ministers": [
     {
-      "heading_name": "Minister of Defence",
-      "heading_number": "1",
+      "name": "Minister of Defence",
+      "number": "1",
       "departments": [
         "1. Sri Lanka Army",
         "2. Sri Lanka Navy",
@@ -65,8 +65,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Mahaweli Development & Environment",
-      "heading_number": "2",
+      "name": "Minister of Mahaweli Development & Environment",
+      "number": "2",
       "departments": [
         "1. Mahaweli Authority of Sri Lanka and its Subsidiary Companies and Associates (except Mahaweli Livestock Enterprise Company Ltd.)",
         "2. Central Engineering Consultancy Bureau (CECB)",
@@ -110,8 +110,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Policy Planning, Economic Affairs, Child, Youth & Cultural Affairs",
-      "heading_number": "3",
+      "name": "Minister of Policy Planning, Economic Affairs, Child, Youth & Cultural Affairs",
+      "number": "3",
       "departments": [
         "1. Department of National Planning",
         "2. Department of External Resources",
@@ -160,8 +160,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
-      "heading_number": "4",
+      "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+      "number": "4",
       "departments": [
         "1. Department of Police",
         "2. Department of Immigration and Emigration",
@@ -208,8 +208,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Home Affairs & Fisheries",
-      "heading_number": "5",
+      "name": "Minister of Home Affairs & Fisheries",
+      "number": "5",
       "departments": [
         "1. All District Secretariats",
         "2. All Divisional Secretariats",
@@ -255,8 +255,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Food Security",
-      "heading_number": "6",
+      "name": "Minister of Food Security",
+      "number": "6",
       "departments": [],
       "laws": [],
       "functions": [
@@ -270,8 +270,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Foreign Affairs",
-      "heading_number": "7",
+      "name": "Minister of Foreign Affairs",
+      "number": "7",
       "departments": [
         "1. Department of Measurement Units, Standards and Services",
         "2. Department of Food Commissioner",
@@ -319,8 +319,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
-      "heading_number": "8",
+      "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+      "number": "8",
       "departments": [
         "1. Department of Management Services",
         "2. Sri Lanka Institute of Development Administration",
@@ -371,8 +371,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Buddha Sasana",
-      "heading_number": "9",
+      "name": "Minister of Buddha Sasana",
+      "number": "9",
       "departments": [
         "1. Department of Buddhist Affairs Institutions & Public Corporations",
         "2. Buddha Sasana Fund",
@@ -389,8 +389,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Plantation Industries",
-      "heading_number": "10",
+      "name": "Minister of Plantation Industries",
+      "number": "10",
       "departments": [
         "1. Department of Rubber Development",
         "2. National Institute of Plantation Management",
@@ -420,8 +420,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Finance",
-      "heading_number": "11",
+      "name": "Minister of Finance",
+      "number": "11",
       "departments": [
         "1. General Treasury",
         "2. Department of Fiscal Policy",
@@ -479,8 +479,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Urban Development, Water Supply & Drainage",
-      "heading_number": "12",
+      "name": "Minister of Urban Development, Water Supply & Drainage",
+      "number": "12",
       "departments": [
         "1. Urban Development Authority",
         "2. Sri Lanka Land Reclamation and Development Corporation",
@@ -510,8 +510,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Power & Energy",
-      "heading_number": "13",
+      "name": "Minister of Power & Energy",
+      "number": "13",
       "departments": [
         "1. Ceylon Electricity Board and its subsidiary companies",
         "2. Lanka Electricity Company",
@@ -546,8 +546,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Health and Indigenous Medicine",
-      "heading_number": "14",
+      "name": "Minister of Health and Indigenous Medicine",
+      "number": "14",
       "departments": [
         "1. Department of Health Services",
         "2.Sri Jayewardenepura General Hospital",
@@ -611,8 +611,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Irrigation and Agriculture",
-      "heading_number": "15",
+      "name": "Minister of Irrigation and Agriculture",
+      "number": "15",
       "departments": [
         "1. Department of Irrigation",
         "2. Water Resources Board",
@@ -652,8 +652,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Highways, Higher Education and Investment Promotion",
-      "heading_number": "16",
+      "name": "Minister of Highways, Higher Education and Investment Promotion",
+      "number": "16",
       "departments": [
         "1. Road Development Authority and its Subsidiaries and Associates",
         "2. Road Maintenance Trust Fund",
@@ -697,8 +697,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Lands",
-      "heading_number": "17",
+      "name": "Minister of Lands",
+      "number": "17",
       "departments": [],
       "laws": [],
       "functions": [
@@ -714,8 +714,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Housing and Samurdhi",
-      "heading_number": "18",
+      "name": "Minister of Housing and Samurdhi",
+      "number": "18",
       "departments": [
         "1. Department of Land Commissioner General",
         "2. Land Reform Commission",
@@ -761,8 +761,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Justice and Labour Relations",
-      "heading_number": "19",
+      "name": "Minister of Justice and Labour Relations",
+      "number": "19",
       "departments": [
         "1. Legal Draftsman Department",
         "2. Department of Prisons",
@@ -798,8 +798,8 @@
       ]
     },
     {
-      "heading_name": "Minister of Mass Media and Parliamentary Affairs",
-      "heading_number": "20",
+      "name": "Minister of Mass Media and Parliamentary Affairs",
+      "number": "20",
       "departments": [
         "1. Department of Information",
         "2. Department of the Government Printing",

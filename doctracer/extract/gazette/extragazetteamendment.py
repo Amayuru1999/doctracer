@@ -42,10 +42,10 @@ class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
         raw_changes = self._extract_changes(text)
 
         # 👇 Add debug prints here
-        print("=== RAW METADATA ===")
-        print(raw_meta)
-        print("=== RAW CHANGES ===")
-        print(raw_changes)
+        # print("=== RAW METADATA ===")
+        # print(raw_meta)
+        # print("=== RAW CHANGES ===")
+        # print(raw_changes)
 
         # 👇 Optional: safely parse JSON with fallback
         try:

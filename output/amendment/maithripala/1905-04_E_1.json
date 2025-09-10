@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "Gazette ID": "1905/4",
+    "Gazette Published Date": "2015-03-09",
+    "Gazette Published by": "Authority",
+    "President": "Maithripala Sirisena",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
+    "Parent Gazette": {
+      "Gazette ID": "1897/15",
+      "Gazette Published Date": "2015-01-18",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "previous_number": "4",
+        "previous_name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "column_no": "1",
+        "added_content": [
+          "18. Registration of Persons",
+          "19. All other subjects that come under the purview of Institutions listed in Column II",
+          "20. Supervision of the Institutions listed in Column II"
+        ],
+        "deleted_sections": []
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 3"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "6",
+        "name": "Minister of Food Security",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 2",
+          "item 4",
+          "item 6",
+          "item 8",
+          "item 9",
+          "item 10"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "8",
+        "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 5",
+          "item 1"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "previous_number": "11",
+        "previous_name": "Minister of Finance",
+        "number": "11",
+        "name": "Minister of Finance",
+        "column_no": "1",
+        "added_content": [
+          "17. Cadre management and advisory services and fixing of salaries",
+          "18. All other subjects that come under the purview of Institutions listed in Column II",
+          "19. Supervision of the institution listed in Column II"
+        ],
+        "deleted_sections": []
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Health & Indigenous Medicine",
+        "column_no": "2",
+        "added_content": [
+          "25. Sri Lanka Thriposha Ltd"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "18",
+        "name": "Minister of Housing & Samurdhi",
+        "column_no": "2",
+        "added_content": [
+          "16. National Engineering Research and Development Centre"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "previous_number": "21",
+        "previous_name": "Minister of Tourism & Sports",
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "1",
+        "added_content": [
+          "8. Encouragement of sports",
+          "9. Development of sports facilities",
+          "10. Sports education",
+          "11. All other subjects that come under the purview of Institutions listed in Column II",
+          "12. Supervision of Institutions referred in Column II"
+        ],
+        "deleted_sections": [
+          "item 8",
+          "item 12",
+          "item 9",
+          "item 10",
+          "item 11"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "previous_number": "23",
+        "previous_name": "Minister of Industry & Commerce",
+        "number": "23",
+        "name": "Minister of Industry & Commerce",
+        "column_no": "1",
+        "added_content": [
+          "11. Development and promotion of national crafts and arts",
+          "12. Development and popularization of designs for Sri Lanka handicraft industry",
+          "13. Formulation and implementation of National Price Policy pertaining to consumer goods",
+          "14. Implement measures for consumer protection",
+          "15. All other subjects that come under the purview of institutions listed in Column II",
+          "16. Supervision of the Institutions listed in Column II"
+        ],
+        "deleted_sections": []
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "26",
+        "name": "Minister of Education",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 11"
+        ]
+      }
+    }
+  ]
+}

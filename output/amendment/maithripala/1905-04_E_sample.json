@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "Gazette ID": "1905/04",
+    "Gazette ID": "1905/4",
     "Gazette Published Date": "2015-03-09",
     "Gazette Published by": "Ministry",
     "Gazette Type": "Extraordinary",
@@ -16,16 +16,16 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "heading_number": "4",
-        "heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "column_no": "1",
         "deleted_sections": [
           "item 18 and item 19"
         ],
-        "previous_heading_number": "4.0",
-        "previous_heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "new_heading_number": "4.0",
-        "new_heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "previous_number": "4.0",
+        "previous_name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "new_number": "4.0",
+        "new_name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "updated_content": [
             "18. Registration of Persons",
             "19. All other subjects that come under the purview of Institutions listed in Column II",
@@ -36,8 +36,8 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "4",
-        "heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "column_no": "2",
         "added_content": [
           "9. Department of Registration of Persons"
@@ -47,8 +47,8 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "4",
-        "heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "column_no": "3",
         "added_content": [
           "Registration of Persons Act, No. 32 of 1968"
@@ -58,8 +58,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "5",
-        "heading_name": "Minister of Home Affairs & Fisheries",
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
         "column_no": "1",
         "deleted_sections": [
           "item 3"
@@ -69,8 +69,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "5",
-        "heading_name": "Minister of Home Affairs & Fisheries",
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
         "column_no": "2",
         "deleted_sections": [
           "item 3"
@@ -80,8 +80,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "5",
-        "heading_name": "Minister of Home Affairs & Fisheries",
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
         "column_no": "3",
         "deleted_sections": [
           "Registration of Persons Act, No. 32 of 1968"
@@ -91,8 +91,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "6",
-        "heading_name": "Minister of Food Security",
+        "number": "6",
+        "name": "Minister of Food Security",
         "column_no": "1",
         "deleted_sections": [
           "items 2 and 4"
@@ -102,16 +102,16 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "heading_number": "6",
-        "heading_name": "Minister of Food Security",
+        "number": "6",
+        "name": "Minister of Food Security",
         "column_no": "1",
         "deleted_sections": [
           "item 3, itemd 5, item 6 and item 7"
         ],
-        "previous_heading_number": "6.0",
-        "previous_heading_name": "Minister of Food Security",
-        "new_heading_number": "6.0",
-        "new_heading_name": "Minister of Food Security",
+        "previous_number": "6.0",
+        "previous_name": "Minister of Food Security",
+        "new_number": "6.0",
+        "new_name": "Minister of Food Security",
         "updated_content":  [
             "2. Ensure availability of food and other essential items",
             "3. Ensure purchase of agricultural products at reasonable prices",
@@ -123,8 +123,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "6",
-        "heading_name": "Minister of Food Security",
+        "number": "6",
+        "name": "Minister of Food Security",
         "column_no": "2",
         "deleted_sections": [
           "items 6, 8, 9 and 10"
@@ -134,16 +134,16 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "heading_number": "6",
-        "heading_name": "Minister of Food Security",
+        "number": "6",
+        "name": "Minister of Food Security",
         "column_no": "2",
         "deleted_sections": [
           "item 7, item 11 and item 12"
         ],
-        "previous_heading_number": "6.0",
-        "previous_heading_name": "Minister of Food Security",
-        "new_heading_number": "6.0",
-        "new_heading_name": "Minister of Food Security",
+        "previous_number": "6.0",
+        "previous_name": "Minister of Food Security",
+        "new_number": "6.0",
+        "new_name": "Minister of Food Security",
         "updated_content":  [
             "6. National Institute of Co-operative Development",
             "7. Regional Economic Centers",
@@ -154,8 +154,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "6",
-        "heading_name": "Minister of Food Security",
+        "number": "6",
+        "name": "Minister of Food Security",
         "column_no": "3",
         "deleted_sections": [
           "Consumer Affairs Authority Act, No. 9 of 2003",
@@ -167,8 +167,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "8",
-        "heading_name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "number": "8",
+        "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
         "column_no": "1",
         "deleted_sections": [
           "item 5"
@@ -178,8 +178,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "8",
-        "heading_name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "number": "8",
+        "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
         "column_no": "2",
         "deleted_sections": [
           "item 1"
@@ -189,16 +189,16 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "heading_number": "11",
-        "heading_name": "Minister of Finance",
+        "number": "11",
+        "name": "Minister of Finance",
         "column_no": "1",
         "deleted_sections": [
           "item 17 and item 18"
         ],
-        "previous_heading_number": "11.0",
-        "previous_heading_name": "Minister of Finance",
-        "new_heading_number": "11.0",
-        "new_heading_name": "Minister of Finance",
+        "previous_number": "11.0",
+        "previous_name": "Minister of Finance",
+        "new_number": "11.0",
+        "new_name": "Minister of Finance",
         "updated_content": [
             "17. Cadre management and advisory services and fixing of salaries",
             "18. All other subjects that come under the purview of Institutions listed in Column II",
@@ -209,8 +209,8 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "11",
-        "heading_name": "Minister of Finance",
+        "number": "11",
+        "name": "Minister of Finance",
         "column_no": "2",
         "added_content": [
           "36. Department of Management Services",
@@ -221,8 +221,8 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "11",
-        "heading_name": "Minister of Finance",
+        "number": "11",
+        "name": "Minister of Finance",
         "column_no": "3",
         "added_content": [
           "Tax Appeals Commission Act, No. 23 of 2008"
@@ -232,8 +232,8 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "14",
-        "heading_name": "Minister of Health & Indigenous Medicine",
+        "number": "14",
+        "name": "Minister of Health & Indigenous Medicine",
         "column_no": "2",
         "added_content": [
           "25. Sri Lanka Thriposha Ltd"
@@ -243,8 +243,8 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "18",
-        "heading_name": "Minister of Housing & Samurdhi",
+        "number": "18",
+        "name": "Minister of Housing & Samurdhi",
         "column_no": "2",
         "added_content": [
           "16. National Engineering Research and Development Centre"
@@ -254,8 +254,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "21.0",
-        "heading_name": "Minister of Tourism & Sports",
+        "number": "21.0",
+        "name": "Minister of Tourism & Sports",
         "column_no": "1",
         "deleted_sections": [
           "items 8 and 12"
@@ -265,16 +265,16 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "heading_number": "21",
-        "heading_name": "Minister of Tourism & Sports",
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
         "column_no": "1",
         "deleted_sections": [
           "item 9, 10, 11 and 13"
         ],
-        "previous_heading_number": "21.0",
-        "previous_heading_name": "Minister of Tourism & Sports",
-        "new_heading_number": "21.0",
-        "new_heading_name": "Minister of Tourism & Sports",
+        "previous_number": "21.0",
+        "previous_name": "Minister of Tourism & Sports",
+        "new_number": "21.0",
+        "new_name": "Minister of Tourism & Sports",
         "updated_content": [
             "8. Encouragement of sports",
             "9. Development of sports facilities",
@@ -287,16 +287,16 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "heading_number": "23",
-        "heading_name": "Minister of Industry & Commerce",
+        "number": "23",
+        "name": "Minister of Industry & Commerce",
         "column_no": "1",
         "deleted_sections": [
           "item 11 and item 12"
         ],
-        "previous_heading_number": "23.0",
-        "previous_heading_name": "Minister of Industry & Commerce",
-        "new_heading_number": "23.0",
-        "new_heading_name": "Minister of Industry & Commerce",
+        "previous_number": "23.0",
+        "previous_name": "Minister of Industry & Commerce",
+        "new_number": "23.0",
+        "new_name": "Minister of Industry & Commerce",
         "updated_content": [
             "11. Development and promotion of national crafts and arts",
             "12. Development and popularization of designs for Sri Lanka handicraft industry",
@@ -310,8 +310,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "26.0",
-        "heading_name": "Minister of Education",
+        "number": "26.0",
+        "name": "Minister of Education",
         "column_no": "2",
         "deleted_sections": [
           "item 11"
@@ -321,8 +321,8 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "26.0",
-        "heading_name": "Minister of Education",
+        "number": "26.0",
+        "name": "Minister of Education",
         "column_no": "3",
         "deleted_sections": [
           "National Education Commission Act, No. 19 of 1991"
