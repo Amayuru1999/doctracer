@@ -1,5 +1,5 @@
 # import json
-# from doctracer.extract.pdf_extractor import extract_text_from_pdfplumber
+# from doctracer.extract.pdf_extractor import extract_text_from_docling
 # from doctracer.extract.gazette.gazette import BaseGazetteProcessor
 # from doctracer.prompt.catalog  import PromptCatalog
 # from doctracer.prompt.config   import SimpleMessageConfig
@@ -46,7 +46,7 @@
 #         return [b.strip() for b in blocks if b.strip()]
 
 #     def process_gazettes(self) -> str:
-#         text = extract_text_from_pdfplumber(self.pdf_path)
+#         text = extract_text_from_docling(self.pdf_path)
 
 #         raw_meta = self._extract_metadata(text)
 #         try:
@@ -76,6 +76,7 @@
 import json
 from pydoc import text
 from doctracer.extract.pdf_extractor import extract_text_from_pdfplumber
+from doctracer.extract.pdf_extractor import extract_text_from_docling
 from doctracer.extract.gazette.gazette import BaseGazetteProcessor
 from doctracer.prompt.catalog  import PromptCatalog
 from doctracer.prompt.config   import SimpleMessageConfig
@@ -103,13 +104,6 @@ class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
             text
         )
         return self.executor.execute_prompt(PromptConfigChat(prompt=prompt))
-
-    # def _extract_changes(self, text: str) -> str:
-    #     prompt = PromptCatalog.get_prompt(
-    #         PromptCatalog.CHANGES_AMENDMENT_EXTRACTION,
-    #         text
-    #     )
-    #     return self.executor.execute_prompt(PromptConfigChat(prompt=prompt))
     
     def _extract_changes(self, text: str) -> str:
         # 1️⃣ Split the full docling text into amendment blocks
@@ -142,16 +136,12 @@ class ExtraGazetteAmendmentProcessor(BaseGazetteProcessor):
         return re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip())
 
     def process_gazettes(self) -> str:
-        text = extract_text_from_pdfplumber(self.pdf_path)
 
-        raw_meta    = self._extract_metadata(text)
-        raw_changes = self._extract_changes(text)
+        plumber_text = extract_text_from_pdfplumber(self.pdf_path)
+        docling_text = extract_text_from_docling(self.pdf_path)
 
-        # 👇 Add debug prints here
-        # print("=== RAW METADATA ===")
-        # print(raw_meta)
-        # print("=== RAW CHANGES ===")
-        # print(raw_changes)
+        raw_meta    = self._extract_metadata(plumber_text)
+        raw_changes = self._extract_changes(docling_text)
 
         # 👇 Optional: safely parse JSON with fallback
         try:

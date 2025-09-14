@@ -1,39 +1,64 @@
 {
   "metadata": {
-    "Gazette ID": "09.03.2015",
+    "Gazette ID": "1905/4",
     "Gazette Published Date": "2015-03-09",
-    "Gazette Published by": "Ministry"
+    "Gazette Published by": "Authority",
+    "President": "Maithripala Sirisena",
+    "Gazette Type": "Extraordinary",
+    "Language": "English",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
+    "Parent Gazette": {
+      "Gazette No": "1897/15",
+      "Published Date": "2015-01-18",
+      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
   },
   "changes": [
     {
       "operation_type": "UPDATE",
       "details": {
-        "previous_heading_number": "4.0",
-        "previous_heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "heading_number": "4.0",
-        "heading_name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "updated_content": {
-          "subjects_and_functions": [
-            "Registration of Persons",
-            "All other subjects that come under the purview of Institutions listed in Column II",
-            "Supervision of the Institutions listed in Column II"
-          ],
-          "related_institutional_and_legal_framework": {
-            "departments_and_institutions": [
-              "Department of Registration of Persons"
-            ],
-            "laws_and_ordinances": [
-              "Registration of Persons Act, No. 32 of 1968"
-            ]
-          }
-        }
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "column_no": "I",
+        "deleted_sections": [
+          "item 18",
+          "item 19"
+        ],
+        "added_content": [
+          "18. Registration of Persons",
+          "19. All other subjects that come under the purview of Institutions listed in Column II",
+          "20. Supervision of the Institutions listed in Column II"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "column_no": "II",
+        "added_content": [
+          "9. Department of Registration of Persons"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "4",
+        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+        "column_no": "III",
+        "added_content": [
+          "Registration of Persons Act, No. 32 of 1968"
+        ]
       }
     },
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "5.0",
-        "heading_name": "Minister of Home Affairs & Fisheries",
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
+        "column_no": "I",
         "deleted_sections": [
           "item 3"
         ]
@@ -42,47 +67,108 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "6.0",
-        "heading_name": "Minister of Food Security",
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
+        "column_no": "II",
         "deleted_sections": [
-          "items 2 and 4"
+          "item 3"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "5",
+        "name": "Minister of Home Affairs & Fisheries",
+        "column_no": "III",
+        "deleted_sections": [
+          "Registration of Persons Act, No. 32 of 1968"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "6",
+        "name": "Minister of Food Security",
+        "column_no": "I",
+        "deleted_sections": [
+          "items 2",
+          "item 4"
         ]
       }
     },
     {
       "operation_type": "UPDATE",
       "details": {
-        "previous_heading_number": "6.0",
-        "previous_heading_name": "Minister of Food Security",
-        "heading_number": "6.0",
-        "heading_name": "Minister of Food Security",
-        "updated_content": {
-          "subjects_and_functions": [
-            "Ensure availability of food and other essential items",
-            "Ensure purchase of agricultural products at reasonable prices",
-            "All other subjects that come under the purview of institutions listed in Column II",
-            "Supervision of the institutions listed in Column II"
-          ],
-          "related_institutional_and_legal_framework": {
-            "departments_and_institutions": [
-              "National Institute of Co-operative Development",
-              "Regional Economic Centers",
-              "Paddy Marketing Board"
-            ],
-            "laws_and_ordinances": [
-              "Consumer Affairs Authority Act, No. 9 of 2003",
-              "Consumer Protection Act, No. 1 of 1979",
-              "Co-operative Wholesale Establishment Act"
-            ]
-          }
-        }
+        "number": "6",
+        "name": "Minister of Food Security",
+        "column_no": "I",
+        "deleted_sections": [
+          "items 3",
+          "5",
+          "6",
+          "7"
+        ],
+        "added_content": [
+          "2. Ensure availability of food and other essential items",
+          "3. Ensure purchase of agricultural products at reasonable prices",
+          "4. All other subjects that come under the purview of institutions listed in Column II",
+          "5. Supervision of the institutions listed in Column II"
+        ]
       }
     },
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "8.0",
-        "heading_name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "number": "6",
+        "name": "Minister of Food Security",
+        "column_no": "II",
+        "deleted_sections": [
+          "items 6",
+          "8",
+          "9",
+          "10"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "6",
+        "name": "Minister of Food Security",
+        "column_no": "II",
+        "deleted_sections": [
+          "items 7",
+          "11",
+          "12"
+        ],
+        "added_content": [
+          "6. National Institute of Co-operative Development",
+          "7. Regional Economic Centers",
+          "8. Paddy Marketing Board"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "6",
+        "name": "Minister of Food Security",
+        "column_no": "III",
+        "deleted_sections": [
+          "Consumer Affairs Authority Act, No. 9 of 2003",
+          "Consumer Protection Act, No. 1 of 1979",
+          "Co-operative Wholesale Establishment Act"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "8",
+        "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "column_no": "I",
         "deleted_sections": [
           "item 5"
         ]
@@ -91,8 +177,9 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "8.0",
-        "heading_name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "number": "8",
+        "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
+        "column_no": "II",
         "deleted_sections": [
           "item 1"
         ]
@@ -101,131 +188,211 @@
     {
       "operation_type": "UPDATE",
       "details": {
-        "previous_heading_number": "11.0",
-        "previous_heading_name": "Minister of Finance",
-        "heading_number": "11.0",
-        "heading_name": "Minister of Finance",
-        "updated_content": {
-          "subjects_and_functions": [
-            "Cadre management and advisory services and fixing of salaries",
-            "All other subjects that come under the purview of Institutions listed in Column II",
-            "Supervision of the institution listed in Column II"
-          ],
-          "related_institutional_and_legal_framework": {
-            "departments_and_institutions": [
-              "Department of Management Services",
-              "Tax Appeals Commission"
-            ],
-            "laws_and_ordinances": [
-              "Tax Appeals Commission Act, No. 23 of 2008"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "operation_type": "INSERTION",
-      "details": {
-        "heading_number": "14.0",
-        "heading_name": "Minister of Health & Indigenous Medicine",
-        "subjects_and_functions": [
-          "Sri Lanka Thriposha Ltd"
-        ]
-      }
-    },
-    {
-      "operation_type": "INSERTION",
-      "details": {
-        "heading_number": "18.0",
-        "heading_name": "Minister of Housing & Samurdhi",
-        "subjects_and_functions": [
-          "National Engineering Research and Development Centre"
-        ]
-      }
-    },
-    {
-      "operation_type": "DELETION",
-      "details": {
-        "heading_number": "21.0",
-        "heading_name": "Minister of Tourism & Sports",
+        "number": "11",
+        "name": "Minister of Finance",
+        "column_no": "I",
         "deleted_sections": [
-          "items 8 and 12"
+          "items 17",
+          "18"
+        ],
+        "added_content": [
+          "17. Cadre management and advisory services and fixing of salaries",
+          "18. All other subjects that come under the purview of Institutions listed in Column II",
+          "19. Supervision of the institution listed in Column II"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "11",
+        "name": "Minister of Finance",
+        "column_no": "II",
+        "added_content": [
+          "36. Department of Management Services",
+          "37. Tax Appeals Commission"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "11",
+        "name": "Minister of Finance",
+        "column_no": "III",
+        "added_content": [
+          "Tax Appeals Commission Act, No. 23 of 2008"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Health & Indigenous Medicine",
+        "column_no": "II",
+        "added_content": [
+          "25. Sri Lanka Thriposha Ltd"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "18",
+        "name": "Minister of Housing & Samurdhi",
+        "column_no": "II",
+        "added_content": [
+          "16. National Engineering Research and Development Centre"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "I",
+        "deleted_sections": [
+          "items 8",
+          "12"
         ]
       }
     },
     {
       "operation_type": "UPDATE",
       "details": {
-        "previous_heading_number": "21.0",
-        "previous_heading_name": "Minister of Tourism & Sports",
-        "heading_number": "21.0",
-        "heading_name": "Minister of Tourism & Sports",
-        "updated_content": {
-          "subjects_and_functions": [
-            "Encouragement of sports",
-            "Development of sports facilities",
-            "Sports education",
-            "All other subjects that come under the purview of Institutions listed in Column II",
-            "Supervision of Institutions referred in Column II"
-          ],
-          "related_institutional_and_legal_framework": {
-            "departments_and_institutions": [
-              "Ape Gama",
-              "Department of Sports Development",
-              "Sugathadasa National Sports Complex Authority",
-              "National Institute of Sports Science",
-              "National Sports Council",
-              "Institute of Sports Medicine",
-              "Sri Lanka Anti-doping Agency"
-            ],
-            "laws_and_ordinances": [
-              "Convention against Doping in Sports Act, No. 33 of 2013"
-            ]
-          }
-        }
-      }
-    },
-    {
-      "operation_type": "UPDATE",
-      "details": {
-        "previous_heading_number": "23.0",
-        "previous_heading_name": "Minister of Industry & Commerce",
-        "heading_number": "23.0",
-        "heading_name": "Minister of Industry & Commerce",
-        "updated_content": {
-          "subjects_and_functions": [
-            "Development and promotion of national crafts and arts",
-            "Development and popularization of designs for Sri Lanka handicraft industry",
-            "Formulation and implementation of National Price Policy pertaining to consumer goods",
-            "Implement measures for consumer protection",
-            "All other subjects that come under the purview of institutions listed in Column II",
-            "Supervision of the Institutions listed in Column II"
-          ],
-          "related_institutional_and_legal_framework": {
-            "departments_and_institutions": [
-              "Sri Lanka Handicrafts Board (Laksala)",
-              "National Design Center",
-              "National Craft Council",
-              "Consumer Affairs Authority",
-              "Lanka Sathosa Ltd",
-              "Lanka General Trading Company Ltd",
-              "Co-operative Wholesale Establishment"
-            ],
-            "laws_and_ordinances": [
-              "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
-              "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996",
-              "Consumer Affairs Authority Act, No. 9 of 2003",
-              "Consumer Protection Act, No. 1 of 1979"
-            ]
-          }
-        }
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "I",
+        "deleted_sections": [
+          "items 9",
+          "10",
+          "11",
+          "13"
+        ],
+        "added_content": [
+          "8. Encouragement of sports",
+          "9. Development of sports facilities",
+          "10. Sports education",
+          "11. All other subjects that come under the purview of Institutions listed in Column II",
+          "12. Supervision of Institutions referred in Column II"
+        ]
       }
     },
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "26.0",
-        "heading_name": "Minister of Education",
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "II",
+        "deleted_sections": [
+          "items 9",
+          "10",
+          "11"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "II",
+        "deleted_sections": [
+          "items from 12 to 17"
+        ],
+        "added_content": [
+          "9. Ape Gama",
+          "10. Department of Sports Development",
+          "11. Sugathadasa National Sports Complex Authority",
+          "12. National Institute of Sports Science",
+          "13. National Sports Council",
+          "14. Institute of Sports Medicine",
+          "15. Sri Lanka Anti-doping Agency"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "III",
+        "deleted_sections": [
+          "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
+          "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Tourism & Sports",
+        "column_no": "III",
+        "added_content": [
+          "Convention against Doping in Sports Act, No. 33 of 2013"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry & Commerce",
+        "column_no": "I",
+        "deleted_sections": [
+          "items from 11 to 12"
+        ],
+        "added_content": [
+          "11. Development and promotion of national crafts and arts",
+          "12. Development and popularization of designs for Sri Lanka handicraft industry",
+          "13. Formulation and implementation of National Price Policy pertaining to consumer goods",
+          "14. Implement measures for consumer protection",
+          "15. All other subjects that come under the purview of institutions listed in Column II",
+          "16. Supervision of the Institutions listed in Column II"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry & Commerce",
+        "column_no": "II",
+        "added_content": [
+          "33. Sri Lanka Handicrafts Board (Laksala)",
+          "34. National Design Center",
+          "35. National Craft Council",
+          "36. Consumer Affairs Authority",
+          "37. Lanka Sathosa Ltd",
+          "38. Lanka General Trading Company Ltd",
+          "39. Co-operative Wholesale Establishment"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry & Commerce",
+        "column_no": "III",
+        "added_content": [
+          "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
+          "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996",
+          "Consumer Affairs Authority Act, No. 9 of 2003",
+          "Consumer Protection Act, No. 1 of 1979",
+          "Co-operative Wholesale Establishment Act"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "26",
+        "name": "Minister of Education",
+        "column_no": "II",
         "deleted_sections": [
           "item 11"
         ]
@@ -234,8 +401,9 @@
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "26.0",
-        "heading_name": "Minister of Education",
+        "number": "26",
+        "name": "Minister of Education",
+        "column_no": "III",
         "deleted_sections": [
           "National Education Commission Act, No. 19 of 1991"
         ]

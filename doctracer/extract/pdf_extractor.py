@@ -1,9 +1,8 @@
 from pathlib import Path
-import json
 import time
 import logging
 import re
-
+import pdfplumber
 from docling.datamodel.base_models import InputFormat
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.pipeline_options import PdfPipelineOptions
@@ -11,10 +10,19 @@ from docling.datamodel.pipeline_options import PdfPipelineOptions
 logging.basicConfig(level=logging.INFO)
 _log = logging.getLogger(__name__)
 
-
-def extract_text_from_pdfplumber(pdf_path, output_dir="docling_txt") -> str:
+def extract_text_from_pdfplumber(pdf_path: str) -> str:
     """
-    Docling-powered drop-in replacement for legacy extract_text_from_pdfplumber.
+    Extract metadata text from only the first page of the PDF.
+    """
+    with pdfplumber.open(pdf_path) as pdf:
+        if not pdf.pages:
+            return ""
+        page_text = pdf.pages[0].extract_text() or ""
+    return page_text.strip()
+
+def extract_text_from_docling(pdf_path, output_dir="docling_txt") -> str:
+    """
+    Docling-powered drop-in replacement for legacy extract_text_from_docling.
     Preserves the same return type: full text string.
     Improves layout and prep by splitting amendment blocks and rejoining clearly.
     """
