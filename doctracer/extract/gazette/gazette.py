@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 from doctracer.prompt.executor import PromptExecutor
-from doctracer.extract.pdf_extractor import extract_text_from_pdfplumber
+from doctracer.extract.pdf_extractor import extract_text_from_docling
 
 
 class BaseGazetteProcessor(ABC):
@@ -27,7 +27,7 @@ class BaseGazetteProcessor(ABC):
     def process_gazettes(self) -> str:
         """Process all gazette PDFs and return results."""
         
-        gazette_text = extract_text_from_pdfplumber(self.pdf_path)
+        gazette_text = extract_text_from_docling(self.pdf_path)
         metadata = self._extract_metadata(gazette_text)
         changes = self._extract_changes(gazette_text)
         
