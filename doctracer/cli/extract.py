@@ -1,9 +1,7 @@
 import os
 import click
-from typing import List
 from pathlib import Path
 from doctracer.extract.gazette.extragazetteamendment import ExtraGazetteAmendmentProcessor
-import json
 
 from doctracer.extract.gazette.extragazettetable import ExtraGazetteTableProcessor
 
