@@ -1,36 +1,80 @@
 from enum import Enum
 
-_METADATA_PROMPT_TEMPLATE: str = """
-    You are an assistant tasked with extracting metadata from a government gazette document. Using the provided text, identify and return the following information in a compact JSON string:
-    - Gazette ID
-    - Gazette Published Date
-    - Gazette Published by
-    - President (You can see clearly the president name by calling president tag in first page of the gazette)
-    - Gazette Type
-    - Language (If the language is not explicitly mentioned, default to "English")
-    - PDF URL (Use the year and month from the published_date. For months 1-9, use a single-digit month in the pdf_url path. Also, use the gazette_no. For months 1-9, if the gazette_no. contains single-digit after "/", use double-digits to create pdf_url. For example, for published_date '2020-04-22' and gazette_no '2277/2, the pdf_url should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-02_E.pdf')
-    - Parent Gazette (Gazette ID, Gazette Published Date, PDF URL)
+# _METADATA_PROMPT_TEMPLATE: str = """
+#     You are an assistant tasked with extracting metadata from a government gazette document. Using the provided text, identify and return the following information in a compact JSON string:
+#     - Gazette ID
+#     - Gazette Published Date
+#     - Gazette Published by
+#     - President (You can see clearly the president name by calling president tag in first page of the gazette)
+#     - Gazette Type
+#     - Language (If the language is not explicitly mentioned, default to "English")
+#     - PDF URL (Use the year and month from the published_date. For months 1-9, use a single-digit month in the pdf_url path. Also, use the gazette_no. For months 1-9, if the gazette_no. contains single-digit after "/", use double-digits to create pdf_url. For example, for published_date '2020-04-22' and gazette_no '2277/2, the pdf_url should be: 'https://documents.gov.lk/view/extra-gazettes/2020/4/2277-02_E.pdf')
+#     - Parent Gazette (Gazette ID, Gazette Published Date, PDF URL)
 
-    Ensure the JSON string is compact, without any additional formatting or escape characters.
-    Don't include unnecessary backward slashes or forward slashes unless the data contains them. 
-    Input Text:
-    {gazette_text}
-    Sample JSON Output:
-    {{
-      "Gazette ID":"2303/17",
-      "Gazette Published Date":"2022-10-26",
-      "Gazette Published by":"Authority",
-      "President":"Maithripala Sirisena", 
-      "Gazette Type":"Extraordinary", 
-      "Language":"English", 
-      "PDF URL":"https://documents.gov.lk/view/extra-gazettes/2022/10/2303-17_E.pdf", 
-      "Parent Gazette": {{
-        "Gazette ID":"1897/15",
-        "Gazette Published Date":"2015-01-18",
-        "PDF URL":"https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
-      }}
-    }}
-    """
+#     Ensure the JSON string is compact, without any additional formatting or escape characters.
+#     Don't include unnecessary backward slashes or forward slashes unless the data contains them. 
+#     Input Text:
+#     {gazette_text}
+#     Sample JSON Output:
+#     {{
+#       "Gazette ID":"2303/17",
+#       "Gazette Published Date":"2022-10-26",
+#       "Gazette Published by":"Authority",
+#       "President":"Maithripala Sirisena", 
+#       "Gazette Type":"Extraordinary", 
+#       "Language":"English", 
+#       "PDF URL":"https://documents.gov.lk/view/extra-gazettes/2022/10/2303-17_E.pdf", 
+#       "Parent Gazette": {{
+#         "Gazette ID":"1897/15",
+#         "Gazette Published Date":"2015-01-18",
+#         "PDF URL":"https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+#       }}
+#     }}
+#     """
+
+_METADATA_PROMPT_TEMPLATE: str = """
+You are an assistant tasked with extracting metadata from a Sri Lankan government gazette document. 
+Return ONLY a valid JSON object, nothing else. No explanations, no extra text.
+
+Required fields:
+- Gazette ID: Extract the gazette number (e.g., '1900/4') from the first page.
+- Gazette Published Date: Extract the date the gazette was published (format YYYY-MM-DD, e.g., '2010-03-10').
+- Gazette Published by: Extract the publisher (e.g., 'Ministry', 'Authority', etc.).
+- President: Extract the President's name as mentioned in the gazette.
+- Gazette Type: 'Extraordinary' or 'Regular', depending on the text.
+- Language: default to 'English' if not explicitly mentioned.
+- PDF URL: Construct using published_date and Gazette ID: "https://documents.gov.lk/view/extra-gazettes/{{year}}/{{month}}/{{gazette_Id}}-XX_E.pdf" 
+  - Month: single-digit for 1-9
+  - Gazette number after "/" must be zero-padded to two digits if single-digit
+  - Example: Gazette ID '1905/4', Published Date '2015-03-09' -> "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf"
+- Parent Gazette: Extract the parent Gazette ID and published date if mentioned. Construct its PDF URL in the same way. Use null if not present.
+
+Rules:
+- JSON must be compact and valid.
+- Always include all keys.
+- Return null for missing data.
+- Ignore any special symbols or noisy characters.
+- Do not include any explanations, markdown, or extra text.
+
+Input Text:
+{gazette_text}
+
+Example Output JSON:
+{{
+  "Gazette ID": "190/4",
+  "Gazette Published Date": "2010-03-10",
+  "Gazette Published by": "Ministry",
+  "President": "Maithripala Sirisena",
+  "Gazette Type": "Extraordinary",
+  "Language": "English",
+  "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2010/3/1900-04_E.pdf",
+  "Parent Gazette": {{
+    "Gazette No": "1897/15",
+    "Published Date": "2015-01-18",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+  }}
+}}
+"""
 
 _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
     You are an assistant tasked with extracting changes from a government gazette document.
@@ -41,14 +85,23 @@ _CHANGES_AMENDMENT_PROMPT_TEMPLATE: str = """
     - (2)
     - (3)
 
-    These indicate individual, self-contained changes. Each block represents **one distinct amendment** such as a deletion, insertion, update, or re-numbering.
+    Each block contains opearations such as deletions, insertions, updates, or re-numberings. Each begins with a markwe like:
+    - (a)
+    - (b)
+    - (c)
+    - (d)
+    ...
 
-    Focus on identifying explicit operations like "By deleting", "By insertion of the following new Heading", "is as follows" (indicating an update/redefinition), and "By re-numbering".
+    These indicate individual, self-contained changes. Each block represents **one distinct amendment** such as a deletion (omission), insertion (addition), update (substitution), or re-numbering.
+
+    In each block, focus on identifying explicit operations like "By deleting", "By insertion of the following new Heading", "is as follows" (indicating an update/redefinition), and "By re-numbering".
 
     Return a JSON array where each object represents a single amendment operation.
 
     Each object in the array should have an "operation_type" key, and a "details" key.
     The "operation_type" can be one of the following: "DELETION", "INSERTION", "UPDATE", "RENUMBERING".
+
+    Make sure extract the *ALL* details.
 
     Here are the details to extract for each operation type:
 
@@ -234,6 +287,41 @@ expected output for this:
     {gazette_text}
 """
 
+_CHANGES_AMENDMENT_BLOCK_EXTRACTION: str = """
+You are an assistant tasked with extracting changes from a **single amendment block** of a government gazette.
+
+Analyze the provided amendment block text and identify the type of amendment and all relevant details.
+
+Each amendment block may include operations such as deletions, insertions, updates, or re-numberings. Each block may also contain:
+
+- Previous minister/heading number and name (if this is an update or re-numbering)
+- Column information (Function: Column 1, Department: Column 2, Law: Column 3)
+- Added content, deleted sections, or restructured sections
+
+Return a JSON array where each object represents **one amendment operation**.
+
+Each object should have:
+- `"operation_type"`: `"DELETION"`, `"INSERTION"`, `"UPDATE"`, `"RENUMBERING"`, or if none match, a custom type like `"REALLOCATION"`, `"RESTRUCTURING"`, `"CLARIFICATION"`, `"MERGE"`, `"SPLIT"`, `"OTHER"`.
+- `"details"`: a dictionary containing all relevant information (numbers, names, columns, added_content, deleted_sections, purview, etc.).
+
+If a field is not applicable, omit it or leave it empty. Make sure to capture **all explicit changes** in this amendment block.
+
+Guidelines for extraction:
+1. If a range of items is mentioned (e.g., "from 12 to 17"), expand it explicitly as:
+   "item 12", "item 13", "item 14", "item 15", "item 16", "item 17". (Add "item 17" as well)
+   Do not summarize as "items 12–17" or "items 12, 13, 14". Give it as fulll ("item 12", "item 13", "item 14", ...).
+2. For Column III laws, remove any leading asterisks "*" in law titles.
+3. Always include "number" and "name" of the ministry.
+3. Include "previous_number" and "previous_name" only if the amendment updates or replaces an existing heading.
+4. For each operation, include:
+   - "operation_type": one of DELETION, INSERTION, UPDATE, RENUMBERING, OTHER
+   - "details": relevant fields such as "number", "name", "column_no", "added_content", "deleted_sections", "purview", etc.
+5. Output must be **valid JSON**, compact, without extra formatting or backticks.
+
+**Input Amendment Block:**
+{gazette_text}
+"""
+
 _CHANGES_TABLE_PROMPT_TEMPLATE: str = """
         What are the ministers found in the image? There will always be at least one minister. Use this information to find the minister(s):
         - The minister begins with a number (example 1. Minister of Defence)
@@ -405,7 +493,11 @@ _CHANGES_TABLE_EXTRACTION_FROM_TEXT: str = """
             10. Higher Education for defence services personnel services 12. Rescue operations and administration of Coast Guard Service   
             • Ranaviru SevaAuthorityAct, No. 54 of 1999 AcademyAct, No. 68 of 1981 • Suppression of Terrorist Bombings Act, No. 11 of 1999
 
-    Do not consider about number order of the function or department. Just put the exact number which is infront of function or department. 
+    Extract the list of functions exactly as shown in the source text.
+
+    Each item must start with its original number and a period (e.g., "1. ...", "2. ...").
+    Do not renumber or reorder the items, even if some numbers are missing.
+    Output the list as a JSON array of strings, each string starting with the original number and text, just like in the source.
         - Example
             "10. Higher Education for defence services personnel",
             "12. Rescue operations and administration of Coast Guard Service"
@@ -425,6 +517,7 @@ class PromptCatalog(Enum):
     METADATA_EXTRACTION = "metadata_extraction"
     CHANGES_AMENDMENT_EXTRACTION = "changes_amendment_extraction"
     CHANGES_TABLE_EXTRACTION = "changes_table_extraction"
+    CHANGES_AMENDMENT_BLOCK_EXTRACTION = "changes_amendment_block_extraction"  # ✅ New prompt type for amendment block
     CHANGES_TABLE_EXTRACTION_FROM_TEXT = "changes_table_extraction_from_text"  # ✅ New prompt type
 
     @staticmethod
@@ -434,10 +527,10 @@ class PromptCatalog(Enum):
                 raise ValueError("The 'gazette_text' parameter is required for METADATA_EXTRACTION.")
             return _METADATA_PROMPT_TEMPLATE.format(gazette_text=gazette_text)
 
-        elif prompt_type == PromptCatalog.CHANGES_AMENDMENT_EXTRACTION:
+        elif prompt_type == PromptCatalog.CHANGES_AMENDMENT_BLOCK_EXTRACTION:
             if gazette_text is None:
                 raise ValueError("The 'gazette_text' parameter is required for CHANGES_AMENDMENT_EXTRACTION.")
-            return _CHANGES_AMENDMENT_PROMPT_TEMPLATE.format(gazette_text=gazette_text)
+            return _CHANGES_AMENDMENT_BLOCK_EXTRACTION.format(gazette_text=gazette_text)
 
         elif prompt_type == PromptCatalog.CHANGES_TABLE_EXTRACTION:
             # No gazette_text needed

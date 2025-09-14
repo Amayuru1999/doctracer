@@ -1,14 +1,15 @@
 {
   "metadata": {
-    "Gazette ID": "1905/4",
-    "Gazette Published Date": "2015-03-09",
-    "Gazette Published by": "Ministry",
+    "Gazette ID": "2303/17",
+    "Gazette Published Date": "2022-10-26",
+    "Gazette Published by": "Authority",
+    "President": "Maithripala Sirisena",
     "Gazette Type": "Extraordinary",
     "Language": "English",
-    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
+    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2022/10/2303-17_E.pdf",
     "Parent Gazette": {
-      "Gazette No": "1897/15",
-      "Published Date": "2015-01-18",
+      "Gazette ID": "1897/15",
+      "Gazette Published Date": "2015-01-18",
       "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
     }
   },
@@ -16,40 +17,22 @@
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "4",
+        "previous_name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "number": "4",
         "name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "column_no": "1",
-        "deleted_sections": [
-          "item 18",
-          "item 19"
-        ],
-        "added_content": [
-          "18. Registration of Persons",
-          "19. All other subjects that come under the purview of Institutions listed in Column II",
-          "20. Supervision of the Institutions listed in Column II"
-        ]
-      }
-    },
-    {
-      "operation_type": "INSERTION",
-      "details": {
-        "number": "4",
-        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "column_no": "2",
-        "added_content": [
-          "9. Department of Registration of Persons"
-        ]
-      }
-    },
-    {
-      "operation_type": "INSERTION",
-      "details": {
-        "number": "4",
-        "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "column_no": "3",
-        "added_content": [
-          "Registration of Persons Act, No. 32 of 1968"
-        ]
+        "updated_content": {
+          "added_content": [
+            "18. Registration of Persons",
+            "19. All other subjects that come under the purview of Institutions listed in Column II",
+            "20. Supervision of the Institutions listed in Column II"
+          ],
+          "deleted_sections": [
+            "item 18",
+            "item 19"
+          ]
+        }
       }
     },
     {
@@ -100,21 +83,25 @@
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "6",
+        "previous_name": "Minister of Food Security",
         "number": "6",
         "name": "Minister of Food Security",
         "column_no": "1",
-        "deleted_sections": [
-          "item 3",
-          "item 5",
-          "item 6",
-          "item 7"
-        ],
-        "added_content": [
-          "2. Ensure availability of food and other essential items",
-          "3. Ensure purchase of agricultural products at reasonable prices",
-          "4. All other subjects that come under the purview of institutions listed in Column II",
-          "5. Supervision of the institutions listed in Column II"
-        ]
+        "updated_content": {
+          "added_content": [
+            "2. Ensure availability of food and other essential items",
+            "3. Ensure purchase of agricultural products at reasonable prices",
+            "4. All other subjects that come under the purview of institutions listed in Column II",
+            "5. Supervision of the institutions listed in Column II"
+          ],
+          "deleted_sections": [
+            "item 3",
+            "item 5",
+            "item 6",
+            "item 7"
+          ]
+        }
       }
     },
     {
@@ -134,19 +121,19 @@
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "6",
+        "previous_name": "Minister of Food Security",
         "number": "6",
         "name": "Minister of Food Security",
         "column_no": "2",
-        "deleted_sections": [
-          "item 7",
-          "item 11",
-          "item 12"
-        ],
-        "added_content": [
-          "6. National Institute of Co-operative Development",
-          "7. Regional Economic Centers",
-          "8. Paddy Marketing Board"
-        ]
+        "updated_content": {
+          "added_content": [
+            "6. National Institute of Co-operative Development",
+            "7. Regional Economic Centers",
+            "8. Paddy Marketing Board"
+          ],
+          "deleted_sections": []
+        }
       }
     },
     {
@@ -187,18 +174,22 @@
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "11",
+        "previous_name": "Minister of Finance",
         "number": "11",
         "name": "Minister of Finance",
         "column_no": "1",
-        "deleted_sections": [
-          "item 17",
-          "item 18"
-        ],
-        "added_content": [
-          "17. Cadre management and advisory services and fixing of salaries",
-          "18. All other subjects that come under the purview of Institutions listed in Column II",
-          "19. Supervision of the institution listed in Column II"
-        ]
+        "updated_content": {
+          "added_content": [
+            "17. Cadre management and advisory services and fixing of salaries",
+            "18. All other subjects that come under the purview of Institutions listed in Column II",
+            "19. Supervision of the institution listed in Column II"
+          ],
+          "deleted_sections": [
+            "item 17",
+            "item 18"
+          ]
+        }
       }
     },
     {
@@ -261,58 +252,47 @@
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "21",
+        "previous_name": "Minister of Tourism & Sports",
         "number": "21",
         "name": "Minister of Tourism & Sports",
         "column_no": "1",
-        "deleted_sections": [
-          "item 9",
-          "item 10",
-          "item 11",
-          "item 13"
-        ],
-        "added_content": [
-          "8. Encouragement of sports",
-          "9. Development of sports facilities",
-          "10. Sports education",
-          "11. All other subjects that come under the purview of Institutions listed in Column II",
-          "12. Supervision of Institutions referred in Column II"
-        ]
-      }
-    },
-    {
-      "operation_type": "DELETION",
-      "details": {
-        "number": "21",
-        "name": "Minister of Tourism & Sports",
-        "column_no": "2",
-        "deleted_sections": [
-          "item 9",
-          "item 10",
-          "item 11"
-        ]
+        "updated_content": {
+          "added_content": [
+            "8. Encouragement of sports",
+            "9. Development of sports facilities",
+            "10. Sports education",
+            "11. All other subjects that come under the purview of Institutions listed in Column II",
+            "12. Supervision of Institutions referred in Column II"
+          ],
+          "deleted_sections": [
+            "item 9",
+            "item 10",
+            "item 11"
+          ]
+        }
       }
     },
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "21",
+        "previous_name": "Minister of Tourism & Sports",
         "number": "21",
         "name": "Minister of Tourism & Sports",
         "column_no": "2",
-        "deleted_sections": [
-          "item 12",
-          "item 13",
-          "item 14",
-          "item 15"
-        ],
-        "added_content": [
-          "9. Ape Gama",
-          "10. Department of Sports Development",
-          "11. Sugathadasa National Sports Complex Authority",
-          "12. National Institute of Sports Science",
-          "13. National Sports Council",
-          "14. Institute of Sports Medicine",
-          "15. Sri Lanka Anti-doping Agency"
-        ]
+        "updated_content": {
+          "added_content": [
+            "9. Ape Gama",
+            "10. Department of Sports Development",
+            "11. Sugathadasa National Sports Complex Authority",
+            "12. National Institute of Sports Science",
+            "13. National Sports Council",
+            "14. Institute of Sports Medicine",
+            "15. Sri Lanka Anti-doping Agency"
+          ],
+          "deleted_sections": []
+        }
       }
     },
     {
@@ -341,21 +321,25 @@
     {
       "operation_type": "UPDATE",
       "details": {
+        "previous_number": "23",
+        "previous_name": "Minister of Industry & Commerce",
         "number": "23",
         "name": "Minister of Industry & Commerce",
         "column_no": "1",
-        "deleted_sections": [
-          "item 11",
-          "item 12"
-        ],
-        "added_content": [
-          "11. Development and promotion of national crafts and arts",
-          "12. Development and popularization of designs for Sri Lanka handicraft industry",
-          "13. Formulation and implementation of National Price Policy pertaining to consumer goods",
-          "14. Implement measures for consumer protection",
-          "15. All other subjects that come under the purview of institutions listed in Column II",
-          "16. Supervision of the Institutions listed in Column II"
-        ]
+        "updated_content": {
+          "added_content": [
+            "11. Development and promotion of national crafts and arts",
+            "12. Development and popularization of designs for Sri Lanka handicraft industry",
+            "13. Formulation and implementation of National Price Policy pertaining to consumer goods",
+            "14. Implement measures for consumer protection",
+            "15. All other subjects that come under the purview of institutions listed in Column II",
+            "16. Supervision of the Institutions listed in Column II"
+          ],
+          "deleted_sections": [
+            "item 11",
+            "item 12"
+          ]
+        }
       }
     },
     {
