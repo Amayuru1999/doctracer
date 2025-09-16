@@ -1,0 +1,1 @@
+export default function AnalyticsDashboard(){return <div className='text-slate-600'>Coming soon…</div>}

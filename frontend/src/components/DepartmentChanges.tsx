@@ -1,0 +1,1 @@
+export default function DepartmentChanges(){return <div className='text-slate-600'>Coming soon…</div>}
