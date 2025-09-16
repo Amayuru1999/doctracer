@@ -1,5 +1,11 @@
 
-import type { Gazette, GazetteDetail } from '../types/gazette'
+import type { 
+  Gazette, 
+  GazetteDetail, 
+  Amendment, 
+  GraphData, 
+  GazetteFullDetails 
+} from '../types/gazette'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:5001'
 console.log('[API_URL]', API_URL)
@@ -15,16 +21,6 @@ export async function getGazetteDetails(gazetteId: string): Promise<GazetteDetai
   if (!r.ok) throw new Error(`Failed /gazettes/:id ${r.status}`)
   return r.json()
 }
-export interface Amendment {
-  gazette_id: string;
-  published_date: string;
-  parent_gazette_id?: string;
-}
-
-export interface GraphPayload {
-  nodes: { id: string; label: string; kind: string }[];
-  links: { source: string; target: string; kind: string }[];
-}
 
 export async function getAmendments(): Promise<Amendment[]> {
   const r = await fetch(`${API_URL}/amendments`);
@@ -32,8 +28,30 @@ export async function getAmendments(): Promise<Amendment[]> {
   return r.json();
 }
 
-export async function getAmendmentGraph(id: string): Promise<GraphPayload> {
+export async function getAmendmentGraph(id: string): Promise<GraphData> {
   const r = await fetch(`${API_URL}/amendments/${encodeURIComponent(id)}/graph`);
   if (!r.ok) throw new Error(`/amendments/:id/graph ${r.status}`);
+  return r.json();
+}
+
+export async function getCompleteGraph(): Promise<GraphData> {
+  const r = await fetch(`${API_URL}/graph/complete`);
+  if (!r.ok) throw new Error(`/graph/complete ${r.status}`);
+  return r.json();
+}
+
+export async function getGazetteFullDetails(gazetteId: string): Promise<GazetteFullDetails> {
+  const r = await fetch(`${API_URL}/gazettes/${encodeURIComponent(gazetteId)}/details`);
+  if (!r.ok) throw new Error(`/gazettes/:id/details ${r.status}`);
+  return r.json();
+}
+
+export async function searchGazettes(query: string = '', type: 'all' | 'base' | 'amendment' = 'all'): Promise<Gazette[]> {
+  const params = new URLSearchParams();
+  if (query) params.append('q', query);
+  if (type !== 'all') params.append('type', type);
+  
+  const r = await fetch(`${API_URL}/search?${params.toString()}`);
+  if (!r.ok) throw new Error(`/search ${r.status}`);
   return r.json();
 }
