@@ -123,9 +123,9 @@ def load_amendment_data(json_path, base_gazette_path=None):
         data = json.load(f)
 
     meta = data.get("metadata", {})
-    gazette_id = meta.get("Gazette ID")
-    published_date = meta.get("Gazette Published Date")
-    parent_gazette_id = meta.get("Parent Gazette", {}).get("Gazette ID")
+    gazette_id = meta.get("gazette_id")
+    published_date = meta.get("published_date")
+    parent_gazette_id = meta.get("parent_gazette", {}).get("gazette_id")
 
     # Dynamically determine base gazette path if not provided
     if not base_gazette_path:

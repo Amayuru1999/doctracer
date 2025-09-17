@@ -5,17 +5,17 @@ You are an assistant tasked with extracting metadata from a Sri Lankan governmen
 Return ONLY a valid JSON object, nothing else. No explanations, no extra text.
 
 Required fields:
-- Gazette ID: Extract the gazette number (e.g., '1900/4') from the first page.
-- Gazette Published Date: Extract the date the gazette was published (format YYYY-MM-DD, e.g., '2010-03-10').
-- Gazette Published by: Extract the publisher (e.g., 'Ministry', 'Authority', etc.).
-- President: Extract the President's name as mentioned in the gazette.
-- Gazette Type: 'Extraordinary' or 'Regular', depending on the text.
-- Language: default to 'English' if not explicitly mentioned.
-- PDF URL: Construct using published_date and Gazette ID: "https://documents.gov.lk/view/extra-gazettes/{{year}}/{{month}}/{{gazette_Id}}-XX_E.pdf" 
+- gazette_id: Extract the gazette number (e.g., '1900/4') from the first page.
+- published_date: Extract the date the gazette was published (format YYYY-MM-DD, e.g., '2010-03-10').
+- published_by: Extract the publisher (e.g., 'Ministry', 'Authority', etc.).
+- president: Extract the President's name as mentioned in the gazette.
+- gazette_type: 'Extraordinary' or 'Regular', depending on the text.
+- language: default to 'English' if not explicitly mentioned.
+- pdf_url: Construct using published_date and gazette_id: "https://documents.gov.lk/view/extra-gazettes/{{year}}/{{month}}/{{gazette_Id}}-XX_E.pdf" 
   - Month: single-digit for 1-9
   - Gazette number after "/" must be zero-padded to two digits if single-digit
-  - Example: Gazette ID '1905/4', Published Date '2015-03-09' -> "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf"
-- Parent Gazette: Extract the parent Gazette ID and published date if mentioned. Construct its PDF URL in the same way. Use null if not present.
+  - Example: gazette_id '1905/4', Published Date '2015-03-09' -> "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf"
+- parent_gazette: Extract the parent gazette_id and published date if mentioned. Construct its PDF URL in the same way. Use null if not present.
 
 Rules:
 - JSON must be compact and valid.
@@ -29,17 +29,17 @@ Input Text:
 
 Example Output JSON:
 {{
-  "Gazette ID": "1900/4",
-  "Gazette Published Date": "2010-03-10",
-  "Gazette Published by": "Ministry",
-  "President": "Maithripala Sirisena",
-  "Gazette Type": "Extraordinary",
-  "Language": "English",
-  "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2010/3/1900-04_E.pdf",
-  "Parent Gazette": {{
-    "Gazette No": "1897/15",
-    "Published Date": "2015-01-18",
-    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+  "gazette_id": "1900/4",
+  "published_date": "2010-03-10",
+  "published_by": "Ministry",
+  "president": "Maithripala Sirisena",
+  "gazette_type": "Extraordinary",
+  "language": "English",
+  "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2010/3/1900-04_E.pdf",
+  "parent_gazette": {{
+    "gazette_id": "1897/15",
+    "published_date": "2015-01-18",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
   }}
 }}
 """
@@ -49,7 +49,9 @@ You are an assistant tasked with extracting changes from a **single amendment bl
 
 Analyze the provided amendment block text and identify the type of amendment and all relevant details.
 
-Each amendment block may include operations such as deletions, insertions, updates, or re-numberings. Each block may also contain:
+Each amendment block may include multiple amendment operations. **Extract every distinct operation as a separate object in the output array.** Do not merge or summarize operations. 
+
+Each block may also contain:
 
 - Previous minister/heading number and name (if this is an update or re-numbering)
 - Column information (Function: Column 1, Department: Column 2, Law: Column 3)
@@ -75,9 +77,71 @@ Guidelines for extraction:
    - "operation_type": one of DELETION, INSERTION, UPDATE, RENUMBERING, OTHER
    - "details": relevant fields such as "number", "name", "column_no", "added_content", "deleted_sections", "purview", etc.
 7. Output must be **valid JSON**, compact, without extra formatting or backticks.
+8. Make sure to capture all changes mentioned in the block.
 
 **Input Amendment Block:**
 {gazette_text}
+
+{{
+  "gazette_id": "1897/15",
+  "published_date": "2015-01-18",
+  "published_by": "Authority",
+  "president": "Maithripala Sirisena",
+  "gazette_type": "Extraordinary",
+  "language": "English",
+  "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf",
+  "parent_gazette": 
+  {{
+    "gazzette_id":"...",
+    "published_date":"...",
+    "pdf_url":"..."
+  }}
+  "changes": [
+  {{
+    "operation_type": "UPDATE",
+    "details": 
+    {{
+      "number": "4",
+      "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+      "column_no": "I",
+      "deleted_sections": [
+        "item 18",
+        "item 19"
+      ],
+      "added_content": [
+        "18. Registration of Persons",
+        "19. All other subjects that come under the purview of Institutions listed in Column II",
+        "20. Supervision of the Institutions listed in Column II"
+      ]
+    }}
+  }},
+  {{
+    "operation_type": "INSERTION",
+    "details": 
+    {{
+      "number": "4",
+      "name": "Minister of Public Order, Disaster Management & Christian Affairs",
+      "column_no": "II",
+      "added_content": [
+        "9. Department of Registration of Persons"
+      ]
+    }}
+  }},
+  {{
+    "operation_type": "DELETION",
+    "details": 
+    {{
+      "number": "5",
+      "name": "Minister of Home Affairs & Fisheries",
+      "column_no": "I",
+      "deleted_sections": [
+        "item 3"
+      ]
+    }}
+  }}
+  ...
+  ]
+  }}
 """
 
 _CHANGES_TABLE_EXTRACTION_FROM_TEXT: str = """

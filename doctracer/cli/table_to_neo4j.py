@@ -59,7 +59,7 @@ def process_table(file_path: str, gazette_id: str, published_date: str):
                 item_number, item_name = extract_item_number_and_name(func_str)
                 session.run(
                     """
-                    MERGE (f:Function {item_number: $item_number, name: $item_name})
+                    MERGE (f:Function {item_number: coalesce($item_number, 'N/A'), name: $item_name})
                     SET f.created_in = $gazette_id,
                         f.tenure_start = $published_date
                     WITH f
@@ -79,7 +79,7 @@ def process_table(file_path: str, gazette_id: str, published_date: str):
                 item_number, item_name = extract_item_number_and_name(dept_str)
                 session.run(
                     """
-                    MERGE (d:Department {item_number: $item_number, name: $item_name})
+                    MERGE (d:Department {item_number: coalesce($item_number, 'N/A'), name: $item_name})
                     SET d.created_in = $gazette_id,
                         d.tenure_start = $published_date
                     WITH d
