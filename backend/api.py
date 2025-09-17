@@ -993,51 +993,12 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
                 'raw_entities': raw_entities
             }
         
-        base_structure = process_gazette_data(base_result)
-        amendment_structure = process_gazette_data(amendment_result)
-        
-        # Calculate differences
-        base_ministers = {m['name']: m for m in base_structure['ministers']}
-        amendment_ministers = {m['name']: m for m in amendment_structure['ministers']}
-        
-        added_ministers = [m for name, m in amendment_ministers.items() if name not in base_ministers]
-        removed_ministers = [m for name, m in base_ministers.items() if name not in amendment_ministers]
+        # Initialize empty structures - will be populated by Neo4j approach below
+        base_structure = {'ministers': [], 'departments': [], 'laws': []}
+        amendment_structure = {'ministers': [], 'departments': [], 'laws': []}
+        added_ministers = []
+        removed_ministers = []
         modified_ministers = []
-        
-        for name in base_ministers:
-            if name in amendment_ministers:
-                base_m = base_ministers[name]
-                amendment_m = amendment_ministers[name]
-                
-                changes = {
-                    'name': name,
-                    'base': base_m,
-                    'amendment': amendment_m,
-                    'changes': []
-                }
-                
-                # Check for changes in departments
-                base_depts = set(base_m['departments'])
-                amendment_depts = set(amendment_m['departments'])
-                if base_depts != amendment_depts:
-                    changes['changes'].append({
-                        'type': 'departments',
-                        'added': list(amendment_depts - base_depts),
-                        'removed': list(base_depts - amendment_depts)
-                    })
-                
-                # Check for changes in laws
-                base_laws = set(base_m['laws'])
-                amendment_laws = set(amendment_m['laws'])
-                if base_laws != amendment_laws:
-                    changes['changes'].append({
-                        'type': 'laws',
-                        'added': list(amendment_laws - base_laws),
-                        'removed': list(base_laws - amendment_laws)
-                    })
-                
-                if changes['changes']:
-                    modified_ministers.append(changes)
         
         # Get government titles (president names) for both gazettes
         base_title_result = session.run("""
