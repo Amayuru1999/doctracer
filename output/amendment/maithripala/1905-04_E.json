@@ -19,7 +19,7 @@
       "details": {
         "number": "4",
         "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
           "item 18",
           "item 19"
@@ -36,7 +36,7 @@
       "details": {
         "number": "4",
         "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "column_no": "II",
+        "column_no": "Column II",
         "added_content": [
           "9. Department of Registration of Persons"
         ]
@@ -47,7 +47,7 @@
       "details": {
         "number": "4",
         "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-        "column_no": "III",
+        "column_no": "Column III",
         "added_content": [
           "Registration of Persons Act, No. 32 of 1968"
         ]
@@ -58,7 +58,7 @@
       "details": {
         "number": "5",
         "name": "Minister of Home Affairs & Fisheries",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
           "item 3"
         ]
@@ -69,7 +69,7 @@
       "details": {
         "number": "5",
         "name": "Minister of Home Affairs & Fisheries",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
           "item 3"
         ]
@@ -80,7 +80,7 @@
       "details": {
         "number": "5",
         "name": "Minister of Home Affairs & Fisheries",
-        "column_no": "III",
+        "column_no": "Column III",
         "deleted_sections": [
           "Registration of Persons Act, No. 32 of 1968"
         ]
@@ -91,9 +91,9 @@
       "details": {
         "number": "6",
         "name": "Minister of Food Security",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
-          "items 2",
+          "item 2",
           "item 4"
         ]
       }
@@ -103,12 +103,12 @@
       "details": {
         "number": "6",
         "name": "Minister of Food Security",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
-          "items 3",
-          "5",
-          "6",
-          "7"
+          "item 3",
+          "item 5",
+          "item 6",
+          "item 7"
         ],
         "added_content": [
           "2. Ensure availability of food and other essential items",
@@ -123,12 +123,12 @@
       "details": {
         "number": "6",
         "name": "Minister of Food Security",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
-          "items 6",
-          "8",
-          "9",
-          "10"
+          "item 6",
+          "item 8",
+          "item 9",
+          "item 10"
         ]
       }
     },
@@ -137,11 +137,11 @@
       "details": {
         "number": "6",
         "name": "Minister of Food Security",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
-          "items 7",
-          "11",
-          "12"
+          "item 7",
+          "item 11",
+          "item 12"
         ],
         "added_content": [
           "6. National Institute of Co-operative Development",
@@ -155,7 +155,7 @@
       "details": {
         "number": "6",
         "name": "Minister of Food Security",
-        "column_no": "III",
+        "column_no": "Column III",
         "deleted_sections": [
           "Consumer Affairs Authority Act, No. 9 of 2003",
           "Consumer Protection Act, No. 1 of 1979",
@@ -168,7 +168,7 @@
       "details": {
         "number": "8",
         "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
           "item 5"
         ]
@@ -179,7 +179,7 @@
       "details": {
         "number": "8",
         "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
           "item 1"
         ]
@@ -190,10 +190,10 @@
       "details": {
         "number": "11",
         "name": "Minister of Finance",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
-          "items 17",
-          "18"
+          "item 17",
+          "item 18"
         ],
         "added_content": [
           "17. Cadre management and advisory services and fixing of salaries",
@@ -207,7 +207,7 @@
       "details": {
         "number": "11",
         "name": "Minister of Finance",
-        "column_no": "II",
+        "column_no": "Column II",
         "added_content": [
           "36. Department of Management Services",
           "37. Tax Appeals Commission"
@@ -219,7 +219,7 @@
       "details": {
         "number": "11",
         "name": "Minister of Finance",
-        "column_no": "III",
+        "column_no": "Column III",
         "added_content": [
           "Tax Appeals Commission Act, No. 23 of 2008"
         ]
@@ -230,7 +230,7 @@
       "details": {
         "number": "14",
         "name": "Minister of Health & Indigenous Medicine",
-        "column_no": "II",
+        "column_no": "Column II",
         "added_content": [
           "25. Sri Lanka Thriposha Ltd"
         ]
@@ -241,7 +241,7 @@
       "details": {
         "number": "18",
         "name": "Minister of Housing & Samurdhi",
-        "column_no": "II",
+        "column_no": "Column II",
         "added_content": [
           "16. National Engineering Research and Development Centre"
         ]
@@ -252,10 +252,10 @@
       "details": {
         "number": "21",
         "name": "Minister of Tourism & Sports",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
-          "items 8",
-          "12"
+          "item 8",
+          "item 12"
         ]
       }
     },
@@ -264,12 +264,12 @@
       "details": {
         "number": "21",
         "name": "Minister of Tourism & Sports",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
-          "items 9",
-          "10",
-          "11",
-          "13"
+          "item 9",
+          "item 10",
+          "item 11",
+          "item 13"
         ],
         "added_content": [
           "8. Encouragement of sports",
@@ -285,11 +285,11 @@
       "details": {
         "number": "21",
         "name": "Minister of Tourism & Sports",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
-          "items 9",
-          "10",
-          "11"
+          "item 9",
+          "item 10",
+          "item 11"
         ]
       }
     },
@@ -298,9 +298,14 @@
       "details": {
         "number": "21",
         "name": "Minister of Tourism & Sports",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
-          "items from 12 to 17"
+          "item 12",
+          "item 13",
+          "item 14",
+          "item 15",
+          "item 16",
+          "item 17"
         ],
         "added_content": [
           "9. Ape Gama",
@@ -318,7 +323,7 @@
       "details": {
         "number": "21",
         "name": "Minister of Tourism & Sports",
-        "column_no": "III",
+        "column_no": "Column III",
         "deleted_sections": [
           "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
           "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996"
@@ -330,7 +335,7 @@
       "details": {
         "number": "21",
         "name": "Minister of Tourism & Sports",
-        "column_no": "III",
+        "column_no": "Column III",
         "added_content": [
           "Convention against Doping in Sports Act, No. 33 of 2013"
         ]
@@ -341,9 +346,10 @@
       "details": {
         "number": "23",
         "name": "Minister of Industry & Commerce",
-        "column_no": "I",
+        "column_no": "Column I",
         "deleted_sections": [
-          "items from 11 to 12"
+          "item 11",
+          "item 12"
         ],
         "added_content": [
           "11. Development and promotion of national crafts and arts",
@@ -360,7 +366,7 @@
       "details": {
         "number": "23",
         "name": "Minister of Industry & Commerce",
-        "column_no": "II",
+        "column_no": "Column II",
         "added_content": [
           "33. Sri Lanka Handicrafts Board (Laksala)",
           "34. National Design Center",
@@ -377,7 +383,7 @@
       "details": {
         "number": "23",
         "name": "Minister of Industry & Commerce",
-        "column_no": "III",
+        "column_no": "Column III",
         "added_content": [
           "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
           "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996",
@@ -392,7 +398,7 @@
       "details": {
         "number": "26",
         "name": "Minister of Education",
-        "column_no": "II",
+        "column_no": "Column II",
         "deleted_sections": [
           "item 11"
         ]
@@ -403,7 +409,7 @@
       "details": {
         "number": "26",
         "name": "Minister of Education",
-        "column_no": "III",
+        "column_no": "Column III",
         "deleted_sections": [
           "National Education Commission Act, No. 19 of 1991"
         ]

@@ -1,523 +1,528 @@
-import { useData } from '../contexts/DataContext'
-import { Link } from 'react-router-dom'
+
+import { useState, useEffect } from 'react'
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  Minus, 
-  AlertTriangle, 
-  RefreshCw, 
-  Building2, 
-  GitBranch,
-  BarChart3
-} from 'lucide-react'
+  getDashboardSummary, 
+  getGazettes, 
+  getAmendments, 
+  getGazetteStructure,
+  compareGazetteStructures,
+  type DashboardSummary,
+  type Gazette,
+  type Amendment,
+  type GazetteStructure,
+  type GazetteComparison
+} from '../services/api'
+import AmendmentTracker from './AmendmentTracker'
+import BaseGazetteVisualization from './BaseGazetteVisualization'
 
-const Dashboard: React.FC = () => {
-  const { summaryData, loading, error } = useData()
+export default function Dashboard() {
+  const [summary, setSummary] = useState<DashboardSummary | null>(null)
+  const [gazettes, setGazettes] = useState<Gazette[]>([])
+  const [amendments, setAmendments] = useState<Amendment[]>([])
+  const [selectedGazette, setSelectedGazette] = useState<Gazette | null>(null)
+  const [selectedAmendment, setSelectedAmendment] = useState<Amendment | null>(null)
+  const [gazetteStructure, setGazetteStructure] = useState<GazetteStructure | null>(null)
+  const [comparison, setComparison] = useState<GazetteComparison | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'structure' | 'comparison' | 'amendment-tracker' | 'visualization'>('structure')
 
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'added':
-        return <TrendingUp style={{ width: '1.5rem', height: '1.5rem', color: '#059669' }} />
-      case 'removed':
-        return <TrendingDown style={{ width: '1.5rem', height: '1.5rem', color: '#dc2626' }} />
-      case 'modified':
-        return <AlertTriangle style={{ width: '1.5rem', height: '1.5rem', color: '#d97706' }} />
-      default:
-        return <Minus style={{ width: '1.5rem', height: '1.5rem', color: '#6b7280' }} />
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const [summaryData, gazettesData, amendmentsData] = await Promise.all([
+        getDashboardSummary(),
+        getGazettes(),
+        getAmendments()
+      ])
+      setSummary(summaryData)
+      setGazettes(gazettesData)
+      setAmendments(amendmentsData)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const getNodeTypeLabel = (nodeType: string) => {
-    // Provide meaningful labels for node types
-    switch (nodeType.toLowerCase()) {
-      case 'department':
-        return 'Government Departments'
-      case 'function':
-        return 'Administrative Functions'
-      case 'law':
-        return 'Legal Statutes'
-      case 'gazette':
-        return 'Official Gazettes'
-      case 'minister':
-        return 'Ministries'
-      default:
-        return nodeType.charAt(0).toUpperCase() + nodeType.slice(1)
+  const handleGazetteSelect = async (gazetteId: string) => {
+    const gazette = gazettes.find(g => g.gazette_id === gazetteId)
+    if (gazette) {
+      setSelectedGazette(gazette)
+      setComparison(null)
+      setError(null)
+      try {
+        const structure = await getGazetteStructure(gazetteId)
+        setGazetteStructure(structure)
+      } catch (err: any) {
+        console.error('Failed to load gazette structure:', err)
+        setError(`Failed to load gazette structure: ${err.message}`)
+        setGazetteStructure(null)
+      }
     }
   }
 
-  const getChangeStatusLabel = (status: string) => {
-    // Provide meaningful labels for change statuses
-    switch (status.toLowerCase()) {
-      case 'added_departments':
-        return 'New Departments Added'
-      case 'added_laws':
-        return 'New Laws Added'
-      case 'added_functions':
-        return 'New Functions Added'
-      case 'removed_departments':
-        return 'Departments Removed'
-      case 'removed_laws':
-        return 'Laws Removed'
-      case 'removed_functions':
-        return 'Functions Removed'
-      case 'modified_departments':
-        return 'Departments Modified'
-      case 'modified_laws':
-        return 'Laws Modified'
-      case 'modified_functions':
-        return 'Functions Modified'
-      default:
-        return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+  const handleAmendmentSelect = async (amendmentId: string) => {
+    const amendment = amendments.find(a => a.gazette_id === amendmentId)
+    if (amendment) {
+      setSelectedAmendment(amendment)
+      setGazetteStructure(null)
+      setComparison(null)
+      
+      // If we have a base gazette selected, automatically compare
+      if (selectedGazette) {
+        try {
+          const comparisonData = await compareGazetteStructures(selectedGazette.gazette_id, amendmentId)
+          setComparison(comparisonData)
+          setViewMode('comparison')
+        } catch (err: any) {
+          console.error('Failed to load comparison:', err)
+        }
+      }
     }
   }
 
-  const handleRefresh = () => {
-    // Refresh functionality removed - using mock data
-    console.log('Refresh clicked - using mock data');
-  };
+  const handleCompare = async () => {
+    if (selectedGazette && selectedAmendment) {
+      try {
+        setLoading(true)
+        const comparisonData = await compareGazetteStructures(selectedGazette.gazette_id, selectedAmendment.gazette_id)
+        setComparison(comparisonData)
+        setViewMode('comparison')
+      } catch (err: any) {
+        console.error('Failed to load comparison:', err)
+        setError('Failed to load comparison data')
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-        <div style={{ textAlign: 'center' }}>
-          <RefreshCw style={{ width: '2rem', height: '2rem', color: '#2563eb', animation: 'spin 1s linear infinite' }} />
-          <p style={{ color: '#6b7280', marginTop: '1rem' }}>Loading dashboard data...</p>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-slate-500">Loading dashboard data...</div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '1rem',
-        padding: '2rem',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-        border: '1px solid #e5e7eb',
-        textAlign: 'center'
-      }}>
-        <AlertTriangle style={{ width: '3rem', height: '3rem', color: '#dc2626', margin: '0 auto 1rem' }} />
-        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827', marginBottom: '0.5rem' }}>Error Loading Data</h3>
-        <p style={{ color: '#6b7280', marginBottom: '1rem' }}>{error}</p>
-        <button 
-          onClick={handleRefresh}
-          style={{
-            backgroundColor: '#2563eb',
-            color: 'white',
-            border: 'none',
-            padding: '0.75rem 1.5rem',
-            borderRadius: '0.75rem',
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            margin: '0 auto',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#1d4ed8'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#2563eb'
-          }}
-        >
-          <RefreshCw style={{ width: '1rem', height: '1rem' }} />
-          Retry
-        </button>
+      <div className="text-red-600 bg-red-50 p-4 rounded-lg">
+        Error loading dashboard: {error}
       </div>
     )
   }
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      {/* Header */}
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.75rem' }}>
-          Government Structure Dashboard
-        </h1>
-        <p style={{ fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto' }}>
-          Track and analyze changes in ministerial structures and government departments
-        </p>
-      </div>
-
-      {/* Quick Actions */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
-        <Link 
-          to="/tree" 
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            textDecoration: 'none',
-            color: 'inherit',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 12px 25px -5px rgba(0, 0, 0, 0.1)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{
-              width: '4rem',
-              height: '4rem',
-              backgroundColor: '#dcfce7',
-              borderRadius: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}>
-              <GitBranch style={{ width: '2rem', height: '2rem', color: '#059669' }} />
-            </div>
-            <div>
-              <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Ministry Tiles</h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>Interactive colorful tiles showing all ministries and their departments</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link 
-          to="/analytics" 
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e8f0',
-            textDecoration: 'none',
-            color: 'inherit',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 12px 25px -5px rgba(0, 0, 0, 0.1)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{
-              width: '4rem',
-              height: '4rem',
-              backgroundColor: '#dbeafe',
-              borderRadius: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}>
-              <BarChart3 style={{ width: '2rem', height: '2rem', color: '#2563eb' }} />
-            </div>
-            <div>
-              <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Analytics Dashboard</h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>Comprehensive analytics and insights from Neo4j database</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link 
-          to="/network" 
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            textDecoration: 'none',
-            color: 'inherit',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 12px 25px -5px rgba(0, 0, 0, 0.1)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{
-              width: '4rem',
-              height: '4rem',
-              backgroundColor: '#f3e8ff',
-              borderRadius: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}>
-              <GitBranch style={{ width: '2rem', height: '2rem', color: '#7c3aed' }} />
-            </div>
-            <div>
-              <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Network Graph</h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>Interactive network visualization of government relationships</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link 
-          to="/departments" 
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            textDecoration: 'none',
-            color: 'inherit',
-            transition: 'all 0.2s ease',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 12px 25px -5px rgba(0, 0, 0, 0.1)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{
-              width: '4rem',
-              height: '4rem',
-              backgroundColor: '#dcfce7',
-              borderRadius: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}>
-              <Building2 style={{ width: '2rem', height: '2rem', color: '#059669' }} />
-            </div>
-            <div>
-              <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Department Changes</h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>Detailed analysis of all department modifications and updates</p>
-            </div>
-          </div>
-        </Link>
-
-        <button 
-          onClick={handleRefresh}
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            textAlign: 'left',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            width: '100%'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 12px 25px -5px rgba(0, 0, 0, 0.1)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{
-              width: '4rem',
-              height: '4rem',
-              backgroundColor: '#fef3c7',
-              borderRadius: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease'
-            }}>
-              <RefreshCw style={{ width: '2rem', height: '2rem', color: '#d97706' }} />
-            </div>
-            <div>
-              <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '1.25rem', marginBottom: '0.5rem' }}>Refresh Data</h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>Update all data from the database and sync changes</p>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      {/* Statistics */}
-      {summaryData && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '2rem' }}>
-          {/* Node Counts */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb'
-          }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
-              <BarChart3 style={{ width: '1.5rem', height: '1.5rem', marginRight: '0.75rem', color: '#2563eb' }} />
-              Node Counts
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {(() => {
-                // Deduplicate and process node counts to avoid repetitive entries
-                const processedCounts = new Map();
+  const renderGovernmentStructure = (structure: GazetteStructure, title: string) => (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-slate-800 border-b pb-2">{title}</h3>
+      
+      {/* Ministers */}
+      {structure.ministers.length > 0 && (
+        <div>
+          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+            Ministers ({structure.ministers.length})
+          </h4>
+          <div className="space-y-3">
+            {structure.ministers.map((minister, index) => (
+              <div key={index} className="bg-slate-50 rounded-lg p-4 border">
+                <h5 className="font-medium text-slate-800 mb-2">{minister.name}</h5>
                 
-                summaryData.node_counts?.forEach((item) => {
-                  const nodeType = item.node_type;
-                  const count = item.count;
-                  
-                  if (processedCounts.has(nodeType)) {
-                    // If we already have this type, update with the latest count
-                    processedCounts.set(nodeType, count);
-                  } else {
-                    // First time seeing this type
-                    processedCounts.set(nodeType, count);
-                  }
-                });
-                
-                // Convert to array and sort by count (descending)
-                const sortedCounts = Array.from(processedCounts.entries())
-                  .map(([type, count]) => ({ type, count }))
-                  .sort((a, b) => (b.count as number) - (a.count as number));
-                
-                return sortedCounts.map((item, index) => (
-                  <div key={index} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '1rem',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '0.75rem',
-                    border: '1px solid #e5e7eb'
-                  }}>
-                    <span style={{ fontWeight: '500', color: '#374151', fontSize: '0.875rem' }}>
-                      {getNodeTypeLabel(item.type)}
-                    </span>
-                    <span style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#2563eb' }}>
-                      {item.count}
-                    </span>
-                  </div>
-                ));
-              })()}
-            </div>
-          </div>
-
-          {/* Changes Summary */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '2rem',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb'
-          }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '1.5rem', display: 'flex', alignItems: 'center' }}>
-              <TrendingUp style={{ width: '1.5rem', height: '1.5rem', marginRight: '0.75rem', color: '#2563eb' }} />
-              Changes Summary
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {(() => {
-                // Process changes to avoid repetitive entries and provide better labels
-                const processedChanges = new Map();
-                
-                summaryData.changes?.forEach((item) => {
-                  const status = item.status;
-                  const count = item.count;
-                  
-                  if (processedChanges.has(status)) {
-                    // If we already have this status, add the counts
-                    processedChanges.set(status, (processedChanges.get(status) || 0) + count);
-                  } else {
-                    // First time seeing this status
-                    processedChanges.set(status, count);
-                  }
-                });
-                
-                // Convert to array and sort by count (descending)
-                const sortedChanges = Array.from(processedChanges.entries())
-                  .map(([status, count]) => ({ status, count }))
-                  .sort((a, b) => (b.count as number) - (a.count as number));
-                
-                return sortedChanges.map((item, index) => (
-                  <div key={index} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '1rem',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '0.75rem',
-                    border: '1px solid #e5e7eb'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      {getStatusIcon(item.status)}
-                      <span style={{ fontWeight: '500', color: '#374151', fontSize: '0.875rem' }}>
-                        {getChangeStatusLabel(item.status)}
-                      </span>
+                {minister.departments.length > 0 && (
+                  <div className="mb-2">
+                    <span className="text-sm font-medium text-slate-600">Departments:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {minister.departments.map((dept, i) => (
+                        <span key={i} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                          {dept}
+                        </span>
+                      ))}
                     </div>
-                    <span style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#2563eb' }}>
-                      {item.count}
-                    </span>
                   </div>
-                ));
-              })()}
+                )}
+                
+                {minister.laws.length > 0 && (
+                  <div>
+                    <span className="text-sm font-medium text-slate-600">Laws:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {minister.laws.map((law, i) => (
+                        <span key={i} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                          {law}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Standalone Departments */}
+      {structure.departments.length > 0 && (
+        <div>
+          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+            Departments ({structure.departments.length})
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {structure.departments.map((dept, i) => (
+              <span key={i} className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded">
+                {dept}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Standalone Laws */}
+      {structure.laws.length > 0 && (
+        <div>
+          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
+            Laws ({structure.laws.length})
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {structure.laws.map((law, i) => (
+              <span key={i} className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded">
+                {law}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Raw Entities Debug */}
+      {structure.raw_entities.length > 0 && (
+        <details className="mt-4">
+          <summary className="text-sm font-medium text-slate-600 cursor-pointer">Debug: Raw Entities ({structure.raw_entities.length})</summary>
+          <div className="mt-2 p-3 bg-gray-100 rounded text-xs">
+            <pre>{JSON.stringify(structure.raw_entities, null, 2)}</pre>
+          </div>
+        </details>
+      )}
+    </div>
+  )
+
+  const renderComparison = (comparison: GazetteComparison) => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-800">Government Structure Comparison</h3>
+          <div className="text-sm text-slate-600 mt-1">
+            <span className="font-medium">{comparison.base_gazette.president}</span> → <span className="font-medium">{comparison.amendment_gazette.president}</span>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded">
+            Base: {comparison.base_gazette.id} ({comparison.base_gazette.published_date})
+          </span>
+          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded">
+            Amendment: {comparison.amendment_gazette.id} ({comparison.amendment_gazette.published_date})
+          </span>
+        </div>
+      </div>
+
+      {/* Changes Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <h4 className="font-medium text-green-800 mb-2">Added</h4>
+          <div className="text-sm text-green-700 space-y-1">
+            <div>Ministers: {comparison.changes.added_ministers.length}</div>
+            {comparison.changes.added_ministers.length > 0 && (
+              <div className="mt-2">
+                {comparison.changes.added_ministers.map((minister, i) => (
+                  <div key={i} className="text-xs bg-green-100 px-2 py-1 rounded mb-1">
+                    {minister.name}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div>Departments: {comparison.changes.added_departments.length}</div>
+            <div>Laws: {comparison.changes.added_laws.length}</div>
+          </div>
+        </div>
+        
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <h4 className="font-medium text-red-800 mb-2">Removed</h4>
+          <div className="text-sm text-red-700 space-y-1">
+            <div>Ministers: {comparison.changes.removed_ministers.length}</div>
+            {comparison.changes.removed_ministers.length > 0 && (
+              <div className="mt-2 max-h-32 overflow-y-auto">
+                {comparison.changes.removed_ministers.map((minister, i) => (
+                  <div key={i} className="text-xs bg-red-100 px-2 py-1 rounded mb-1">
+                    {minister.name}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div>Departments: {comparison.changes.removed_departments.length}</div>
+            <div>Laws: {comparison.changes.removed_laws.length}</div>
+          </div>
+        </div>
+        
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <h4 className="font-medium text-yellow-800 mb-2">Modified</h4>
+          <div className="text-sm text-yellow-700 space-y-1">
+            <div>Ministers: {comparison.changes.modified_ministers.length}</div>
+            {comparison.changes.modified_ministers.length > 0 && (
+              <div className="mt-2">
+                {comparison.changes.modified_ministers.map((minister, i) => (
+                  <div key={i} className="text-xs bg-yellow-100 px-2 py-1 rounded mb-1">
+                    {minister.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-medium text-blue-800 mb-2">Total Changes</h4>
+          <div className="text-sm text-blue-700">
+            <div>All Changes: {
+              comparison.changes.added_ministers.length +
+              comparison.changes.removed_ministers.length +
+              comparison.changes.modified_ministers.length +
+              comparison.changes.added_departments.length +
+              comparison.changes.removed_departments.length +
+              comparison.changes.added_laws.length +
+              comparison.changes.removed_laws.length
+            }</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Detailed Changes */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <div className="mb-3">
+            <h4 className="font-medium text-slate-700">Base Gazette Structure</h4>
+            <div className="text-sm text-slate-600">
+              <span className="font-medium">{comparison.base_gazette.president}</span> - {comparison.base_gazette.id} ({comparison.base_gazette.published_date})
+            </div>
+          </div>
+          {renderGovernmentStructure(comparison.base_gazette.structure, `Base: ${comparison.base_gazette.id}`)}
+        </div>
+        
+        <div>
+          <div className="mb-3">
+            <h4 className="font-medium text-slate-700">Amendment Gazette Structure</h4>
+            <div className="text-sm text-slate-600">
+              <span className="font-medium">{comparison.amendment_gazette.president}</span> - {comparison.amendment_gazette.id} ({comparison.amendment_gazette.published_date})
+            </div>
+          </div>
+          {renderGovernmentStructure(comparison.amendment_gazette.structure, `Amendment: ${comparison.amendment_gazette.id}`)}
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <section className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-slate-800">Government Gazette Dashboard</h1>
+        <p className="text-slate-600 mt-2">Track and analyze government structure changes through gazettes</p>
+      </div>
+
+      {/* Summary Cards */}
+      {summary && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Base Gazettes</p>
+                <p className="text-2xl font-bold text-slate-900">{summary.counts.BaseGazette || 0}</p>
+              </div>
+              <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📄</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Amendment Gazettes</p>
+                <p className="text-2xl font-bold text-slate-900">{summary.counts.AmendmentGazette || 0}</p>
+              </div>
+              <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📝</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Total Gazettes</p>
+                <p className="text-2xl font-bold text-slate-900">
+                  {(summary.counts.BaseGazette || 0) + (summary.counts.AmendmentGazette || 0)}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📊</span>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Legend */}
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '1rem',
-        padding: '2rem',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-        border: '1px solid #e5e7eb'
-      }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '1.5rem' }}>Legend & Status Guide</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-          {[
-            { status: 'Added', description: 'New ministries or departments added to the structure', icon: <TrendingUp style={{ width: '1.25rem', height: '1.25rem' }} /> },
-            { status: 'Removed', description: 'Ministries or departments removed from the structure', icon: <TrendingDown style={{ width: '1.25rem', height: '1.25rem' }} /> },
-            { status: 'Modified', description: 'Existing ministries or departments with changes', icon: <AlertTriangle style={{ width: '1.25rem', height: '1.25rem' }} /> },
-            { status: 'Unchanged', description: 'No modifications detected in these items', icon: <Minus style={{ width: '1.25rem', height: '1.25rem' }} /> }
-          ].map((item) => (
-            <div key={item.status} style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                padding: '0.75rem 1.25rem',
-                borderRadius: '9999px',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                border: '1px solid #d1d5db',
-                backgroundColor: '#f9fafb',
-                color: '#374151',
-                marginBottom: '0.75rem'
-              }}>
-                {item.icon}
-                <span>{item.status}</span>
-              </div>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.4' }}>{item.description}</p>
-            </div>
+      {/* Gazette Selection */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Select Base Gazette</label>
+        <select
+              value={selectedGazette?.gazette_id || ''}
+              onChange={(e) => handleGazetteSelect(e.target.value)}
+          className="w-full rounded-lg border-slate-300"
+        >
+              <option value="">Select a base gazette...</option>
+          {gazettes.map(g => (
+            <option key={g.gazette_id} value={g.gazette_id}>
+              {g.gazette_id} — {g.published_date}
+            </option>
           ))}
-        </div>
+        </select>
       </div>
-    </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Select Amendment Gazette</label>
+            <select
+              value={selectedAmendment?.gazette_id || ''}
+              onChange={(e) => handleAmendmentSelect(e.target.value)}
+              className="w-full rounded-lg border-slate-300"
+            >
+              <option value="">Select an amendment gazette...</option>
+              {amendments.map(a => (
+                <option key={a.gazette_id} value={a.gazette_id}>
+                  {a.gazette_id} — {a.published_date}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        {selectedGazette && selectedAmendment && (
+          <div className="mt-4 flex gap-3">
+            <button
+              onClick={() => setViewMode('structure')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                viewMode === 'structure' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              View Structure
+            </button>
+            <button
+              onClick={handleCompare}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                viewMode === 'comparison' 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Compare Structures
+            </button>
+            <button
+              onClick={() => setViewMode('amendment-tracker')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                viewMode === 'amendment-tracker' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Enhanced Comparison
+            </button>
+            <button
+              onClick={() => setViewMode('visualization')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                viewMode === 'visualization' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Interactive Visualization
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Main Content */}
+      {viewMode === 'structure' && selectedGazette && (
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          {gazetteStructure ? (
+            renderGovernmentStructure(gazetteStructure, `Government Structure: ${gazetteStructure.gazette_id}`)
+          ) : (
+            <div className="text-center py-8">
+              <div className="text-slate-500 mb-4">
+                {error ? (
+                  <div className="text-red-600">
+                    <p className="font-medium">Error loading structure</p>
+                    <p className="text-sm">{error}</p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="font-medium">No government structure data found</p>
+                    <p className="text-sm">This gazette may not have any ministers, departments, or laws defined in the database.</p>
+                  </div>
+                )}
+              </div>
+              <div className="text-xs text-slate-400">
+                Gazette ID: {selectedGazette.gazette_id} | Published: {selectedGazette.published_date}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {viewMode === 'comparison' && comparison && (
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          {renderComparison(comparison)}
+        </div>
+      )}
+
+      {viewMode === 'amendment-tracker' && selectedGazette && selectedAmendment && (
+        <AmendmentTracker 
+          baseGazetteId={selectedGazette.gazette_id}
+        />
+      )}
+
+      {viewMode === 'visualization' && (
+        <BaseGazetteVisualization 
+          gazetteId={selectedGazette?.gazette_id}
+        />
+      )}
+
+      {/* Recent Gazettes */}
+      {summary && summary.recent_gazettes.length > 0 && (
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-800 mb-4">Recent Gazettes</h2>
+          <div className="space-y-2">
+            {summary.recent_gazettes.map((gazette, index) => (
+              <div key={`${gazette.gazette_id}-${index}`} className="flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg">
+                <div>
+                  <span className="font-medium text-slate-800">{gazette.gazette_id}</span>
+                  <span className="text-sm text-slate-600 ml-2">
+                    {gazette.gazette_id.includes('1897') ? 'Base' : 'Amendment'}
+                  </span>
+                </div>
+                <div className="text-sm text-slate-600">{gazette.published_date}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
   )
 }
-
-export default Dashboard
