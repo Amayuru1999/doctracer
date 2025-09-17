@@ -13,6 +13,7 @@ import {
   type GazetteComparison
 } from '../services/api'
 import AmendmentTracker from './AmendmentTracker'
+import BaseGazetteVisualization from './BaseGazetteVisualization'
 
 export default function Dashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null)
@@ -24,7 +25,7 @@ export default function Dashboard() {
   const [comparison, setComparison] = useState<GazetteComparison | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [viewMode, setViewMode] = useState<'structure' | 'comparison' | 'amendment-tracker'>('structure')
+  const [viewMode, setViewMode] = useState<'structure' | 'comparison' | 'amendment-tracker' | 'visualization'>('structure')
 
   useEffect(() => {
     loadDashboardData()
@@ -443,6 +444,16 @@ export default function Dashboard() {
             >
               Enhanced Comparison
             </button>
+            <button
+              onClick={() => setViewMode('visualization')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                viewMode === 'visualization' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Interactive Visualization
+            </button>
           </div>
         )}
       </div>
@@ -484,6 +495,12 @@ export default function Dashboard() {
       {viewMode === 'amendment-tracker' && selectedGazette && selectedAmendment && (
         <AmendmentTracker 
           baseGazetteId={selectedGazette.gazette_id}
+        />
+      )}
+
+      {viewMode === 'visualization' && (
+        <BaseGazetteVisualization 
+          gazetteId={selectedGazette?.gazette_id}
         />
       )}
 

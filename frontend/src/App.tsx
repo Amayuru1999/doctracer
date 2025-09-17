@@ -4,6 +4,8 @@ import Dashboard from './components/Dashboard'
 import TreeVisualization from './components/TreeVisualization'
 import DepartmentChanges from './components/DepartmentChanges'
 import AnalyticsDashboard from './components/AnalyticsDashboard'
+import BaseGazetteVisualization from './components/BaseGazetteVisualization'
+import RadialVisualization from './components/RadialVisualization'
 import { DataProvider } from './contexts/DataContext'
 
 function Header() {
@@ -11,6 +13,8 @@ function Header() {
     { to: '/', label: 'Dashboard' },
     { to: '/tree', label: 'Ministries' },
     { to: '/departments', label: 'Departments' },
+    { to: '/visualization', label: 'Visualization' },
+    { to: '/radial', label: 'Radial View' },
     { to: '/analytics', label: 'Analytics' },
   ]
   return (
@@ -54,6 +58,8 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/tree" element={<TreeVisualization />} />
             <Route path="/departments" element={<DepartmentChanges />} />
+            <Route path="/visualization" element={<BaseGazetteVisualization />} />
+            <Route path="/radial" element={<RadialVisualization />} />
             <Route path="/analytics" element={<AnalyticsDashboard />} />
           </Routes>
         </main>
