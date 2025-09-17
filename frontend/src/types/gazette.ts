@@ -23,9 +23,11 @@ export interface Amendment {
 export interface GraphNode {
   id: string;
   label: string;
-  kind: 'base' | 'amendment';
+  kind: 'base' | 'amendment' | 'minister' | 'department' | 'law';
   published_date?: string;
   parent_gazette_id?: string;
+  type?: string;
+  is_base?: boolean;
 }
 
 export interface GraphLink {
