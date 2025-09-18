@@ -406,14 +406,14 @@ def get_law_changes():
         with driver.session() as session:
             # Get base laws
             base_laws = session.run("""
-                MATCH (m:BaseMinister)-[:RESPONSIBLE_FOR_LAW]->(l:BaseLaw)
+                MATCH (m:BaseMinister)-[:ENFORCES_LAW]->(l:BaseLaw)
                 RETURN m.name as minister, l.name as law, 'base' as source
                 ORDER BY m.name, l.name
             """).data()
             
             # Get amendment laws
             amendment_laws = session.run("""
-                MATCH (m:AmendmentMinister)-[:RESPONSIBLE_FOR_LAW]->(l:AmendmentLaw)
+                MATCH (m:AmendmentMinister)-[:ENFORCES_LAW]->(l:AmendmentLaw)
                 RETURN m.name as minister, l.name as law, 'amendment' as source
                 ORDER BY m.name, l.name
             """).data()
