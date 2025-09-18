@@ -31,7 +31,6 @@ def normalize_column(col):
     roman_map = {"I": "1", "II": "2", "III": "3"}
     if s in roman_map:
         return roman_map[s]
-    # extract first digit 1-3 if present
     m = re.search(r"([1-3])", s)
     if m:
         return m.group(1)
@@ -60,31 +59,27 @@ def get_item_name_from_base_file(base_gazette_path, minister_number, column_no, 
 
 
 def find_node_and_rel(session, parent_id, minister_number, label, rel, item_number=None, item_name=None):
-    """
-    Find node (n) of label attached to minister under the parent BaseGazette.
-    Returns dict with keys: found (bool), node_exists (True/False)
-    and any other metadata returned.
-    """
-    # Build dynamic Cypher — label and rel are safe enumerated strings
+    """Find node and relationship, return dict with existence info and current name."""
     q = f"""
     MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
     OPTIONAL MATCH (m)-[r:{rel}]->(n:{label})
     WHERE ($item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name)
-    RETURN n IS NOT NULL AS node_exists, id(n) AS node_id, r IS NOT NULL AS rel_exists
+    RETURN n IS NOT NULL AS node_exists, id(n) AS node_id, r IS NOT NULL AS rel_exists, n.name AS current_name
     LIMIT 1
     """
     res = session.run(q, parent_id=parent_id, minister_number=str(minister_number),
                       item_number=item_number, item_name=item_name)
     rec = res.single()
     if rec:
-        return {"node_exists": rec["node_exists"], "node_id": rec["node_id"], "rel_exists": rec["rel_exists"]}
-    return {"node_exists": False, "node_id": None, "rel_exists": False}
+        return {"node_exists": rec["node_exists"], "node_id": rec["node_id"],
+                "rel_exists": rec["rel_exists"], "current_name": rec["current_name"]}
+    return {"node_exists": False, "node_id": None, "rel_exists": False, "current_name": None}
 
 
 def apply_change(session, parent_id, minister_number, column_no, raw_text, amend_id, published_date, action, base_gazette_file=None):
     """
-    action: 'added', 'removed', or 'updated'
-    raw_text: the string from amendment (e.g., "18. Registration of Persons" or "item 18")
+    Apply a single change (added/removed/updated) to Neo4j.
+    Only modifies nodes if content actually changed.
     """
     column = normalize_column(column_no)
     label_map = {"1": "Function", "2": "Department", "3": "Law"}
@@ -97,12 +92,9 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         return
 
     item_number = extract_item_number(raw_text)
-    # Try to get a clean item name:
-    # Prefer: name in base JSON (if item_number present and base file supplied)
     item_name = None
     if item_number and base_gazette_file:
         item_name = get_item_name_from_base_file(base_gazette_file, minister_number, column, item_number)
-    # If no base file name found, try to extract from raw_text (strip leading "18." if exists)
     if not item_name:
         m = re.match(r"^\s*\d+\.\s*(.+)$", str(raw_text).strip())
         if m:
@@ -110,14 +102,13 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         else:
             item_name = str(raw_text).strip()
 
-    # Try to find node and rel in graph under the parent gazette -> minister
     found = find_node_and_rel(session, parent_id, minister_number, label, rel, item_number, item_name)
 
-    node_prop_prefix = action  # 'added' or 'removed' or 'updated'
-    node_prop_by = f"{node_prop_prefix}_by"
-    node_prop_on = f"{node_prop_prefix}_on"
-    rel_prop_by = f"{node_prop_prefix}_by"
-    rel_prop_on = f"{node_prop_prefix}_on"
+    # Determine node property names
+    node_prop_by = f"{action}_by"
+    node_prop_on = f"{action}_on"
+    rel_prop_by = f"{action}_by"
+    rel_prop_on = f"{action}_on"
 
     params = {
         "parent_id": parent_id,
@@ -128,8 +119,14 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         "published_date": published_date
     }
 
+    # Skip if node exists and content unchanged (for added/updated)
+    if found["node_exists"] and action in ["added", "updated"]:
+        if found["current_name"] == item_name:
+            # Node unchanged → do not overwrite base added_by/added_date
+            return
+
     if found["node_exists"]:
-        # Update node and relationship (create relationship if missing)
+        # Update node/rel for changed content or removal
         q_update = f"""
         MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
         MATCH (m)-[r:{rel}]->(n:{label})
@@ -141,26 +138,25 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
             rr.{rel_prop_on} = $published_date
         """
         session.run(q_update, **params)
-        print(f"ℹ️ Updated existing {label} node for minister {minister_number}: set {node_prop_by}/{node_prop_on} and relationship props.")
+        print(f"ℹ️ Updated existing {label} node for minister {minister_number}.")
     else:
-        # Node not found under that minister; create node and relationship and set props
-        # create item node with item_number if available
+        # Node not found → create new node and relationship
+        q_create = f"""
+        MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
+        CREATE (n:{label} {{name: $item_name, {node_prop_by}: $amend_id, {node_prop_on}: $published_date}})
+        """
         if item_number:
             q_create = f"""
             MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
             CREATE (n:{label} {{item_number: $item_number, name: $item_name, {node_prop_by}: $amend_id, {node_prop_on}: $published_date}})
-            CREATE (m)-[rr:{rel}]->(n)
-            SET rr.{rel_prop_by} = $amend_id, rr.{rel_prop_on} = $published_date
             """
-        else:
-            q_create = f"""
-            MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
-            CREATE (n:{label} {{name: $item_name, {node_prop_by}: $amend_id, {node_prop_on}: $published_date}})
-            CREATE (m)-[rr:{rel}]->(n)
-            SET rr.{rel_prop_by} = $amend_id, rr.{rel_prop_on} = $published_date
-            """
+        q_create += f"""
+        CREATE (m)-[rr:{rel}]->(n)
+        SET rr.{rel_prop_by} = $amend_id, rr.{rel_prop_on} = $published_date
+        """
         session.run(q_create, **params)
-        print(f"ℹ️ Created {label} node and relationship for minister {minister_number} with {node_prop_by}/{node_prop_on}.")
+        print(f"ℹ️ Created {label} node and relationship for minister {minister_number}.")
+
 
 def load_amendment_data(json_path, base_gazette_path=None):
     with open(json_path, "r", encoding="utf-8") as f:
@@ -169,17 +165,12 @@ def load_amendment_data(json_path, base_gazette_path=None):
     meta = data.get("metadata", {})
     amend_gazette_id = meta.get("gazette_id")
     published_date = meta.get("published_date") or meta.get("Gazette Published Date")
-    parent = meta.get("parent_gazette") or {}
-    parent_gazette_id = parent.get("gazette_id") if isinstance(parent, dict) else meta.get("parent_gazette")
-
-    # if parent still not found, try top-level
-    if not parent_gazette_id:
-        parent_gazette_id = data.get("parent_gazette") or data.get("parent")
+    parent_gazette_id = (meta.get("parent_gazette") or {}).get("gazette_id") or data.get("parent_gazette") or data.get("parent")
 
     if not amend_gazette_id or not parent_gazette_id:
         raise ValueError("Amendment JSON missing gazette_id or parent_gazette.gazette_id")
 
-    # best-effort derive base file path if not provided (same pattern as your repo)
+    # Fallback base file
     if not base_gazette_path and parent_gazette_id:
         safe_id = parent_gazette_id.replace("/", "-")
         amendment_dir = os.path.dirname(os.path.abspath(json_path))
@@ -189,31 +180,22 @@ def load_amendment_data(json_path, base_gazette_path=None):
             base_gazette_path = candidate
 
     with driver.session() as session:
-        # Create Amendment node and link to base if not exists
-        session.run(
-            """
-            MERGE (a:AmendmentGazette {gazette_id: $amend_id})
-            SET a.published_date = $published_date, a.published_by = $published_by, a.gazette_type = $gazette_type, a.language = $language, a.pdf_url = $pdf_url
-            """,
-            amend_id=amend_gazette_id,
-            published_date=published_date,
-            published_by=meta.get("published_by"),
-            gazette_type=meta.get("gazette_type"),
-            language=meta.get("language"),
-            pdf_url=meta.get("pdf_url"),
-        )
+        # Create Amendment node
+        session.run("""
+        MERGE (a:AmendmentGazette {gazette_id: $amend_id})
+        SET a.published_date = $published_date, a.published_by = $published_by,
+            a.gazette_type = $gazette_type, a.language = $language, a.pdf_url = $pdf_url
+        """, amend_id=amend_gazette_id, published_date=published_date,
+        published_by=meta.get("published_by"), gazette_type=meta.get("gazette_type"),
+        language=meta.get("language"), pdf_url=meta.get("pdf_url"))
 
-        session.run(
-            """
-            MERGE (b:BaseGazette {gazette_id: $parent_id})
-            MERGE (a:AmendmentGazette {gazette_id: $amend_id})
-            MERGE (b)-[r:AMENDED_BY]->(a)
-            SET r.date = $date
-            """,
-            parent_id=parent_gazette_id,
-            amend_id=amend_gazette_id,
-            date=published_date,
-        )
+        # Link to base gazette
+        session.run("""
+        MERGE (b:BaseGazette {gazette_id: $parent_id})
+        MERGE (a:AmendmentGazette {gazette_id: $amend_id})
+        MERGE (b)-[r:AMENDED_BY]->(a)
+        SET r.date = $date
+        """, parent_id=parent_gazette_id, amend_id=amend_gazette_id, date=published_date)
 
         # Process changes
         for change in data.get("changes", []):
@@ -221,24 +203,22 @@ def load_amendment_data(json_path, base_gazette_path=None):
             details = change.get("details", {}) or {}
             minister_number = details.get("number") or details.get("minister_number")
             column_no = details.get("column_no") or details.get("column")
-            # Normalize roman numerals etc. inside apply_change
 
             if not minister_number or not column_no:
                 print(f"⚠️ Skipping change missing minister_number or column: {change}")
                 continue
 
-            # Deletions (also part of UPDATE)
+            # Deletions
             if op_type in ["DELETION", "UPDATE"]:
                 for raw in details.get("deleted_sections", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
                                  amend_gazette_id, published_date, "removed", base_gazette_path)
 
-            # Insertions (also part of UPDATE)
+            # Insertions / updates
             if op_type in ["INSERTION", "UPDATE"]:
                 for raw in details.get("added_content", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
                                  amend_gazette_id, published_date, "added", base_gazette_path)
-
                 for raw in details.get("updated_content", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
                                  amend_gazette_id, published_date, "updated", base_gazette_path)
@@ -247,9 +227,9 @@ def load_amendment_data(json_path, base_gazette_path=None):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Apply amendment gazette JSON to base Neo4j graph")
+    parser = argparse.ArgumentParser(description="Apply amendment gazette JSON to Neo4j")
     parser.add_argument("--input", required=True, help="Path to amendment JSON file")
-    parser.add_argument("--base", required=False, help="Optional path to base gazette JSON (fallback lookup)")
+    parser.add_argument("--base", required=False, help="Optional path to base gazette JSON")
     args = parser.parse_args()
     load_amendment_data(args.input, args.base)
 
