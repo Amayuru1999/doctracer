@@ -109,13 +109,13 @@ class ExtraGazetteTableProcessor(BaseGazetteProcessor):
 
         # Step 6: Build final GazetteData object
         gazette = GazetteData(
-            gazette_id=meta.get("Gazette ID", ""),
-            published_date=meta.get("Gazette Published Date", "1970-01-01"),
-            published_by=meta.get("Gazette Published By", "Authority"),
-            president=meta.get("President", ""),
-            gazette_type=meta.get("Gazette Type", "Extraordinary"),
-            language=meta.get("Language", "English"),
-            pdf_url=meta.get("PDF URL", ""),
+            gazette_id=meta.get("gazette_id", ""),
+            published_date=meta.get("published_date", ""),
+            published_by=meta.get("published_by", ""),
+            president=meta.get("president", ""),
+            gazette_type=meta.get("gazette_type", "Extraordinary"),
+            language=meta.get("language", "English"),
+            pdf_url=meta.get("pdf_url", ""),
             ministers=ministers_list
         )
 

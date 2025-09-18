@@ -24,7 +24,7 @@ Relationships
 
 (Minister)-[:OVERSEES_DEPARTMENT]->(Department)
 
-(Minister)-[:RESPONSIBLE_FOR_LAW]->(Law)
+(Minister)-[:ENFORCES_LAW]->(Law)
 
 (Minister)-[:PERFORMS_FUNCTION]->(Function)
 
@@ -170,7 +170,7 @@ def load_base_data(json_path):
                 session.run("""
                     MATCH (m:Minister {name: $name})
                     MATCH (l:Law {name: $law_name})
-                    MERGE (m)-[r:RESPONSIBLE_FOR_LAW]->(l)
+                    MERGE (m)-[r:ENFORCES_LAW]->(l)
                     SET r.gazette_id = $gazette_id,
                         r.published_date = $published_date,
                         r.gazette_type = $gazette_type,
