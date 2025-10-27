@@ -2,7 +2,6 @@ import os
 import click
 from pathlib import Path
 from doctracer.extract.gazette.extragazetteamendment import ExtraGazetteAmendmentProcessor
-
 from doctracer.extract.gazette.extragazettetable import ExtraGazetteTableProcessor
 
 PROCESSOR_TYPES = {
