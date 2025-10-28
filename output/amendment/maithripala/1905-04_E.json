@@ -1,16 +1,16 @@
 {
   "metadata": {
-    "Gazette ID": "1905/4",
-    "Gazette Published Date": "2015-03-09",
-    "Gazette Published by": "Authority",
-    "President": "Maithripala Sirisena",
-    "Gazette Type": "Extraordinary",
-    "Language": "English",
-    "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
-    "Parent Gazette": {
-      "Gazette No": "1897/15",
-      "Published Date": "2015-01-18",
-      "PDF URL": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    "gazette_id": "1905/4",
+    "gazette_published_date": "2015-03-09",
+    "gazette_published_by": "Authority",
+    "president": "Maithripala Sirisena",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/3/1905-04_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "1897/15",
+      "published_date": "2015-01-18",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
     }
   },
   "changes": [
