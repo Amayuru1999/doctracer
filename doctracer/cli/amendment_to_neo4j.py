@@ -169,13 +169,47 @@ def load_amendment_data(json_path, base_gazette_path=None):
     if not amend_gazette_id or not parent_gazette_id:
         raise ValueError("Amendment JSON missing gazette_id or parent_gazette.gazette_id")
 
-    # Fallback base file
+        # Fallback base file: prefer an explicitly passed file. If base_gazette_path is a directory,
+    # try to find matching base file by gazette id inside that directory.
+    def _find_base_in_dir_by_id(base_dir, parent_id):
+        if not base_dir or not os.path.isdir(base_dir):
+            return None
+        pid_safe = str(parent_id).replace("/", "-")
+        for root, _, files in os.walk(base_dir):
+            for fname in files:
+                if not fname.lower().endswith(".json"):
+                    continue
+                # quick filename check
+                if pid_safe in fname or str(parent_id) in fname:
+                    return os.path.join(root, fname)
+                # content check (safe)
+                fpath = os.path.join(root, fname)
+                try:
+                    with open(fpath, "r", encoding="utf-8") as bf:
+                        bdata = json.load(bf)
+                    file_gzid = bdata.get("gazette_id") or bdata.get("metadata", {}).get("gazette_id")
+                    if file_gzid and str(file_gzid) == str(parent_id):
+                        return fpath
+                except Exception:
+                    continue
+        return None
+
+    # If caller passed a directory as base_gazette_path, resolve it to the actual file
+    if base_gazette_path and os.path.isdir(base_gazette_path):
+        found = _find_base_in_dir_by_id(base_gazette_path, parent_gazette_id)
+        if found:
+            base_gazette_path = found
+        else:
+            # if not found, leave it None so other fallback logic may try
+            base_gazette_path = None
+
+    # Existing fallback (your original logic) now runs if base_gazette_path still None
     if not base_gazette_path and parent_gazette_id:
         safe_id = parent_gazette_id.replace("/", "-")
         amendment_dir = os.path.dirname(os.path.abspath(json_path))
-        base_dir = amendment_dir.replace("amendment", "base")
-        candidate = os.path.join(base_dir, f"{safe_id}_E.json")
-        if os.path.exists(candidate):
+        base_dir_guess = amendment_dir.replace("amendment", "base")
+        candidate = os.path.join(base_dir_guess, f"{safe_id}_E.json")
+        if os.path.exists(candidate) and os.path.isfile(candidate):
             base_gazette_path = candidate
 
     with driver.session() as session:

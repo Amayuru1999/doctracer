@@ -1,18 +1,50 @@
 {
   "metadata": {
-    "Gazette ID": "2297/78",
-    "Gazette Published Date": "2022-09-16",
-    "Gazette Published by": "Authority"
+    "gazette_id": "2297/78",
+    "published_date": "2022-09-16",
+    "published_by": "Authority",
+    "president": "Ranil WickRemesinghe",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/9/2297-78_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2289/43",
+      "published_date": "2022-07-22",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/7/2289-43_E.pdf"
+    }
   },
   "changes": [
     {
       "operation_type": "DELETION",
       "details": {
-        "heading_number": "02",
-        "heading_name": "Minister of Finance, Economic Stabilization and National Policies",
+        "number": "02",
+        "name": "Minister of Finance, Economic Stabilization and National Policies",
+        "column_no": "I",
         "deleted_sections": [
-          "item 32",
-          "items 26, 50 and 51",
+          "item 32"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Economic Stabilization and National Policies",
+        "column_no": "II",
+        "deleted_sections": [
+          "item 26",
+          "item 50",
+          "item 51"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Economic Stabilization and National Policies",
+        "column_no": "III",
+        "deleted_sections": [
           "Sri Lanka Export Development Act No. 40 of 1979",
           "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
           "Colombo Port City Economic Commission Act, No. 11 of 2021"
@@ -22,39 +54,54 @@
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "06",
-        "heading_name": "Minister of Investment Promotion",
-        "subjects_and_functions": [
-          "Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement."
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "I",
+        "added_content": [
+          "11. Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement."
         ]
       }
     },
     {
       "operation_type": "RENUMBERING",
       "details": {
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "I",
         "previous_number": "11",
-        "new_number": "12",
-        "heading_name": "Minister of Investment Promotion"
+        "new_number": "12"
+      }
+    },
+    {
+      "operation_type": "RENUMBERING",
+      "details": {
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "I",
+        "previous_number": "12",
+        "new_number": "13"
       }
     },
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "06",
-        "heading_name": "Minister of Investment Promotion",
-        "subjects_and_functions": [
-          "Sri Lanka Export Development Board",
-          "Board of Investment of Sri Lanka",
-          "Colombo Port City Economic Commission"
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "II",
+        "added_content": [
+          "5. Sri Lanka Export Development Board",
+          "6. Board of Investment of Sri Lanka",
+          "7. Colombo Port City Economic Commission"
         ]
       }
     },
     {
       "operation_type": "INSERTION",
       "details": {
-        "heading_number": "06",
-        "heading_name": "Minister of Investment Promotion",
-        "subjects_and_functions": [
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "III",
+        "added_content": [
           "Sri Lanka Export Development Act No. 40 of 1979",
           "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
           "Colombo Port City Economic Commission Act, No. 11 of 2021"
