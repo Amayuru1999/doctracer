@@ -10,7 +10,7 @@ import type {
 // Re-export types for convenience
 export type { Gazette, GazetteDetail, Amendment, GraphData, GazetteFullDetails }
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:5001'
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5001'
 console.log('[API_URL]', API_URL)
 
 export async function getGazettes(): Promise<Gazette[]> {

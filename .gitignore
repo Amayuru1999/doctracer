@@ -8233,3 +8233,18 @@ cython_debug/
 /frontend/node_modules/.package-lock.json
 /node_modules/.vite/deps/_metadata.json
 /node_modules/.vite/deps/package.json
+# Production deployment files
+.env.local
+.env.production.local
+data/backups/
+logs/
+
+# Docker volumes
+neo4j_data/
+neo4j_logs/
+neo4j_import/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store

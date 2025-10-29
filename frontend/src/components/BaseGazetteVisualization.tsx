@@ -31,6 +31,8 @@ interface GraphNode {
   size: number;
   color: string;
   details?: any;
+  x?: number;
+  y?: number;
 }
 
 interface GraphLink {
@@ -554,12 +556,9 @@ export default function BaseGazetteVisualization({ gazetteId }: BaseGazetteVisua
                 cooldownTicks={50}
                 d3AlphaDecay={0.05}
                 d3VelocityDecay={0.4}
-                d3ReheatDecay={0.0228}
-                enableZoomPanInteraction={true}
+                enableZoomInteraction={true}
                 enableNodeDrag={true}
-                nodeRepulsion={200}
-                linkDistance={100}
-                nodeCanvasObject={(node: GraphNode, ctx: CanvasRenderingContext2D, globalScale: number) => {
+                nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
                   const label = node.label;
                   const fontSize = Math.max(10/globalScale, 2);
                   const nodeSize = node.size || 5;
@@ -587,13 +586,13 @@ export default function BaseGazetteVisualization({ gazetteId }: BaseGazetteVisua
                     ctx.fillText(label, node.x || 0, textY);
                   }
                 }}
-                linkCanvasObject={(link: GraphLink, ctx: CanvasRenderingContext2D) => {
+                linkCanvasObject={(link: any, ctx: CanvasRenderingContext2D) => {
                   if (!link.source || !link.target) return;
                   ctx.strokeStyle = link.color;
                   ctx.lineWidth = link.width || 1;
                   ctx.beginPath();
-                  ctx.moveTo((link.source as any).x || 0, (link.source as any).y || 0);
-                  ctx.lineTo((link.target as any).x || 0, (link.target as any).y || 0);
+                  ctx.moveTo(link.source.x || 0, link.source.y || 0);
+                  ctx.lineTo(link.target.x || 0, link.target.y || 0);
                   ctx.stroke();
                 }}
               />

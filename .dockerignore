@@ -1,0 +1,60 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+README-DEPLOYMENT.md
+*.md
+
+# Environment files
+.env
+.env.*
+!.env.production
+
+# Node modules
+node_modules
+frontend/node_modules
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+venv/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+frontend/dist
+frontend/build
+
+# Test files
+tests/
+*test*
+
+# Development files
+docker-compose.yml
+docker-compose.override.yml
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+tmp/
+temp/

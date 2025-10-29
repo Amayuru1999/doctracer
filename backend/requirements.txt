@@ -7,3 +7,5 @@ pandas==2.1.4
 python-dotenv==1.0.0
 flask
 flask-cors==4.0.0
+deepdiff>=6.3.0
+gunicorn

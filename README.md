@@ -40,9 +40,24 @@ DocTracer/
 - **Node.js 18+** - For frontend development
 - **Git** - For version control
 
+## 🚀 Production Deployment
+
+### Digital Ocean Deployment (Recommended)
+
+Deploy DocTracer to Digital Ocean with one command:
+
+```bash
+# On your Digital Ocean droplet
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/doctracer/main/deploy-digitalocean.sh | bash
+```
+
+See [README-DEPLOYMENT.md](README-DEPLOYMENT.md) for detailed deployment instructions.
+
+### Local Development
+
 ## 🐳 Quick Start with Docker
 
-The fastest way to get everything running:
+The fastest way to get everything running locally:
 
 ```bash
 # Clone the repository
