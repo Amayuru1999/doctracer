@@ -59,6 +59,10 @@ def get_item_name_from_base_file(base_gazette_path, minister_number, column_no, 
 
 def find_node_and_rel(session, parent_id, minister_number, label, rel, item_number=None, item_name=None):
     """Find node and relationship, return dict with existence info and current name."""
+    # Normalize minister number by removing leading zeros and parentheses
+    clean_number = str(minister_number).strip('()')
+    normalized_minister_number = str(int(clean_number)) if clean_number.isdigit() else str(minister_number)
+    
     q = f"""
     MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
     OPTIONAL MATCH (m)-[r:{rel}]->(n:{label})
@@ -66,7 +70,7 @@ def find_node_and_rel(session, parent_id, minister_number, label, rel, item_numb
     RETURN n IS NOT NULL AS node_exists, id(n) AS node_id, r IS NOT NULL AS rel_exists, n.name AS current_name
     LIMIT 1
     """
-    res = session.run(q, parent_id=parent_id, minister_number=str(minister_number),
+    res = session.run(q, parent_id=parent_id, minister_number=normalized_minister_number,
                       item_number=item_number, item_name=item_name)
     rec = res.single()
     if rec:
@@ -109,9 +113,13 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
     rel_prop_by = f"{action}_by"
     rel_prop_on = f"{action}_on"
 
+    # Normalize minister number by removing leading zeros and parentheses
+    clean_number = str(minister_number).strip('()')
+    normalized_minister_number = str(int(clean_number)) if clean_number.isdigit() else str(minister_number)
+    
     params = {
         "parent_id": parent_id,
-        "minister_number": str(minister_number),
+        "minister_number": normalized_minister_number,
         "item_number": item_number,
         "item_name": item_name,
         "amend_id": amend_id,
@@ -137,7 +145,7 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
             rr.{rel_prop_on} = $published_date
         """
         session.run(q_update, **params)
-        print(f"ℹ️ Updated existing {label} node for minister {minister_number}.")
+        print(f"ℹ️ Updated existing {label} node for minister {normalized_minister_number} (original: {minister_number}).")
     else:
         # Node not found → create new node and relationship
         q_create = f"""
@@ -154,7 +162,7 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         SET rr.{rel_prop_by} = $amend_id, rr.{rel_prop_on} = $published_date
         """
         session.run(q_create, **params)
-        print(f"ℹ️ Created {label} node and relationship for minister {minister_number}.")
+        print(f"ℹ️ Created {label} node and relationship for minister {normalized_minister_number} (original: {minister_number}).")
 
 
 def load_amendment_data(json_path, base_gazette_path=None):
