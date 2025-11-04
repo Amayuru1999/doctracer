@@ -8,10 +8,27 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      
+    - name: Verify secrets
+      run: |
+        if [ -z "${{ secrets.DO_HOST }}" ]; then
+          echo "❌ DO_HOST secret is not set"
+          exit 1
+        fi
+        if [ -z "${{ secrets.DO_USERNAME }}" ]; then
+          echo "❌ DO_USERNAME secret is not set"
+          exit 1
+        fi
+        if [ -z "${{ secrets.DO_SSH_KEY }}" ]; then
+          echo "❌ DO_SSH_KEY secret is not set"
+          exit 1
+        fi
+        echo "✅ All required secrets are configured"
       
     - name: Deploy to Digital Ocean
       uses: appleboy/ssh-action@v1.0.3
@@ -20,34 +37,86 @@ jobs:
         username: ${{ secrets.DO_USERNAME }}
         key: ${{ secrets.DO_SSH_KEY }}
         port: 22
+        timeout: 300s
+        command_timeout: 600s
         script: |
-          echo "🚀 Starting deployment..."
-          cd ~/doctracer || { echo "❌ Failed to navigate to project directory"; exit 1; }
+          set -e
+          echo "🚀 Starting deployment at $(date)"
+          
+          # Check if project directory exists
+          if [ ! -d "~/doctracer" ]; then
+            echo "📁 Creating project directory..."
+            mkdir -p ~/doctracer
+            cd ~/doctracer
+            git clone https://github.com/Amayuru1999/doctracer.git .
+          else
+            echo "📁 Navigating to project directory..."
+            cd ~/doctracer
+          fi
           
           echo "📥 Pulling latest changes..."
-          git pull origin main || { echo "❌ Git pull failed"; exit 1; }
+          git fetch origin
+          git reset --hard origin/main
+          
+          echo "🔍 Checking Docker installation..."
+          if ! command -v docker &> /dev/null; then
+            echo "❌ Docker is not installed"
+            exit 1
+          fi
+          
+          if ! command -v docker-compose &> /dev/null; then
+            echo "❌ Docker Compose is not installed"
+            exit 1
+          fi
+          
+          echo "📋 Checking environment file..."
+          if [ ! -f ".env" ]; then
+            if [ -f ".env.production" ]; then
+              echo "📄 Copying .env.production to .env"
+              cp .env.production .env
+            else
+              echo "❌ No .env or .env.production file found"
+              exit 1
+            fi
+          fi
           
           echo "🛑 Stopping existing containers..."
-          docker-compose -f docker-compose.prod.yml down || echo "⚠️ No containers to stop"
+          docker-compose -f docker-compose.prod.yml down --remove-orphans || true
+          
+          echo "🧹 Cleaning up Docker resources..."
+          docker system prune -f || true
           
           echo "🏗️ Building and starting containers..."
-          docker-compose -f docker-compose.prod.yml up -d --build || { echo "❌ Docker compose failed"; exit 1; }
+          docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
           
           echo "⏳ Waiting for services to start..."
-          sleep 45
+          sleep 60
           
           echo "🔍 Checking container status..."
           docker-compose -f docker-compose.prod.yml ps
           
-          echo "✅ Deployment completed!"
+          echo "📊 Checking container logs..."
+          docker-compose -f docker-compose.prod.yml logs --tail=10 backend || true
+          
+          echo "✅ Deployment completed at $(date)"
           
     - name: Health Check
       run: |
         echo "🏥 Running health check..."
-        sleep 30
-        if curl -f -s --max-time 30 http://${{ secrets.DO_HOST }}:5001/gazettes; then
-          echo "✅ API health check passed"
-        else
-          echo "❌ API health check failed"
-          exit 1
-        fi
+        sleep 45
+        
+        # Test API endpoint
+        for i in {1..5}; do
+          echo "Attempt $i/5: Testing API endpoint..."
+          if curl -f -s --max-time 30 "http://${{ secrets.DO_HOST }}:5001/gazettes" > /dev/null; then
+            echo "✅ API health check passed"
+            exit 0
+          fi
+          echo "⏳ Waiting 30 seconds before retry..."
+          sleep 30
+        done
+        
+        echo "❌ API health check failed after 5 attempts"
+        echo "🔍 Checking if port 5001 is accessible..."
+        nc -zv ${{ secrets.DO_HOST }} 5001 || echo "Port 5001 is not accessible"
+        exit 1
