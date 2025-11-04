@@ -96,7 +96,7 @@ print_status "Testing Docker installation..."
 docker --version
 docker-compose --version
 
-print_success "✅ Digital Ocean droplet setup completed!"
+print_success "✅ Digital Ocean droplet setup completed successfully!"
 echo ""
 echo "📋 Next Steps:"
 echo "1. Edit /root/doctracer/.env with your production values"
