@@ -1,0 +1,68 @@
+{
+  "metadata": {
+    "gazette_id": "2458/65",
+    "published_date": "2025-10-18",
+    "published_by": "Authority",
+    "president": "AnurA KumArA DissAnAyAKe",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2025/10/2458-65_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2412/08",
+      "published_date": "2024-11-25",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2024/11/2412-08_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "RENUMBERING",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "previous_number": "",
+        "previous_name": "",
+        "column_no": "I",
+        "deleted_sections": [
+          "item 28"
+        ],
+        "added_content": [
+          "28. Ensuring safety of navigation through conducting hydrographic surveys, producing nautical charts, and updating navigation information for maritime safety, and regulating hydrographic related activities in accordance with the International Convention for the Safety of Life at Sea 1974, within waters under the jurisdiction of Sri Lanka"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "II",
+        "added_content": [
+          "26. National Hydrographic Council",
+          "27. Sri Lanka National Hydrographic Office"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "II",
+        "deleted_sections": [
+          "item 6"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "III",
+        "deleted_sections": [
+          "Sri Lanka Telecommunications Act, No. 25 of 1991 and its Amendments"
+        ]
+      }
+    }
+  ]
+}
