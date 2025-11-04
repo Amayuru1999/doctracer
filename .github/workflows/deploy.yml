@@ -19,13 +19,35 @@ jobs:
         host: ${{ secrets.DO_HOST }}
         username: ${{ secrets.DO_USERNAME }}
         key: ${{ secrets.DO_SSH_KEY }}
+        port: 22
         script: |
-          cd ~/doctracer
-          git pull origin main
-          docker-compose -f docker-compose.prod.yml down
-          docker-compose -f docker-compose.prod.yml up -d --build
+          echo "🚀 Starting deployment..."
+          cd ~/doctracer || { echo "❌ Failed to navigate to project directory"; exit 1; }
+          
+          echo "📥 Pulling latest changes..."
+          git pull origin main || { echo "❌ Git pull failed"; exit 1; }
+          
+          echo "🛑 Stopping existing containers..."
+          docker-compose -f docker-compose.prod.yml down || echo "⚠️ No containers to stop"
+          
+          echo "🏗️ Building and starting containers..."
+          docker-compose -f docker-compose.prod.yml up -d --build || { echo "❌ Docker compose failed"; exit 1; }
+          
+          echo "⏳ Waiting for services to start..."
+          sleep 45
+          
+          echo "🔍 Checking container status..."
+          docker-compose -f docker-compose.prod.yml ps
+          
+          echo "✅ Deployment completed!"
           
     - name: Health Check
       run: |
+        echo "🏥 Running health check..."
         sleep 30
-        curl -f http://${{ secrets.DO_HOST }}:5001/gazettes || exit 1
+        if curl -f -s --max-time 30 http://${{ secrets.DO_HOST }}:5001/gazettes; then
+          echo "✅ API health check passed"
+        else
+          echo "❌ API health check failed"
+          exit 1
+        fi
