@@ -5,3 +5,16 @@
 
 /* app-level tweaks */
 :root { color-scheme: light; }
+
+
+select {
+  width: 100%;
+  max-width: 100%;
+}
+
+select option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

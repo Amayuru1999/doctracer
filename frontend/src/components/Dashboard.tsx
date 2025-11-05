@@ -438,6 +438,7 @@ export default function Dashboard() {
   );
 
   console.log("Gazette are:", gazettes);
+  console.log("Amendments", amendments);
 
   const presidentMapping: { [key: string]: string } = {
     "2159/15": "Gotabaya Rajapaksa",
@@ -446,12 +447,27 @@ export default function Dashboard() {
     "1905/4": "Maithripala Sirisena",
     "1897/15": "Maithripala Sirisena",
     "2289/43": "Ranil Wickremesinghe",
+    "2412/08": "Anura Kumara Dissanayaka",
   };
 
-  const updatedGazettes: Gazette[] = gazettes.map((g) => ({
+  // const updatedGazettes: Gazette[] = gazettes.map((g) => ({
+  //   ...g,
+  //   president: presidentMapping[g.gazette_id] || "Unknown",
+  // }));
+
+  const updatedGazettes = gazettes
+    .filter((g) => g.labels.includes("BaseGazette")) // ← filters only BaseGazette
+    .map((g) => ({
+      ...g,
+      president: presidentMapping[g.gazette_id] || "Unknown",
+    }));
+
+  const updatedAmendments = amendments.map((g) => ({
     ...g,
     president: presidentMapping[g.gazette_id] || "Unknown",
   }));
+
+  console.log("Updated Amendments:", updatedAmendments);
 
   return (
     <section className="space-y-6">
@@ -522,19 +538,20 @@ export default function Dashboard() {
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Select Base Gazette
+            <label className="block text-sm font-medium text-slate-700 mb-2 ">
+              Select Base Gazette 
             </label>
             <select
               value={selectedGazette?.gazette_id || ""}
               onChange={(e) => handleGazetteSelect(e.target.value)}
-              className="w-full rounded-lg border-slate-300"
+              className="w-full  rounded-lg border-slate-300 text-sm"
             >
               <option value="">Select a base gazette...</option>
               {updatedGazettes.map((g) => (
                 <option key={g.gazette_id} value={g.gazette_id}>
                   {g.gazette_id} — {g.published_date || "N/A"} — {g.president}
                 </option>
+                
               ))}
             </select>
           </div>
@@ -546,13 +563,12 @@ export default function Dashboard() {
             <select
               value={selectedAmendment?.gazette_id || ""}
               onChange={(e) => handleAmendmentSelect(e.target.value)}
-              className="w-full rounded-lg border-slate-300"
+              className="w-full max-w-full truncate rounded-lg border-slate-300 text-sm"
             >
               <option value="">Select an amendment gazette...</option>
-              {amendments.map((a) => (
+              {updatedAmendments.map((a) => (
                 <option key={a.gazette_id} value={a.gazette_id}>
-                  {a.gazette_id} — {a.published_date}{" "}
-                  {!(a as any).has_detailed_changes ? "(Limited tracking)" : ""}
+                  {a.gazette_id} — {a.published_date || "N/A"} — {a.president}
                 </option>
               ))}
             </select>

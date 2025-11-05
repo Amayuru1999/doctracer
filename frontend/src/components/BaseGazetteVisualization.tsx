@@ -308,18 +308,14 @@ export default function BaseGazetteVisualization({
   useEffect(() => {
     if (!graphRef.current) return;
 
-    
     const fg = graphRef.current;
     const chargeForce = fg.d3Force("charge");
     const linkForce = fg.d3Force("link");
 
-   
     if (chargeForce) chargeForce.strength(-800);
 
-    
     if (linkForce) linkForce.distance(180);
 
-    
     fg.d3ReheatSimulation();
   }, [graphData]);
 
@@ -449,10 +445,22 @@ export default function BaseGazetteVisualization({
                 1897/15
               </button>
               <button
-                onClick={() => setSelectedGazette("1905/4")}
+                onClick={() => setSelectedGazette("2153/12")}
                 className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
               >
-                1905/4
+                2153/12
+              </button>
+              <button
+                onClick={() => setSelectedGazette("2289/43")}
+                className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
+              >
+                2289/43
+              </button>
+              <button
+                onClick={() => setSelectedGazette("2412/08")}
+                className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
+              >
+                2412/08
               </button>
             </div>
           </div>
