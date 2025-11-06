@@ -3,6 +3,9 @@ export interface Gazette {
   gazette_id: string;
   published_date: string;
   parent_gazette_id?: string;
+  president?:string;
+  labels: string[];
+
 }
 
 export interface GazetteDetail {
@@ -18,6 +21,7 @@ export interface Amendment {
   gazette_id: string;
   published_date: string;
   parent_gazette_id?: string;
+  president?:string;
 }
 
 export interface GraphNode {
