@@ -1,6 +1,5 @@
-import { useEffect, useState, useMemo, useRef } from "react";
-import * as d3 from "d3-force";
-import ForceGraph2D, { ForceGraphMethods } from "react-force-graph-2d";
+import { useEffect, useState, useMemo } from "react";
+import Tree, { CustomNodeElementProps, RawNodeDatum } from "react-d3-tree";
 import {
   getGazettes,
   getGazetteStructure,
@@ -8,17 +7,7 @@ import {
   type GazetteStructure,
   type GazetteFullDetails,
 } from "../services/api";
-import {
-  Building2,
-  Scale,
-  Users,
-  Calendar,
-  Search,
-  Filter,
-  Download,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { Building2, Search, Download } from "lucide-react";
 
 interface BaseGazetteVisualizationProps {
   gazetteId?: string;
@@ -36,13 +25,46 @@ interface GraphNode {
   y?: number;
 }
 
-interface GraphLink {
-  source: string;
-  target: string;
-  type: string;
-  color: string;
-  width: number;
+enum NodeType {
+  Gazette = "gazette",
+  Minister = "minister",
+  Department = "department",
+  Law = "law",
 }
+
+const nodeStyleConfig: {
+  [key in NodeType]: {
+    bg: string;
+    border: string;
+    text: string;
+    padding: string;
+  };
+} = {
+  [NodeType.Gazette]: {
+    bg: "bg-blue-600/10",
+    border: "border-blue-600/30",
+    text: "text-blue-700 font-bold text-lg",
+    padding: "px-4 py-2",
+  },
+  [NodeType.Minister]: {
+    bg: "bg-emerald-600/10",
+    border: "border-emerald-600/30",
+    text: "text-emerald-700 font-medium",
+    padding: "px-3 py-1.5",
+  },
+  [NodeType.Department]: {
+    bg: "bg-amber-600/10",
+    border: "border-amber-600/30",
+    text: "text-amber-700",
+    padding: "px-3 py-1",
+  },
+  [NodeType.Law]: {
+    bg: "bg-purple-600/10",
+    border: "border-purple-600/30",
+    text: "text-purple-700",
+    padding: "px-3 py-1",
+  },
+};
 
 export default function BaseGazetteVisualization({
   gazetteId,
@@ -64,13 +86,11 @@ export default function BaseGazetteVisualization({
     width: 800,
     height: 600,
   });
-  const [graphLoading, setGraphLoading] = useState(false);
   const [showPerformanceMode, setShowPerformanceMode] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
 
-  const graphRef = useRef<ForceGraphMethods>();
+  console.log("departments", gazetteStructure?.ministers);
 
-  // Color scheme
   const colors = {
     gazette: "#3b82f6",
     minister: "#10b981",
@@ -82,18 +102,16 @@ export default function BaseGazetteVisualization({
     if (selectedGazette) {
       loadGazetteData();
     } else {
-      // If no gazette is selected, stop loading
       setLoading(false);
     }
   }, [selectedGazette]);
 
   useEffect(() => {
-    // Update graph dimensions on window resize
     const updateDimensions = () => {
       const container = document.getElementById("graph-container");
       if (container) {
         setGraphDimensions({
-          width: container.offsetWidth - 40,
+          width: Math.max(400, container.offsetWidth - 40),
           height: Math.max(400, window.innerHeight - 300),
         });
       }
@@ -115,7 +133,6 @@ export default function BaseGazetteVisualization({
       setLoading(true);
       setError(null);
 
-      // First verify the gazette exists (this is fast)
       const basicGazette = await getGazettes().then((gazettes) =>
         gazettes.find((g) => g.gazette_id === selectedGazette)
       );
@@ -124,7 +141,6 @@ export default function BaseGazetteVisualization({
         throw new Error(`Gazette ${selectedGazette} not found`);
       }
 
-      // Load real data from Neo4j with increased timeout
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(
           () =>
@@ -157,172 +173,96 @@ export default function BaseGazetteVisualization({
     }
   };
 
-  const graphData = useMemo(() => {
-    if (!gazetteStructure) return { nodes: [], links: [] };
+  const treeData: RawNodeDatum | undefined = useMemo(() => {
+    if (!gazetteStructure) return undefined;
 
-    const nodes: GraphNode[] = [];
-    const links: GraphLink[] = [];
+    const ministerNodes: RawNodeDatum[] = gazetteStructure.ministers.map(
+      (minister, idx) => {
+        const departmentNodes: RawNodeDatum[] = minister.departments.map(
+          (dept, dIdx) => ({
+            name: dept,
+            attributes: { id: `dept-${idx}-${dIdx}`, type: "department" },
+            _collapsed: true,
+          })
+        );
 
-    // Limit ministers in performance mode
-    const ministersToShow = showPerformanceMode
-      ? gazetteStructure.ministers.slice(0, 10)
-      : gazetteStructure.ministers;
-
-    // Add gazette node (center)
-    const gazetteNode: GraphNode = {
-      id: gazetteStructure.gazette_id,
-      label: `Gazette ${gazetteStructure.gazette_id}`,
-      type: "gazette",
-      level: 0,
-      size: 25,
-      color: colors.gazette,
-      details: {
-        published_date: gazetteDetails?.gazette.published_date,
-        type: gazetteDetails?.gazette.type,
-      },
-    };
-    nodes.push(gazetteNode);
-
-    // Add minister nodes
-    ministersToShow.forEach((minister, index) => {
-      const ministerNode: GraphNode = {
-        id: `minister-${index}`,
-        label: minister.name,
-        type: "minister",
-        level: 1,
-        size: 18,
-        color: colors.minister,
-        details: {
-          departments: minister.departments,
-          laws: minister.laws,
-        },
-      };
-      nodes.push(ministerNode);
-
-      // Link minister to gazette
-      links.push({
-        source: gazetteStructure.gazette_id,
-        target: `minister-${index}`,
-        type: "has_minister",
-        color: "#64748b",
-        width: 2,
-      });
-
-      // Add department nodes if enabled
-      if (showDepartments) {
-        minister.departments.forEach((dept, deptIndex) => {
-          const deptNode: GraphNode = {
-            id: `dept-${index}-${deptIndex}`,
-            label: dept,
-            type: "department",
-            level: 2,
-            size: 10,
-            color: colors.department,
-            details: { minister: minister.name },
-          };
-          nodes.push(deptNode);
-
-          // Link department to minister
-          links.push({
-            source: `minister-${index}`,
-            target: `dept-${index}-${deptIndex}`,
-            type: "oversees",
-            color: "#f59e0b",
-            width: 1.5,
-          });
-        });
+        return {
+          name: minister.name,
+          attributes: { id: `minister-${idx}`, type: "minister" },
+          children: departmentNodes.length > 0 ? departmentNodes : undefined,
+          _collapsed: true,
+        };
       }
-
-      // Add law nodes if enabled
-      if (showLaws) {
-        minister.laws.forEach((law, lawIndex) => {
-          const lawNode: GraphNode = {
-            id: `law-${index}-${lawIndex}`,
-            label: law,
-            type: "law",
-            level: 2,
-            size: 8,
-            color: colors.law,
-            details: { minister: minister.name },
-          };
-          nodes.push(lawNode);
-
-          // Link law to minister
-          links.push({
-            source: `minister-${index}`,
-            target: `law-${index}-${lawIndex}`,
-            type: "responsible_for",
-            color: "#8b5cf6",
-            width: 1.5,
-          });
-        });
-      }
-    });
-
-    // Filter nodes based on search term
-    const filteredNodes = searchTerm
-      ? nodes.filter((node) =>
-          node.label.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      : nodes;
-
-    // Filter links to only include those connecting filtered nodes
-    const filteredNodeIds = new Set(filteredNodes.map((n) => n.id));
-    const filteredLinks = links.filter(
-      (link) =>
-        filteredNodeIds.has(link.source) && filteredNodeIds.has(link.target)
     );
 
-    return { nodes: filteredNodes, links: filteredLinks };
-  }, [
-    gazetteStructure,
-    showDepartments,
-    showLaws,
-    searchTerm,
-    gazetteDetails,
-    showPerformanceMode,
-    showLabels,
-  ]);
+    return {
+      name: `Gazette ${gazetteStructure.gazette_id}`,
+      attributes: { id: gazetteStructure.gazette_id, type: "gazette" },
+      children: ministerNodes,
+      _collapsed: false,
+    };
+  }, [gazetteStructure]);
 
-  const handleNodeClick = (node: GraphNode) => {
-    setSelectedNode(node);
+  const countNodes = (node: RawNodeDatum | undefined): number => {
+    if (!node) return 0;
+    const children = node.children ?? [];
+    return (
+      1 + children.reduce((acc, c) => acc + countNodes(c as RawNodeDatum), 0)
+    );
   };
+  const totalNodes = treeData ? countNodes(treeData) : 0;
 
-  const handleNodeHover = (node: GraphNode | null) => {
-    // You can add hover effects here
+  const renderCustomNode = ({
+    nodeDatum,
+    toggleNode,
+  }: CustomNodeElementProps) => {
+    const type = (nodeDatum.attributes as any)?.type || NodeType.Minister;
+    const styles = nodeStyleConfig[type as NodeType];
+
+    return (
+      <g
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleNode?.();
+        }}
+      >
+        <foreignObject width={220} height={90} x={10} y={-45}>
+          <div
+            className={`
+          ${styles.bg} ${styles.border} ${styles.text} ${styles.padding}
+          border rounded-xl shadow-sm backdrop-blur-sm
+          hover:shadow-md transition-all duration-200 cursor-pointer
+          flex items-center gap-2
+        `}
+          >
+            <div className="flex-1 leading-tight">
+              <div className="truncate">{nodeDatum.name}</div>
+              {nodeDatum.children?.length ? (
+                <div className="text-[10px] text-slate-500 mt-1">
+                  {nodeDatum.children.length} children
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </foreignObject>
+      </g>
+    );
   };
 
   const exportGraph = () => {
-    const dataStr = JSON.stringify(graphData, null, 2);
+    const dataStr = JSON.stringify(treeData ?? {}, null, 2);
     const dataBlob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `gazette-${selectedGazette}-graph.json`;
+    link.download = `gazette-${selectedGazette || "export"}-hierarchy.json`;
     link.click();
     URL.revokeObjectURL(url);
   };
 
-  console.log("Graph data", graphData);
-
-  useEffect(() => {
-    if (!graphRef.current) return;
-
-    const fg = graphRef.current;
-    const chargeForce = fg.d3Force("charge");
-    const linkForce = fg.d3Force("link");
-
-    if (chargeForce) chargeForce.strength(-800);
-
-    if (linkForce) linkForce.distance(180);
-
-    fg.d3ReheatSimulation();
-  }, [graphData]);
-
   if (loading) {
     return (
       <div className="space-y-6">
-        {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="h-8 w-8" />
@@ -337,9 +277,8 @@ export default function BaseGazetteVisualization({
           </div>
         </div>
 
-        {/* Loading State */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto mb-4" />
           <div className="text-slate-500 mb-2">
             Loading ministry structure data...
           </div>
@@ -357,7 +296,6 @@ export default function BaseGazetteVisualization({
   if (error) {
     return (
       <div className="space-y-6">
-        {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="h-8 w-8" />
@@ -372,7 +310,6 @@ export default function BaseGazetteVisualization({
           </div>
         </div>
 
-        {/* Error State */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 text-center">
           <div className="text-red-600 mb-4">Error: {error}</div>
           <div className="flex gap-3 justify-center">
@@ -402,7 +339,6 @@ export default function BaseGazetteVisualization({
   if (!gazetteStructure && !selectedGazette) {
     return (
       <div className="space-y-6">
-        {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="h-8 w-8" />
@@ -417,7 +353,6 @@ export default function BaseGazetteVisualization({
           </div>
         </div>
 
-        {/* Welcome State */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 text-center">
           <div className="text-6xl mb-4">🏛️</div>
           <h3 className="text-xl font-semibold text-slate-800 mb-2">
@@ -434,7 +369,6 @@ export default function BaseGazetteVisualization({
             </p>
           </div>
 
-          {/* Quick Start */}
           <div className="bg-slate-50 rounded-lg p-4 mb-6">
             <h4 className="font-medium text-slate-800 mb-2">Quick Start:</h4>
             <div className="flex flex-wrap gap-2 justify-center">
@@ -465,7 +399,6 @@ export default function BaseGazetteVisualization({
             </div>
           </div>
 
-          {/* Manual Input */}
           <div className="flex items-center justify-center gap-2">
             <input
               type="text"
@@ -504,7 +437,6 @@ export default function BaseGazetteVisualization({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
         <div className="flex items-center gap-3 mb-2">
           <Building2 className="h-8 w-8" />
@@ -525,10 +457,8 @@ export default function BaseGazetteVisualization({
         </div>
       </div>
 
-      {/* Controls */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
         <div className="flex flex-wrap items-center gap-4">
-          {/* Gazette Selection */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-slate-700">
               Gazette:
@@ -548,7 +478,6 @@ export default function BaseGazetteVisualization({
             </button>
           </div>
 
-          {/* Search */}
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-slate-500" />
             <input
@@ -560,7 +489,6 @@ export default function BaseGazetteVisualization({
             />
           </div>
 
-          {/* Performance Mode Toggle */}
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
@@ -571,7 +499,6 @@ export default function BaseGazetteVisualization({
             <span className="text-slate-600">Performance Mode</span>
           </label>
 
-          {/* Show Labels Toggle */}
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
@@ -582,7 +509,6 @@ export default function BaseGazetteVisualization({
             <span className="text-slate-600">Show Labels</span>
           </label>
 
-          {/* Export */}
           <button
             onClick={exportGraph}
             className="flex items-center gap-2 px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
@@ -593,119 +519,58 @@ export default function BaseGazetteVisualization({
         </div>
       </div>
 
-      {/* Graph and Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Graph Visualization */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-slate-800">
-                Interactive Graph
+                Hierarchy View
               </h3>
               <div className="flex items-center gap-3">
                 {showPerformanceMode && (
                   <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                    Performance Mode (10 ministers)
+                    Performance Mode (limited)
                   </span>
                 )}
                 <div className="text-sm text-slate-500">
-                  {graphData.nodes.length} nodes, {graphData.links.length} links
+                  {totalNodes} nodes in hierarchy
                 </div>
               </div>
             </div>
-
-            {/* Performance Warning */}
-            {!showPerformanceMode && graphData.nodes.length > 20 && (
-              <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <div className="text-yellow-600">⚠️</div>
-                  <div className="text-sm text-yellow-800">
-                    <strong>Performance Notice:</strong> Large number of nodes
-                    detected. Enable "Performance Mode" for smoother interaction
-                    or toggle "Show Labels" to reduce clutter.
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div
               id="graph-container"
               className="border border-slate-200 rounded-lg overflow-hidden"
               style={{ height: graphDimensions.height }}
             >
-              <ForceGraph2D
-                ref={graphRef}
-                graphData={graphData}
-                width={
-                  window.innerWidth > 1024
-                    ? graphDimensions.width
-                    : window.innerWidth - 40
-                }
-                height={650}
-                // nodeLabel={(node: GraphNode) => node.label}
-                // nodeColor={(node: GraphNode) => node.color}
-                // nodeVal={(node: GraphNode) => node.size}
-                linkColor={(link: GraphLink) => link.color}
-                linkWidth={(link: GraphLink) => link.width}
-                // onNodeClick={handleNodeClick}
-                // onNodeHover={handleNodeHover}
-                cooldownTicks={50}
-                d3AlphaDecay={0.05}
-                d3VelocityDecay={0.4}
-                enableZoomInteraction={true}
-                enableNodeDrag={true}
-                nodeCanvasObject={(
-                  node: any,
-                  ctx: CanvasRenderingContext2D,
-                  globalScale: number
-                ) => {
-                  const label = node.label;
-                  const fontSize = Math.max(10 / globalScale, 2);
-                  const nodeSize = node.size || 5;
-
-                  // Draw node circle
-                  ctx.fillStyle = node.color;
-                  ctx.beginPath();
-                  ctx.arc(node.x || 0, node.y || 0, nodeSize, 0, 2 * Math.PI);
-                  ctx.fill();
-
-                  // Add white border for better visibility
-                  ctx.strokeStyle = "white";
-                  ctx.lineWidth = 2;
-                  ctx.stroke();
-
-                  // Draw label outside the node (only if showLabels is true)
-                  if (showLabels) {
-                    ctx.font = `${fontSize}px Sans-Serif`;
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillStyle = "#1f2937";
-
-                    // Position text below the node
-                    const textY = (node.y || 0) + nodeSize + fontSize + 2;
-                    ctx.fillText(label, node.x || 0, textY);
-                  }
-                }}
-                linkCanvasObject={(
-                  link: any,
-                  ctx: CanvasRenderingContext2D
-                ) => {
-                  if (!link.source || !link.target) return;
-                  ctx.strokeStyle = link.color;
-                  ctx.lineWidth = link.width || 1;
-                  ctx.beginPath();
-                  ctx.moveTo(link.source.x || 0, link.source.y || 0);
-                  ctx.lineTo(link.target.x || 0, link.target.y || 0);
-                  ctx.stroke();
-                }}
-              />
+              <div
+                id="tree-container-wrapper"
+                className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden relative"
+                style={{ height: "700px" }}
+              >
+                {!treeData ? (
+                  <div className="flex items-center justify-center h-full text-slate-400">
+                    Loading Data...
+                  </div>
+                ) : (
+                  <Tree
+                    data={treeData}
+                    orientation="horizontal"
+                    collapsible={true}
+                    pathFunc="diagonal"
+                    separation={{ siblings: 0.5, nonSiblings: 10 }}
+                    renderCustomNodeElement={renderCustomNode}
+                    translate={{ x: 100, y: graphDimensions.height / 2 }}
+                    zoomable={true}
+                    zoom={0.8}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Node Details Panel */}
         <div className="space-y-4">
-          {/* Legend */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Legend
@@ -715,20 +580,19 @@ export default function BaseGazetteVisualization({
                 <div
                   className="w-4 h-4 rounded-full"
                   style={{ backgroundColor: colors.gazette }}
-                ></div>
+                />
                 <span className="text-sm">Gazette</span>
               </div>
               <div className="flex items-center gap-2">
                 <div
                   className="w-4 h-4 rounded-full"
                   style={{ backgroundColor: colors.minister }}
-                ></div>
+                />
                 <span className="text-sm">Minister</span>
               </div>
             </div>
           </div>
 
-          {/* Selected Node Details */}
           {selectedNode && (
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
               <h3 className="text-lg font-semibold text-slate-800 mb-3">
@@ -764,7 +628,6 @@ export default function BaseGazetteVisualization({
             </div>
           )}
 
-          {/* Statistics */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Statistics
