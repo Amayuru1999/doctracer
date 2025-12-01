@@ -7,7 +7,13 @@ import {
   type GazetteStructure,
   type GazetteFullDetails,
 } from "../services/api";
-import { Building2, Search, Download } from "lucide-react";
+import {
+  Building2,
+  Search,
+  Download,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 interface BaseGazetteVisualizationProps {
   gazetteId?: string;
@@ -79,8 +85,6 @@ export default function BaseGazetteVisualization({
     gazetteId || ""
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [showDepartments, setShowDepartments] = useState(false);
-  const [showLaws, setShowLaws] = useState(false);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [graphDimensions, setGraphDimensions] = useState({
     width: 800,
@@ -89,7 +93,9 @@ export default function BaseGazetteVisualization({
   const [showPerformanceMode, setShowPerformanceMode] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
 
-  console.log("departments", gazetteStructure?.ministers);
+
+  const [visibleMinisters, setVisibleMinisters] = useState(10);
+  const [activeMinisterId, setActiveMinisterId] = useState<string | null>(null);
 
   const colors = {
     gazette: "#3b82f6",
@@ -163,6 +169,8 @@ export default function BaseGazetteVisualization({
 
       setGazetteStructure(structure);
       setGazetteDetails(details);
+
+      setVisibleMinisters(10);
     } catch (err) {
       console.error("Failed to load gazette data:", err);
       setError(
@@ -176,21 +184,30 @@ export default function BaseGazetteVisualization({
   const treeData: RawNodeDatum | undefined = useMemo(() => {
     if (!gazetteStructure) return undefined;
 
-    const ministerNodes: RawNodeDatum[] = gazetteStructure.ministers.map(
+    const displayMinisters = gazetteStructure.ministers.slice(
+      0,
+      visibleMinisters
+    );
+
+    const ministerNodes: RawNodeDatum[] = displayMinisters.map(
       (minister, idx) => {
-        const departmentNodes: RawNodeDatum[] = minister.departments.map(
-          (dept, dIdx) => ({
-            name: dept,
-            attributes: { id: `dept-${idx}-${dIdx}`, type: "department" },
-            _collapsed: true,
-          })
-        );
+    
+        const ministerId = `minister-${idx}`;
+
+
+        const isExpanded = activeMinisterId === ministerId;
 
         return {
           name: minister.name,
-          attributes: { id: `minister-${idx}`, type: "minister" },
-          children: departmentNodes.length > 0 ? departmentNodes : undefined,
-          _collapsed: true,
+          attributes: { id: ministerId, type: "minister" },
+      
+          _collapsed: !isExpanded,
+          children:
+            minister.departments?.map((dept: any, dIdx: number) => ({
+              name: typeof dept === "string" ? dept : dept.name,
+              attributes: { id: `dept-${idx}-${dIdx}`, type: "department" },
+              _collapsed: true,
+            })) || [],
         };
       }
     );
@@ -201,7 +218,7 @@ export default function BaseGazetteVisualization({
       children: ministerNodes,
       _collapsed: false,
     };
-  }, [gazetteStructure]);
+  }, [gazetteStructure, visibleMinisters, activeMinisterId]); 
 
   const countNodes = (node: RawNodeDatum | undefined): number => {
     if (!node) return 0;
@@ -218,12 +235,32 @@ export default function BaseGazetteVisualization({
   }: CustomNodeElementProps) => {
     const type = (nodeDatum.attributes as any)?.type || NodeType.Minister;
     const styles = nodeStyleConfig[type as NodeType];
+    const nodeId = (nodeDatum.attributes as any)?.id;
 
     return (
       <g
         onClick={(e) => {
           e.stopPropagation();
-          toggleNode?.();
+
+
+          setSelectedNode({
+            id: nodeId,
+            label: nodeDatum.name,
+            type: type,
+            level: 0,
+            size: 0,
+            color: "",
+            details: nodeDatum.attributes,
+          });
+
+        
+          if (type === NodeType.Minister) {
+     
+            setActiveMinisterId((prev) => (prev === nodeId ? null : nodeId));
+          } else {
+         
+            toggleNode?.();
+          }
         }}
       >
         <foreignObject width={220} height={90} x={10} y={-45}>
@@ -235,11 +272,13 @@ export default function BaseGazetteVisualization({
           flex items-center gap-2
         `}
           >
-            <div className="flex-1 leading-tight">
-              <div className="truncate">{nodeDatum.name}</div>
+            <div className="flex-1 leading-tight ">
+              <div className="truncate" title={nodeDatum.name}>
+                {nodeDatum.name}
+              </div>
               {nodeDatum.children?.length ? (
                 <div className="text-[10px] text-slate-500 mt-1">
-                  {nodeDatum.children.length} children
+                  {nodeDatum.children.length} departments
                 </div>
               ) : null}
             </div>
@@ -259,6 +298,8 @@ export default function BaseGazetteVisualization({
     link.click();
     URL.revokeObjectURL(url);
   };
+
+  // --- RENDER STATES (Loading, Error, Empty) ---
 
   if (loading) {
     return (
@@ -284,9 +325,6 @@ export default function BaseGazetteVisualization({
           </div>
           <div className="text-sm text-slate-400">
             Querying Neo4j database for: {selectedGazette}
-          </div>
-          <div className="text-xs text-slate-400 mt-2">
-            This may take up to 30 seconds for complex queries
           </div>
         </div>
       </div>
@@ -362,40 +400,19 @@ export default function BaseGazetteVisualization({
             Enter a gazette ID below to explore the ministry structure
             interactively.
           </p>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6">
-            <p className="text-sm text-green-700">
-              <strong>Real Data:</strong> Loading actual government structure
-              data from Neo4j database.
-            </p>
-          </div>
 
           <div className="bg-slate-50 rounded-lg p-4 mb-6">
             <h4 className="font-medium text-slate-800 mb-2">Quick Start:</h4>
             <div className="flex flex-wrap gap-2 justify-center">
-              <button
-                onClick={() => setSelectedGazette("1897/15")}
-                className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
-              >
-                1897/15
-              </button>
-              <button
-                onClick={() => setSelectedGazette("2153/12")}
-                className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
-              >
-                2153/12
-              </button>
-              <button
-                onClick={() => setSelectedGazette("2289/43")}
-                className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
-              >
-                2289/43
-              </button>
-              <button
-                onClick={() => setSelectedGazette("2412/08")}
-                className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
-              >
-                2412/08
-              </button>
+              {["1897/15", "2153/12", "2289/43", "2412/08"].map((id) => (
+                <button
+                  key={id}
+                  onClick={() => setSelectedGazette(id)}
+                  className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors text-sm"
+                >
+                  {id}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -435,8 +452,11 @@ export default function BaseGazetteVisualization({
     );
   }
 
+  // --- MAIN RENDER ---
+
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
         <div className="flex items-center gap-3 mb-2">
           <Building2 className="h-8 w-8" />
@@ -457,6 +477,7 @@ export default function BaseGazetteVisualization({
         </div>
       </div>
 
+      {/* Control Bar */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
@@ -467,7 +488,7 @@ export default function BaseGazetteVisualization({
               type="text"
               value={selectedGazette}
               onChange={(e) => setSelectedGazette(e.target.value)}
-              placeholder="Enter gazette ID (e.g., 1897/15)"
+              placeholder="Enter gazette ID"
               className="px-3 py-1 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
             <button
@@ -519,7 +540,9 @@ export default function BaseGazetteVisualization({
         </div>
       </div>
 
+    
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Graph Area */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
@@ -533,7 +556,7 @@ export default function BaseGazetteVisualization({
                   </span>
                 )}
                 <div className="text-sm text-slate-500">
-                  {totalNodes} nodes in hierarchy
+                  {totalNodes} visible nodes
                 </div>
               </div>
             </div>
@@ -557,8 +580,11 @@ export default function BaseGazetteVisualization({
                     data={treeData}
                     orientation="horizontal"
                     collapsible={true}
+                    initialDepth={1} 
+                    depthFactor={500}
+                    nodeSize={{ x: 300, y: 150 }}
                     pathFunc="diagonal"
-                    separation={{ siblings: 0.5, nonSiblings: 10 }}
+                    separation={{ siblings: 0.5, nonSiblings: 20 }}
                     renderCustomNodeElement={renderCustomNode}
                     translate={{ x: 100, y: graphDimensions.height / 2 }}
                     zoomable={true}
@@ -570,7 +596,9 @@ export default function BaseGazetteVisualization({
           </div>
         </div>
 
+ 
         <div className="space-y-4">
+      
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Legend
@@ -590,9 +618,17 @@ export default function BaseGazetteVisualization({
                 />
                 <span className="text-sm">Minister</span>
               </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: colors.department }}
+                />
+                <span className="text-sm">Department</span>
+              </div>
             </div>
           </div>
 
+    
           {selectedNode && (
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
               <h3 className="text-lg font-semibold text-slate-800 mb-3">
@@ -601,7 +637,7 @@ export default function BaseGazetteVisualization({
               <div className="space-y-2">
                 <div>
                   <span className="font-medium text-slate-700">Name:</span>
-                  <span className="ml-2 text-slate-600">
+                  <span className="ml-2 text-slate-600 text-sm block mt-1">
                     {selectedNode.label}
                   </span>
                 </div>
@@ -612,22 +648,28 @@ export default function BaseGazetteVisualization({
                   </span>
                 </div>
                 {selectedNode.details &&
-                  Object.entries(selectedNode.details).map(([key, value]) => (
-                    <div key={key}>
-                      <span className="font-medium text-slate-700 capitalize">
-                        {key.replace("_", " ")}:
-                      </span>
-                      <span className="ml-2 text-slate-600">
-                        {Array.isArray(value)
-                          ? value.join(", ")
-                          : String(value)}
-                      </span>
-                    </div>
-                  ))}
+                  Object.entries(selectedNode.details)
+                    .filter(
+                      ([key]) =>
+                        key !== "id" && key !== "type" && !key.startsWith("_")
+                    )
+                    .map(([key, value]) => (
+                      <div key={key}>
+                        <span className="font-medium text-slate-700 capitalize">
+                          {key.replace("_", " ")}:
+                        </span>
+                        <span className="ml-2 text-slate-600">
+                          {Array.isArray(value)
+                            ? value.join(", ")
+                            : String(value)}
+                        </span>
+                      </div>
+                    ))}
               </div>
             </div>
           )}
 
+      
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Statistics
@@ -637,6 +679,15 @@ export default function BaseGazetteVisualization({
                 <span className="text-slate-600">Total Ministers:</span>
                 <span className="font-medium">
                   {gazetteStructure.ministers.length}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">Showing:</span>
+                <span className="font-medium text-blue-600">
+                  {Math.min(
+                    visibleMinisters,
+                    gazetteStructure.ministers.length
+                  )}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -651,6 +702,49 @@ export default function BaseGazetteVisualization({
                   {gazetteDetails?.gazette.published_date || "N/A"}
                 </span>
               </div>
+
+              {/* Show All / Show Less Button */}
+              {gazetteStructure.ministers.length > 10 && (
+                <div className="pt-4 border-t border-slate-100 mt-2">
+                  <button
+                    onClick={() => {
+                      if (
+                        visibleMinisters >= gazetteStructure.ministers.length
+                      ) {
+                        setVisibleMinisters(10); 
+                      } else {
+                        setVisibleMinisters(gazetteStructure.ministers.length); 
+                      }
+                    }}
+                    className={`w-full py-2.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 ${
+                      visibleMinisters >= gazetteStructure.ministers.length
+                        ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        : "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+                    }`}
+                  >
+                    {visibleMinisters >= gazetteStructure.ministers.length ? (
+                      <>
+                        <ChevronUp className="h-4 w-4" />
+                        <span>Show Less (First 10)</span>
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4" />
+                        <span>
+                          Show All ({gazetteStructure.ministers.length})
+                        </span>
+                      </>
+                    )}
+                  </button>
+                  <p className="text-xs text-center text-slate-400 mt-2">
+                    {visibleMinisters >= gazetteStructure.ministers.length
+                      ? "Showing all ministries"
+                      : `${
+                          gazetteStructure.ministers.length - 10
+                        } hidden ministries`}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
