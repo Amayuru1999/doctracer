@@ -99,6 +99,13 @@ export default function BaseGazetteVisualization({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
+
+  // NEW: hovered minister state
+  const [hoveredMinister, setHoveredMinister] = useState<{
+    name: string;
+    departments: string[];
+  } | null>(null);
+
   const [graphDimensions, setGraphDimensions] = useState({
     width: 800,
     height: 600,
@@ -414,6 +421,25 @@ export default function BaseGazetteVisualization({
             setActiveMinisterId((prev) => (prev === nodeId ? null : nodeId));
           } else {
             toggleNode?.();
+          }
+        }}
+        onMouseEnter={() => {
+          if (type === NodeType.Minister) {
+            const children = (nodeDatum.children ??
+              []) as RawNodeDatum[] | undefined;
+
+            const departments =
+              children?.map((child) => child.name).filter(Boolean) || [];
+
+            setHoveredMinister({
+              name: nodeDatum.name,
+              departments,
+            });
+          }
+        }}
+        onMouseLeave={() => {
+          if (type === NodeType.Minister) {
+            setHoveredMinister(null);
           }
         }}
       >
@@ -871,6 +897,23 @@ export default function BaseGazetteVisualization({
               )}
             </div>
           </div>
+
+          {/* Hovered Minister Departments */}
+          {hoveredMinister && hoveredMinister.departments.length > 0 && (
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                Departments under
+              </h3>
+              <p className="text-sm font-medium text-slate-700 mb-2">
+                {hoveredMinister.name}
+              </p>
+              <ul className="text-sm text-slate-600 list-disc list-inside space-y-1 max-h-48 overflow-auto">
+                {hoveredMinister.departments.map((dept) => (
+                  <li key={dept}>{dept}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Node Details */}
           {selectedNode && (
