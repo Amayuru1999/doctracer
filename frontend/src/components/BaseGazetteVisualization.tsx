@@ -4,8 +4,10 @@ import {
   getGazettes,
   getGazetteStructure,
   getGazetteFullDetails,
+  compareGazetteStructures,
   type GazetteStructure,
   type GazetteFullDetails,
+  type GazetteComparison,
 } from "../services/api";
 import {
   Building2,
@@ -17,6 +19,7 @@ import {
 
 interface BaseGazetteVisualizationProps {
   gazetteId?: string;
+  amendmentGazetteId?: string; // optional initial amendment id
 }
 
 interface GraphNode {
@@ -37,6 +40,8 @@ enum NodeType {
   Department = "department",
   Law = "law",
 }
+
+type ChangeStatus = "added" | "removed" | "modified" | "unchanged";
 
 const nodeStyleConfig: {
   [key in NodeType]: {
@@ -74,16 +79,24 @@ const nodeStyleConfig: {
 
 export default function BaseGazetteVisualization({
   gazetteId,
+  amendmentGazetteId,
 }: BaseGazetteVisualizationProps) {
   const [gazetteStructure, setGazetteStructure] =
     useState<GazetteStructure | null>(null);
   const [gazetteDetails, setGazetteDetails] =
     useState<GazetteFullDetails | null>(null);
+  const [comparison, setComparison] = useState<GazetteComparison | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // base + amendment ids managed in this screen
   const [selectedGazette, setSelectedGazette] = useState<string>(
     gazetteId || ""
   );
+  const [selectedAmendmentId, setSelectedAmendmentId] = useState<string>(
+    amendmentGazetteId || ""
+  );
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [graphDimensions, setGraphDimensions] = useState({
@@ -92,7 +105,7 @@ export default function BaseGazetteVisualization({
   });
   const [showPerformanceMode, setShowPerformanceMode] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
-
+  const [highlightChanges, setHighlightChanges] = useState(true);
 
   const [visibleMinisters, setVisibleMinisters] = useState(10);
   const [activeMinisterId, setActiveMinisterId] = useState<string | null>(null);
@@ -110,7 +123,7 @@ export default function BaseGazetteVisualization({
     } else {
       setLoading(false);
     }
-  }, [selectedGazette]);
+  }, [selectedGazette, selectedAmendmentId]);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -138,6 +151,7 @@ export default function BaseGazetteVisualization({
     try {
       setLoading(true);
       setError(null);
+      setComparison(null);
 
       const basicGazette = await getGazettes().then((gazettes) =>
         gazettes.find((g) => g.gazette_id === selectedGazette)
@@ -159,16 +173,29 @@ export default function BaseGazetteVisualization({
         )
       );
 
-      const [structure, details] = (await Promise.race([
-        Promise.all([
+      const dataPromise = (async () => {
+        const [structure, details, comparisonResult] = await Promise.all([
           getGazetteStructure(selectedGazette),
           getGazetteFullDetails(selectedGazette),
-        ]),
+          selectedAmendmentId
+            ? compareGazetteStructures(selectedGazette, selectedAmendmentId)
+            : Promise.resolve(null),
+        ]);
+        return { structure, details, comparisonResult };
+      })();
+
+      const { structure, details, comparisonResult } = (await Promise.race([
+        dataPromise,
         timeoutPromise,
-      ])) as [GazetteStructure, GazetteFullDetails];
+      ])) as {
+        structure: GazetteStructure;
+        details: GazetteFullDetails;
+        comparisonResult: GazetteComparison | null;
+      };
 
       setGazetteStructure(structure);
       setGazetteDetails(details);
+      setComparison(comparisonResult || null);
 
       setVisibleMinisters(10);
     } catch (err) {
@@ -184,41 +211,149 @@ export default function BaseGazetteVisualization({
   const treeData: RawNodeDatum | undefined = useMemo(() => {
     if (!gazetteStructure) return undefined;
 
-    const displayMinisters = gazetteStructure.ministers.slice(
-      0,
-      visibleMinisters
+    // Build change maps when comparison is available
+    const ministerStatus = new Map<string, ChangeStatus>();
+    const departmentStatus = new Map<string, ChangeStatus>();
+
+    if (comparison) {
+      comparison.changes.added_ministers.forEach((m: any) =>
+        ministerStatus.set(m.name, "added")
+      );
+      comparison.changes.removed_ministers.forEach((m: any) =>
+        ministerStatus.set(m.name, "removed")
+      );
+      comparison.changes.modified_ministers.forEach((m: any) =>
+        ministerStatus.set(m.name, "modified")
+      );
+
+      comparison.changes.added_departments.forEach((d: string) =>
+        departmentStatus.set(d, "added")
+      );
+      comparison.changes.removed_departments.forEach((d: string) =>
+        departmentStatus.set(d, "removed")
+      );
+    }
+
+    const baseMinisters = gazetteStructure.ministers;
+    const baseMinisterNames = new Set(baseMinisters.map((m) => m.name));
+
+    const displayMinisters = baseMinisters.slice(0, visibleMinisters);
+
+    const amendmentStructure = comparison?.amendment_gazette
+      ?.structure as GazetteStructure | undefined;
+
+    const addedMinisterNames = new Set(
+      comparison?.changes.added_ministers.map((m: any) => m.name) ?? []
     );
 
-    const ministerNodes: RawNodeDatum[] = displayMinisters.map(
-      (minister, idx) => {
-    
+    const filterBySearch = (name: string) => {
+      if (!searchTerm.trim()) return true;
+      return name.toLowerCase().includes(searchTerm.toLowerCase());
+    };
+
+    const ministerNodes: RawNodeDatum[] = displayMinisters
+      .filter((minister) => filterBySearch(minister.name))
+      .map((minister, idx) => {
         const ministerId = `minister-${idx}`;
-
-
         const isExpanded = activeMinisterId === ministerId;
+
+        const status: ChangeStatus =
+          ministerStatus.get(minister.name) ?? "unchanged";
 
         return {
           name: minister.name,
-          attributes: { id: ministerId, type: "minister" },
-      
+          attributes: {
+            id: ministerId,
+            type: "minister",
+            changeStatus: status,
+          },
           _collapsed: !isExpanded,
           children:
-            minister.departments?.map((dept: any, dIdx: number) => ({
-              name: typeof dept === "string" ? dept : dept.name,
-              attributes: { id: `dept-${idx}-${dIdx}`, type: "department" },
-              _collapsed: true,
-            })) || [],
+            minister.departments
+              ?.filter((dept: any) =>
+                filterBySearch(typeof dept === "string" ? dept : dept.name)
+              )
+              .map((dept: any, dIdx: number) => {
+                const deptName = typeof dept === "string" ? dept : dept.name;
+                const deptStatus: ChangeStatus =
+                  departmentStatus.get(deptName) ?? "unchanged";
+
+                return {
+                  name: deptName,
+                  attributes: {
+                    id: `dept-${idx}-${dIdx}`,
+                    type: "department",
+                    changeStatus: deptStatus,
+                  },
+                  _collapsed: true,
+                };
+              }) || [],
         };
-      }
-    );
+      });
+
+    // Extra nodes: ministers only in amendment (added)
+    const extraMinisters: RawNodeDatum[] = [];
+
+    if (comparison && amendmentStructure) {
+      addedMinisterNames.forEach((name) => {
+        if (baseMinisterNames.has(name)) return; // already in base tree
+        if (!filterBySearch(name)) return;
+
+        const amMinister = amendmentStructure.ministers.find(
+          (m) => m.name === name
+        );
+        if (!amMinister) return;
+
+        const ministerId = `added-minister-${name}`;
+        extraMinisters.push({
+          name,
+          attributes: {
+            id: ministerId,
+            type: "minister",
+            changeStatus: "added" as ChangeStatus,
+            isComparisonOnly: true,
+          },
+          // @ts-ignore: react-d3-tree internal property
+          _collapsed: false,
+          children:
+            amMinister.departments
+              ?.filter((dept: any) =>
+                filterBySearch(typeof dept === "string" ? dept : dept.name)
+              )
+              .map((dept: any, dIdx: number) => {
+                const deptName = typeof dept === "string" ? dept : dept.name;
+                const deptStatus: ChangeStatus =
+                  departmentStatus.get(deptName) ?? "unchanged";
+
+                return {
+                  name: deptName,
+                  attributes: {
+                    id: `added-dept-${name}-${dIdx}`,
+                    type: "department",
+                    changeStatus: deptStatus,
+                    isComparisonOnly: true,
+                  },
+                  // @ts-ignore: react-d3-tree internal property
+                  _collapsed: true,
+                };
+              }) || [],
+        });
+      });
+    }
 
     return {
       name: `Gazette ${gazetteStructure.gazette_id}`,
       attributes: { id: gazetteStructure.gazette_id, type: "gazette" },
-      children: ministerNodes,
+      children: [...ministerNodes, ...extraMinisters],
       _collapsed: false,
     };
-  }, [gazetteStructure, visibleMinisters, activeMinisterId]); 
+  }, [
+    gazetteStructure,
+    visibleMinisters,
+    activeMinisterId,
+    comparison,
+    searchTerm,
+  ]);
 
   const countNodes = (node: RawNodeDatum | undefined): number => {
     if (!node) return 0;
@@ -233,15 +368,37 @@ export default function BaseGazetteVisualization({
     nodeDatum,
     toggleNode,
   }: CustomNodeElementProps) => {
-    const type = (nodeDatum.attributes as any)?.type || NodeType.Minister;
+    const attrs = (nodeDatum.attributes || {}) as any;
+    const type = (attrs.type as NodeType) || NodeType.Minister;
     const styles = nodeStyleConfig[type as NodeType];
-    const nodeId = (nodeDatum.attributes as any)?.id;
+    const nodeId = attrs.id;
+
+    const changeStatus: ChangeStatus =
+      (attrs.changeStatus as ChangeStatus) || "unchanged";
+    const isComparisonOnly = !!attrs.isComparisonOnly;
+
+    const statusRingClass =
+      highlightChanges && changeStatus !== "unchanged"
+        ? changeStatus === "added"
+          ? "ring-2 ring-green-400"
+          : changeStatus === "removed"
+          ? "ring-2 ring-red-400"
+          : "ring-2 ring-yellow-400"
+        : "";
+
+    const statusLabel =
+      changeStatus === "added"
+        ? "Added in amendment"
+        : changeStatus === "removed"
+        ? "Removed in amendment"
+        : changeStatus === "modified"
+        ? "Modified"
+        : null;
 
     return (
       <g
         onClick={(e) => {
           e.stopPropagation();
-
 
           setSelectedNode({
             id: nodeId,
@@ -253,12 +410,9 @@ export default function BaseGazetteVisualization({
             details: nodeDatum.attributes,
           });
 
-        
           if (type === NodeType.Minister) {
-     
             setActiveMinisterId((prev) => (prev === nodeId ? null : nodeId));
           } else {
-         
             toggleNode?.();
           }
         }}
@@ -266,22 +420,46 @@ export default function BaseGazetteVisualization({
         <foreignObject width={220} height={90} x={10} y={-45}>
           <div
             className={`
-          ${styles.bg} ${styles.border} ${styles.text} ${styles.padding}
-          border rounded-xl shadow-sm backdrop-blur-sm
-          hover:shadow-md transition-all duration-200 cursor-pointer
-          flex items-center gap-2
-        `}
+              ${styles.bg} ${styles.border} ${styles.text} ${styles.padding}
+              border rounded-xl shadow-sm backdrop-blur-sm
+              hover:shadow-md transition-all duration-200 cursor-pointer
+              flex flex-col gap-1
+              ${statusRingClass}
+            `}
           >
-            <div className="flex-1 leading-tight ">
-              <div className="truncate" title={nodeDatum.name}>
-                {nodeDatum.name}
-              </div>
-              {nodeDatum.children?.length ? (
-                <div className="text-[10px] text-slate-500 mt-1">
-                  {nodeDatum.children.length} departments
+            <div className="flex items-center gap-2">
+              <div className="flex-1 leading-tight ">
+                <div className="truncate" title={nodeDatum.name}>
+                  {showLabels ? nodeDatum.name : ""}
                 </div>
-              ) : null}
+                {nodeDatum.children?.length ? (
+                  <div className="text-[10px] text-slate-500 mt-1">
+                    {nodeDatum.children.length} departments
+                  </div>
+                ) : null}
+              </div>
             </div>
+
+            {highlightChanges && statusLabel && (
+              <div className="flex items-center justify-between">
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full ${
+                    changeStatus === "added"
+                      ? "bg-green-100 text-green-800"
+                      : changeStatus === "removed"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {statusLabel}
+                </span>
+                {isComparisonOnly && (
+                  <span className="text-[9px] text-slate-400">
+                    (amendment only)
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </foreignObject>
       </g>
@@ -361,8 +539,10 @@ export default function BaseGazetteVisualization({
               onClick={() => {
                 setError(null);
                 setSelectedGazette("");
+                setSelectedAmendmentId("");
                 setGazetteStructure(null);
                 setGazetteDetails(null);
+                setComparison(null);
               }}
               className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
             >
@@ -416,13 +596,20 @@ export default function BaseGazetteVisualization({
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2">
             <input
               type="text"
               value={selectedGazette}
               onChange={(e) => setSelectedGazette(e.target.value)}
-              placeholder="Enter gazette ID (e.g., 1897/15)"
+              placeholder="Base gazette ID (e.g., 1897/15)"
               className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"
+            />
+            <input
+              type="text"
+              value={selectedAmendmentId}
+              onChange={(e) => setSelectedAmendmentId(e.target.value)}
+              placeholder="Amendment gazette ID (optional)"
+              className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300"
             />
             <button
               onClick={loadGazetteData}
@@ -475,11 +662,26 @@ export default function BaseGazetteVisualization({
             data from Neo4j for {selectedGazette}
           </p>
         </div>
+        {comparison && (
+          <div className="bg-indigo-500/20 border border-indigo-300/30 rounded-lg p-2 mt-2">
+            <p className="text-xs text-indigo-100">
+              Comparing base gazette{" "}
+              <span className="font-semibold">
+                {comparison.base_gazette.id}
+              </span>{" "}
+              with amendment{" "}
+              <span className="font-semibold">
+                {comparison.amendment_gazette.id}
+              </span>
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Control Bar */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
         <div className="flex flex-wrap items-center gap-4">
+          {/* Base gazette input */}
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-slate-700">
               Gazette:
@@ -488,16 +690,31 @@ export default function BaseGazetteVisualization({
               type="text"
               value={selectedGazette}
               onChange={(e) => setSelectedGazette(e.target.value)}
-              placeholder="Enter gazette ID"
+              placeholder="Base gazette ID"
               className="px-3 py-1 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
-            <button
-              onClick={loadGazetteData}
-              className="px-3 py-1 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm"
-            >
-              Load
-            </button>
           </div>
+
+          {/* Amendment gazette input */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-slate-700">
+              Amendment:
+            </label>
+            <input
+              type="text"
+              value={selectedAmendmentId}
+              onChange={(e) => setSelectedAmendmentId(e.target.value)}
+              placeholder="Amendment gazette ID (optional)"
+              className="px-3 py-1 border border-purple-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+            />
+          </div>
+
+          <button
+            onClick={loadGazetteData}
+            className="px-3 py-1 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm"
+          >
+            Load
+          </button>
 
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-slate-500" />
@@ -530,6 +747,18 @@ export default function BaseGazetteVisualization({
             <span className="text-slate-600">Show Labels</span>
           </label>
 
+          {comparison && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={highlightChanges}
+                onChange={(e) => setHighlightChanges(e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-slate-600">Highlight Changes</span>
+            </label>
+          )}
+
           <button
             onClick={exportGraph}
             className="flex items-center gap-2 px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
@@ -540,7 +769,6 @@ export default function BaseGazetteVisualization({
         </div>
       </div>
 
-    
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Graph Area */}
         <div className="lg:col-span-2">
@@ -580,7 +808,7 @@ export default function BaseGazetteVisualization({
                     data={treeData}
                     orientation="horizontal"
                     collapsible={true}
-                    initialDepth={1} 
+                    initialDepth={1}
                     depthFactor={500}
                     nodeSize={{ x: 300, y: 150 }}
                     pathFunc="diagonal"
@@ -596,9 +824,9 @@ export default function BaseGazetteVisualization({
           </div>
         </div>
 
- 
+        {/* Side Panel */}
         <div className="space-y-4">
-      
+          {/* Legend */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Legend
@@ -625,10 +853,26 @@ export default function BaseGazetteVisualization({
                 />
                 <span className="text-sm">Department</span>
               </div>
+              {comparison && (
+                <div className="mt-3 space-y-1 text-xs text-slate-600">
+                  <div>
+                    <span className="inline-block w-3 h-3 rounded-full bg-green-200 align-middle mr-1" />
+                    Added / amendment only
+                  </div>
+                  <div>
+                    <span className="inline-block w-3 h-3 rounded-full bg-red-200 align-middle mr-1" />
+                    Removed in amendment
+                  </div>
+                  <div>
+                    <span className="inline-block w-3 h-3 rounded-full bg-yellow-200 align-middle mr-1" />
+                    Modified
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-    
+          {/* Node Details */}
           {selectedNode && (
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
               <h3 className="text-lg font-semibold text-slate-800 mb-3">
@@ -669,7 +913,7 @@ export default function BaseGazetteVisualization({
             </div>
           )}
 
-      
+          {/* Statistics */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
             <h3 className="text-lg font-semibold text-slate-800 mb-3">
               Statistics
@@ -703,6 +947,39 @@ export default function BaseGazetteVisualization({
                 </span>
               </div>
 
+              {comparison ? (
+                <>
+                  <div className="flex justify-between mt-3 pt-3 border-t border-slate-100">
+                    <span className="text-slate-600 text-sm">
+                      Compared With:
+                    </span>
+                    <span className="font-medium text-sm text-indigo-700">
+                      {comparison.amendment_gazette.id} (
+                      {comparison.amendment_gazette.published_date})
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xs text-slate-500 space-y-1">
+                    <div>
+                      Added ministers:{" "}
+                      {comparison.changes.added_ministers.length}
+                    </div>
+                    <div>
+                      Removed ministers:{" "}
+                      {comparison.changes.removed_ministers.length}
+                    </div>
+                    <div>
+                      Modified ministers:{" "}
+                      {comparison.changes.modified_ministers.length}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-400">
+                  Enter an amendment gazette ID above to visualize differences
+                  (added, removed and modified ministries).
+                </p>
+              )}
+
               {/* Show All / Show Less Button */}
               {gazetteStructure.ministers.length > 10 && (
                 <div className="pt-4 border-t border-slate-100 mt-2">
@@ -711,9 +988,11 @@ export default function BaseGazetteVisualization({
                       if (
                         visibleMinisters >= gazetteStructure.ministers.length
                       ) {
-                        setVisibleMinisters(10); 
+                        setVisibleMinisters(10);
                       } else {
-                        setVisibleMinisters(gazetteStructure.ministers.length); 
+                        setVisibleMinisters(
+                          gazetteStructure.ministers.length
+                        );
                       }
                     }}
                     className={`w-full py-2.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 ${
