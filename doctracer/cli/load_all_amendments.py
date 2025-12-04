@@ -1,4 +1,3 @@
-# doctracer/cli/load_all_amendments.py
 import os
 import json
 import argparse
