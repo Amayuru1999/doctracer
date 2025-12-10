@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   getDashboardSummary,
   getGazettes,
@@ -13,6 +14,7 @@ import {
 } from "../services/api";
 import AmendmentTracker from "./AmendmentTracker";
 import BaseGazetteVisualization from "./BaseGazetteVisualization";
+import { useGovernment } from "../contexts/GovernmentContext";
 
 export default function Dashboard() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -30,6 +32,16 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<
     "structure" | "comparison" | "amendment-tracker" | "visualization"
   >("structure");
+
+  const { selectedGovernment } = useGovernment();
+  const params = useParams<{ presidentId?: string }>();
+  const routeParam = params?.presidentId;
+  const pathnameSegment =
+    typeof window !== "undefined"
+      ? window.location.pathname.split("/").filter(Boolean)[0]
+      : undefined;
+  const effectiveGovernment =
+    selectedGovernment || routeParam || pathnameSegment;
 
   useEffect(() => {
     loadDashboardData();
@@ -52,6 +64,13 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const govToPresidentName: { [key: string]: string } = {
+    maithripala: "Maithripala Sirisena",
+    gotabaya: "Gotabaya Rajapaksa",
+    ranil: "Ranil Wickremesinghe",
+    anura: "Anura Kumara Dissanayaka",
   };
 
   const handleGazetteSelect = async (gazetteId: string) => {
@@ -450,22 +469,31 @@ export default function Dashboard() {
     "2412/08": "Anura Kumara Dissanayaka",
   };
 
-  // const updatedGazettes: Gazette[] = gazettes.map((g) => ({
-  //   ...g,
-  //   president: presidentMapping[g.gazette_id] || "Unknown",
-  // }));
-
-  const updatedGazettes = gazettes
+  const updatedGazettesAll = gazettes
     .filter((g) => g.labels.includes("BaseGazette")) // ← filters only BaseGazette
     .map((g) => ({
       ...g,
       president: presidentMapping[g.gazette_id] || "Unknown",
     }));
 
+  // If a government is selected, filter base gazettes to only those matching the selected president
+  const filteredGazettes = effectiveGovernment
+    ? updatedGazettesAll.filter(
+        (g) => g.president === govToPresidentName[effectiveGovernment]
+      )
+    : updatedGazettesAll;
+
   const updatedAmendments = amendments.map((g) => ({
     ...g,
     president: presidentMapping[g.gazette_id] || "Unknown",
   }));
+
+  // Filter amendment gazettes by the effective government (context OR route param)
+  const filteredAmendments = effectiveGovernment
+    ? updatedAmendments.filter(
+        (a) => a.president === govToPresidentName[effectiveGovernment]
+      )
+    : updatedAmendments;
 
   console.log("Updated Amendments:", updatedAmendments);
 
@@ -539,19 +567,18 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2 ">
-              Select Base Gazette 
+              Select Base Gazette
             </label>
             <select
               value={selectedGazette?.gazette_id || ""}
               onChange={(e) => handleGazetteSelect(e.target.value)}
-              className="w-full  rounded-lg border-slate-300 text-sm"
+              className="w-full rounded-lg border-slate-300 text-sm"
             >
               <option value="">Select a base gazette...</option>
-              {updatedGazettes.map((g) => (
+              {filteredGazettes.map((g) => (
                 <option key={g.gazette_id} value={g.gazette_id}>
                   {g.gazette_id} — {g.published_date || "N/A"} — {g.president}
                 </option>
-                
               ))}
             </select>
           </div>
@@ -566,7 +593,7 @@ export default function Dashboard() {
               className="w-full max-w-full truncate rounded-lg border-slate-300 text-sm"
             >
               <option value="">Select an amendment gazette...</option>
-              {updatedAmendments.map((a) => (
+              {filteredAmendments.map((a) => (
                 <option key={a.gazette_id} value={a.gazette_id}>
                   {a.gazette_id} — {a.published_date || "N/A"} — {a.president}
                 </option>
