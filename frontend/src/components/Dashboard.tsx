@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
-  getDashboardSummary,
+  getDashboardSummary as fetchDashboardSummary,
   getGazettes,
   getAmendments,
   getGazetteStructure,
@@ -43,16 +43,33 @@ export default function Dashboard() {
   const effectiveGovernment =
     selectedGovernment || routeParam || pathnameSegment;
 
+  const govToPresidentName: { [key: string]: string } = {
+    maithripala: "Maithripala Sirisena",
+    gotabaya: "Gotabaya Rajapaksa",
+    ranil: "Ranil Wickremesinghe",
+    anura: "Anura Kumara Dissanayaka",
+  };
+
+  const presidentMapping: { [key: string]: string } = {
+    "2159/15": "Gotabaya Rajapaksa",
+    "2297/78": "Ranil Wickremesinghe",
+    "2153/12": "Gotabaya Rajapaksa",
+    "1905/4": "Maithripala Sirisena",
+    "1897/15": "Maithripala Sirisena",
+    "2289/43": "Ranil Wickremesinghe",
+    "2412/08": "Anura Kumara Dissanayaka",
+  };
+
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [effectiveGovernment]);
 
   const loadDashboardData = async () => {
     try {
       setLoading(true);
       setError(null);
       const [summaryData, gazettesData, amendmentsData] = await Promise.all([
-        getDashboardSummary(),
+        fetchDashboardSummary(),
         getGazettes(),
         getAmendments(),
       ]);
@@ -66,12 +83,46 @@ export default function Dashboard() {
     }
   };
 
-  const govToPresidentName: { [key: string]: string } = {
-    maithripala: "Maithripala Sirisena",
-    gotabaya: "Gotabaya Rajapaksa",
-    ranil: "Ranil Wickremesinghe",
-    anura: "Anura Kumara Dissanayaka",
+  const getDashboardSummary = async () => {
+    try {
+      const summary = await getDashboardSummary();
+      setSummary(summary);
+    } catch (err: any) {
+      setError(err.message || String(err));
+    }
   };
+
+  const getFilteredSummary = (rawSummary: DashboardSummary | null) => {
+    if (!rawSummary || !effectiveGovernment) return rawSummary;
+
+    const presidentName = govToPresidentName[effectiveGovernment];
+    if (!presidentName) return rawSummary;
+
+    // Filter recent gazettes by president
+    const filteredRecent = rawSummary.recent_gazettes.filter((g: any) => {
+      const gPresident = presidentMapping[g.gazette_id];
+      return gPresident === presidentName;
+    });
+
+    // Count base & amendment gazettes for this president
+    const baseCount = filteredRecent.filter((g: any) =>
+      g.labels?.includes("BaseGazette")
+    ).length;
+    const amendmentCount = filteredRecent.filter((g: any) =>
+      g.labels?.includes("AmendmentGazette")
+    ).length;
+
+    return {
+      ...rawSummary,
+      counts: {
+        BaseGazette: baseCount,
+        AmendmentGazette: amendmentCount,
+      },
+      recent_gazettes: filteredRecent,
+    };
+  };
+
+  const displaySummary = getFilteredSummary(summary);
 
   const handleGazetteSelect = async (gazetteId: string) => {
     const gazette = gazettes.find((g) => g.gazette_id === gazetteId);
@@ -459,16 +510,6 @@ export default function Dashboard() {
   console.log("Gazette are:", gazettes);
   console.log("Amendments", amendments);
 
-  const presidentMapping: { [key: string]: string } = {
-    "2159/15": "Gotabaya Rajapaksa",
-    "2297/78": "Ranil Wickremesinghe",
-    "2153/12": "Gotabaya Rajapaksa",
-    "1905/4": "Maithripala Sirisena",
-    "1897/15": "Maithripala Sirisena",
-    "2289/43": "Ranil Wickremesinghe",
-    "2412/08": "Anura Kumara Dissanayaka",
-  };
-
   const updatedGazettesAll = gazettes
     .filter((g) => g.labels.includes("BaseGazette")) // ← filters only BaseGazette
     .map((g) => ({
@@ -509,7 +550,7 @@ export default function Dashboard() {
       </div>
 
       {/* Summary Cards */}
-      {summary && (
+      {displaySummary && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between">
@@ -518,7 +559,7 @@ export default function Dashboard() {
                   Base Gazettes
                 </p>
                 <p className="text-2xl font-bold text-slate-900">
-                  {summary.counts.BaseGazette || 0}
+                  {displaySummary.counts.BaseGazette || 0}
                 </p>
               </div>
               <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -534,7 +575,7 @@ export default function Dashboard() {
                   Amendment Gazettes
                 </p>
                 <p className="text-2xl font-bold text-slate-900">
-                  {summary.counts.AmendmentGazette || 0}
+                  {displaySummary.counts.AmendmentGazette || 0}
                 </p>
               </div>
               <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -550,8 +591,8 @@ export default function Dashboard() {
                   Total Gazettes
                 </p>
                 <p className="text-2xl font-bold text-slate-900">
-                  {(summary.counts.BaseGazette || 0) +
-                    (summary.counts.AmendmentGazette || 0)}
+                  {(displaySummary.counts.BaseGazette || 0) +
+                    (displaySummary.counts.AmendmentGazette || 0)}
                 </p>
               </div>
               <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -572,7 +613,7 @@ export default function Dashboard() {
             <select
               value={selectedGazette?.gazette_id || ""}
               onChange={(e) => handleGazetteSelect(e.target.value)}
-              className="w-full rounded-lg border-slate-300 text-sm"
+              className="w-full rounded-lg border-slate-300 text-sm cursor-pointer"
             >
               <option value="">Select a base gazette...</option>
               {filteredGazettes.map((g) => (
@@ -590,7 +631,7 @@ export default function Dashboard() {
             <select
               value={selectedAmendment?.gazette_id || ""}
               onChange={(e) => handleAmendmentSelect(e.target.value)}
-              className="w-full max-w-full truncate rounded-lg border-slate-300 text-sm"
+              className="w-full max-w-full truncate rounded-lg border-slate-300 text-sm cursor-pointer"
             >
               <option value="">Select an amendment gazette...</option>
               {filteredAmendments.map((a) => (
