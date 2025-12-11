@@ -9,7 +9,7 @@
   "ministers": [
     {
       "name": "Minister of Defence",
-      "number": "1",
+      "number": "01",
       "departments": [
         "1. Sri Lanka Army",
         "2. Sri Lanka Navy",
@@ -68,7 +68,7 @@
     },
     {
       "name": "Minister of Mahaweli Development & Environment",
-      "number": "2",
+      "number": "02",
       "departments": [
         "1. Mahaweli Authority of Sri Lanka and its Subsidiary Companies and Associates (except Mahaweli Livestock Enterprise Company Ltd.)",
         "2. Central Engineering Consultancy Bureau (CECB)",
@@ -120,7 +120,7 @@
     },
     {
       "name": "Minister of Policy Planning, Economic Affairs, Child, Youth & Cultural Affairs",
-      "number": "3",
+      "number": "03",
       "departments": [
         "1. Department of National Planning",
         "2. Department of External Resources",
@@ -224,7 +224,7 @@
     },
     {
       "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-      "number": "4",
+      "number": "04",
       "departments": [
         "1. Department of Police",
         "2. Department of Immigration and Emigration",
@@ -273,7 +273,7 @@
     },
     {
       "name": "Minister of Home Affairs & Fisheries",
-      "number": "5",
+      "number": "05",
       "departments": [
         "1. All District Secretariats",
         "2. All Divisional Secretariats",
@@ -322,7 +322,7 @@
     },
     {
       "name": "Minister of Food Security",
-      "number": "6",
+      "number": "06",
       "departments": [
         "1. Department of Measurement Units, Standards and Services",
         "2. Department of Food Commissioner",
@@ -363,7 +363,7 @@
     },
     {
       "name": "Minister of Foreign Affairs",
-      "number": "7",
+      "number": "07",
       "departments": [
         "1. Diplomatic Missions Abroad",
         "2. Indian Ocean Marine Affairs Co-operation",
@@ -395,7 +395,7 @@
     },
     {
       "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
-      "number": "8",
+      "number": "08",
       "departments": [
         "1. Department of Management Services",
         "2. Sri Lanka Institute of Development Administration",
@@ -462,7 +462,7 @@
     },
     {
       "name": "Minister of Buddha Sasana",
-      "number": "9",
+      "number": "09",
       "departments": [
         "1. Department of Buddhist Affairs",
         "2. Buddha Sasana Fund",

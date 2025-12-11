@@ -58,6 +58,7 @@ export default function Dashboard() {
     "1897/15": "Maithripala Sirisena",
     "2289/43": "Ranil Wickremesinghe",
     "2412/08": "Anura Kumara Dissanayaka",
+    "2458/65": "Anura Kumara Dissanayaka",
   };
 
   useEffect(() => {
@@ -80,15 +81,6 @@ export default function Dashboard() {
       setError(err.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getDashboardSummary = async () => {
-    try {
-      const summary = await getDashboardSummary();
-      setSummary(summary);
-    } catch (err: any) {
-      setError(err.message || String(err));
     }
   };
 
