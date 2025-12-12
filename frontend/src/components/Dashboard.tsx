@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { KeyboardEvent } from "react";
 import { useParams } from "react-router-dom";
 import {
   getDashboardSummary as fetchDashboardSummary,
@@ -32,6 +33,8 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<
     "structure" | "comparison" | "amendment-tracker" | "visualization"
   >("structure");
+  const [expandedMinisters, setExpandedMinisters] = useState<Record<string, boolean>>({});
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   const { selectedGovernment } = useGovernment();
   const params = useParams<{ presidentId?: string }>();
@@ -228,64 +231,99 @@ export default function Dashboard() {
                 const ministryNumber = minister.number && minister.number !== 'Unknown' 
                   ? minister.number 
                   : `${String(index + 1).padStart(2, '0')}`;
+                const ministerKey = `${ministryNumber}-${minister.name}`; // shared key so base/amendment expand together
+                const isExpanded = !!expandedMinisters[ministerKey];
+
+                const handleToggle = () => {
+                  setExpandedMinisters((prev) => ({ ...prev, [ministerKey]: !prev[ministerKey] }));
+                };
+                const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleToggle();
+                  }
+                };
                 
                 return (
-                  <div key={index} className="bg-slate-50 rounded-lg p-4 border">
-                    <h5 className="font-medium text-slate-800 mb-2">
-                      {`${ministryNumber}. ${minister.name}`}
-                    </h5>
-
-                    {minister.functions && minister.functions.length > 0 && (
-                      <div className="mb-2">
-                        <span className="text-sm font-medium text-slate-600">
-                          Functions:
-                        </span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {minister.functions.map((func, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
-                            >
-                              {func}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {minister.departments.length > 0 && (
-                      <div className="mb-2">
-                        <span className="text-sm font-medium text-slate-600">
-                          Departments:
-                        </span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {minister.departments.map((dept, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
-                            >
-                              {dept}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {minister.laws.length > 0 && (
+                  <div
+                    key={ministerKey}
+                    className="bg-slate-50 rounded-lg p-4 border cursor-pointer hover:border-sky-200"
+                    onClick={handleToggle}
+                    onKeyDown={handleKeyDown}
+                    tabIndex={0}
+                    role="button"
+                    aria-expanded={isExpanded}
+                    aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${minister.name}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
                       <div>
-                        <span className="text-sm font-medium text-slate-600">
-                          Laws:
-                        </span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {minister.laws.map((law, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
-                            >
-                              {law}
+                        <h5 className="font-medium text-slate-800 mb-1">
+                          {`${ministryNumber}. ${minister.name}`}
+                        </h5>
+                        {!isExpanded && (
+                          <div className="text-xs text-slate-500">Click to view departments, functions, and laws</div>
+                        )}
+                      </div>
+                      <div className="text-sm text-slate-600" aria-hidden>
+                        {isExpanded ? "▾" : "▸"}
+                      </div>
+                    </div>
+
+                    {isExpanded && (
+                      <div className="mt-3 space-y-2">
+                        {minister.functions && minister.functions.length > 0 && (
+                          <div>
+                            <span className="text-sm font-medium text-slate-600">
+                              Functions:
                             </span>
-                          ))}
-                        </div>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {minister.functions.map((func, i) => (
+                                <span
+                                  key={i}
+                                  className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
+                                >
+                                  {func}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {minister.departments.length > 0 && (
+                          <div>
+                            <span className="text-sm font-medium text-slate-600">
+                              Departments:
+                            </span>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {minister.departments.map((dept, i) => (
+                                <span
+                                  key={i}
+                                  className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                                >
+                                  {dept}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {minister.laws.length > 0 && (
+                          <div>
+                            <span className="text-sm font-medium text-slate-600">
+                              Laws:
+                            </span>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {minister.laws.map((law, i) => (
+                                <span
+                                  key={i}
+                                  className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
+                                >
+                                  {law}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -296,64 +334,124 @@ export default function Dashboard() {
         )}
 
         {/* Standalone Departments */}
-        {structure.departments.length > 0 && (
-          <div>
-            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-              <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-              Departments ({structure.departments.length})
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {structure.departments.map((dept, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"
-                >
-                  {dept}
-                </span>
-              ))}
+        {structure.departments.length > 0 && (() => {
+          const sectionKey = "departments"; // shared so base/amendment stay in sync
+          const isExpanded = !!expandedSections[sectionKey];
+          const toggle = () => setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
+          const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+          };
+          return (
+            <div
+              className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
+              onClick={toggle}
+              onKeyDown={onKey}
+              tabIndex={0}
+              role="button"
+              aria-expanded={isExpanded}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                  <span className="font-medium text-slate-700">Departments ({structure.departments.length})</span>
+                </div>
+                <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
+              </div>
+              {isExpanded && (
+                <div className="flex flex-wrap gap-2">
+                  {structure.departments.map((dept, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"
+                    >
+                      {dept}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Standalone Functions */}
-        {(structure.functions || []).length > 0 && (
-          <div>
-            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-              <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
-              Functions ({(structure.functions || []).length})
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {(structure.functions || []).map((func, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded"
-                >
-                  {func}
-                </span>
-              ))}
+        {(structure.functions || []).length > 0 && (() => {
+          const sectionKey = "functions";
+          const isExpanded = !!expandedSections[sectionKey];
+          const toggle = () => setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
+          const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+          };
+          return (
+            <div
+              className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
+              onClick={toggle}
+              onKeyDown={onKey}
+              tabIndex={0}
+              role="button"
+              aria-expanded={isExpanded}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
+                  <span className="font-medium text-slate-700">Functions ({(structure.functions || []).length})</span>
+                </div>
+                <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
+              </div>
+              {isExpanded && (
+                <div className="flex flex-wrap gap-2">
+                  {(structure.functions || []).map((func, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded"
+                    >
+                      {func}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Standalone Laws */}
-        {structure.laws.length > 0 && (
-          <div>
-            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-              <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
-              Laws ({structure.laws.length})
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {structure.laws.map((law, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded"
-                >
-                  {law}
-                </span>
-              ))}
+        {structure.laws.length > 0 && (() => {
+          const sectionKey = "laws";
+          const isExpanded = !!expandedSections[sectionKey];
+          const toggle = () => setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
+          const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+          };
+          return (
+            <div
+              className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
+              onClick={toggle}
+              onKeyDown={onKey}
+              tabIndex={0}
+              role="button"
+              aria-expanded={isExpanded}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
+                  <span className="font-medium text-slate-700">Laws ({structure.laws.length})</span>
+                </div>
+                <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
+              </div>
+              {isExpanded && (
+                <div className="flex flex-wrap gap-2">
+                  {structure.laws.map((law, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded"
+                    >
+                      {law}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Raw Entities Debug */}
         {structure.raw_entities.length > 0 && (
