@@ -82,6 +82,7 @@ export interface DashboardSummary {
 
 export interface MinisterStructure {
   name: string;
+  number: string;
   departments: string[];
   laws: string[];
   functions: string[];
@@ -163,6 +164,7 @@ export interface GovernmentEvolutionFromBase extends GovernmentEvolution {
     added_ministers: MinisterStructure[];
     removed_ministers: MinisterStructure[];
     modified_ministers: Array<{
+      number: any;
       name: string;
       departments_added: string[];
       departments_removed: string[];

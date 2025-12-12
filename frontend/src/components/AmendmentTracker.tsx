@@ -140,6 +140,14 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
     }
   };
 
+  const sortMinistries = <T extends { number?: string; name?: string }>(items: T[]) =>
+    [...items].sort((a, b) => {
+      const numA = parseInt(a.number || '999', 10);
+      const numB = parseInt(b.number || '999', 10);
+      if (!Number.isNaN(numA) && !Number.isNaN(numB) && numA !== numB) return numA - numB;
+      return (a.name || '').localeCompare(b.name || '');
+    });
+
   if (loading) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
@@ -295,8 +303,8 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                       {change.added_ministers.length > 0 && (
                         <div className="text-xs">
                           <div className="font-medium text-slate-600">Ministries:</div>
-                          {change.added_ministers.map((minister, i) => (
-                            <div key={i} className="text-green-600 ml-2">• {minister.name}</div>
+                          {sortMinistries(change.added_ministers).map((minister, i) => (
+                            <div key={i} className="text-green-600 ml-2">• {`${minister.number}. ${minister.name}`}</div>
                           ))}
                         </div>
                       )}
@@ -326,8 +334,8 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                       {change.removed_ministers.length > 0 && (
                         <div className="text-xs">
                           <div className="font-medium text-slate-600">Ministries:</div>
-                          {change.removed_ministers.map((minister, i) => (
-                            <div key={i} className="text-red-600 ml-2">• {minister.name}</div>
+                          {sortMinistries(change.removed_ministers).map((minister, i) => (
+                            <div key={i} className="text-red-600 ml-2">• {`${minister.number}. ${minister.name}`}</div>
                           ))}
                         </div>
                       )}
@@ -357,9 +365,12 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                       {change.modified_ministers.length > 0 && (
                         <div className="text-xs">
                           <div className="font-medium text-slate-600">Ministries:</div>
-                          {change.modified_ministers.map((minister, i) => (
+                          {sortMinistries(change.modified_ministers).map((minister, i) => (
                             <div key={i} className="text-amber-600 ml-2">
-                              • {minister.name}
+                              {(() => {
+                                const displayNumber = minister.number || String(i + 1).padStart(2, '0');
+                                return `• ${displayNumber}. ${minister.name}`;
+                              })()}
                               {minister.departments_added.length > 0 && (
                                 <div className="ml-2 text-green-600">
                                   +{minister.departments_added.join(', ')}
@@ -567,7 +578,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                 {comparisonData.changes.added_ministers.length > 0 && (
                   <div>
                     <div className="text-xs font-medium text-slate-600 mb-1">Ministries:</div>
-                    {comparisonData.changes.added_ministers.map((minister, i) => (
+                    {sortMinistries(comparisonData.changes.added_ministers).map((minister, i) => (
                       <div key={i} className="text-xs text-green-600 bg-green-50 border border-green-200 rounded px-2 py-1 mb-1">
                         {minister.name}
                       </div>
@@ -607,7 +618,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                 {comparisonData.changes.removed_ministers.length > 0 && (
                   <div>
                     <div className="text-xs font-medium text-slate-600 mb-1">Ministries:</div>
-                    {comparisonData.changes.removed_ministers.map((minister, i) => (
+                    {sortMinistries(comparisonData.changes.removed_ministers).map((minister, i) => (
                       <div key={i} className="text-xs text-red-600 bg-red-50 border border-red-200 rounded px-2 py-1 mb-1">
                         {minister.name}
                       </div>
@@ -647,9 +658,14 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                 {comparisonData.changes.modified_ministers.length > 0 && (
                   <div>
                     <div className="text-xs font-medium text-slate-600 mb-1">Ministries:</div>
-                    {comparisonData.changes.modified_ministers.map((minister, i) => (
+                    {sortMinistries(comparisonData.changes.modified_ministers).map((minister, i) => (
                       <div key={i} className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1 mb-1">
-                        <div className="font-medium">{minister.name}</div>
+                        <div className="font-medium">
+                          {(() => {
+                            const displayNumber = minister.number || String(i + 1).padStart(2, '0');
+                            return `${displayNumber}. ${minister.name}`;
+                          })()}
+                        </div>
                         {minister.changes.map((change: any, j: number) => (
                           <div key={j} className="ml-2 text-xs">
                             {change.type === 'departments' && (
@@ -748,7 +764,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                          Added Ministers ({comparisonData.changes.added_ministers.length})
                        </h5>
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                         {comparisonData.changes.added_ministers.map((minister, index) => (
+                         {sortMinistries(comparisonData.changes.added_ministers).map((minister, index) => (
                            <div key={index} className="bg-green-50 border border-green-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                              <div className="flex items-start gap-3">
                                <div className="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600 text-lg">
@@ -808,7 +824,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                          Removed Ministers ({comparisonData.changes.removed_ministers.length})
                        </h5>
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                         {comparisonData.changes.removed_ministers.map((minister, index) => (
+                         {sortMinistries(comparisonData.changes.removed_ministers).map((minister, index) => (
                            <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                              <div className="flex items-start gap-3">
                                <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center text-red-600 text-lg">
@@ -868,7 +884,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                          Modified Ministers ({comparisonData.changes.modified_ministers.length})
                        </h5>
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                         {comparisonData.changes.modified_ministers.map((minister, index) => (
+                         {sortMinistries(comparisonData.changes.modified_ministers).map((minister, index) => (
                            <div key={index} className="bg-amber-50 border border-amber-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                              <div className="flex items-start gap-3">
                                <div className="h-10 w-10 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 text-lg">
@@ -876,7 +892,10 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                                </div>
                                <div className="flex-1 min-w-0">
                                  <h6 className="font-medium text-slate-800 text-sm leading-tight">
-                                   {minister.name}
+                                   {(() => {
+                                     const displayNumber = minister.number || String(index + 1).padStart(2, '0');
+                                     return `${displayNumber}. ${minister.name}`;
+                                   })()}
                                  </h6>
                                  {minister.changes && minister.changes.length > 0 && (
                                    <div className="mt-2">

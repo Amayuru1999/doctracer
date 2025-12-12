@@ -191,161 +191,184 @@ export default function Dashboard() {
     );
   }
 
+  const sortMinistries = <T extends { number?: string; name?: string }>(items: T[]) =>
+    [...items].sort((a, b) => {
+      const numA = parseInt(a.number || "999", 10);
+      const numB = parseInt(b.number || "999", 10);
+      if (!Number.isNaN(numA) && !Number.isNaN(numB) && numA !== numB) return numA - numB;
+      return (a.name || "").localeCompare(b.name || "");
+    });
+
   const renderGovernmentStructure = (
     structure: GazetteStructure,
     title: string
-  ) => (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-slate-800 border-b pb-2">
-        {title}
-      </h3>
+  ) => {
+    // Sort ministers by their actual number from Neo4j
+    const sortedMinisters = [...structure.ministers].sort((a, b) => {
+      const numA = parseInt(a.number || "999", 10);
+      const numB = parseInt(b.number || "999", 10);
+      return numA - numB;
+    });
 
-      {/* Ministers */}
-      {structure.ministers.length > 0 && (
-        <div>
-          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-            <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-            Ministers ({structure.ministers.length})
-          </h4>
-          <div className="space-y-3">
-            {structure.ministers.map((minister, index) => (
-              <div key={index} className="bg-slate-50 rounded-lg p-4 border">
-                <h5 className="font-medium text-slate-800 mb-2">
-                  {minister.name}
-                </h5>
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-slate-800 border-b pb-2">
+          {title}
+        </h3>
 
-                {minister.functions && minister.functions.length > 0 && (
-                  <div className="mb-2">
-                    <span className="text-sm font-medium text-slate-600">
-                      Functions:
-                    </span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {minister.functions.map((func, i) => (
-                        <span
-                          key={i}
-                          className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
-                        >
-                          {func}
+        {/* Ministers */}
+        {sortedMinisters.length > 0 && (
+          <div>
+            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+              <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+              Ministers ({sortedMinisters.length})
+            </h4>
+            <div className="space-y-3">
+              {sortedMinisters.map((minister, index) => {
+                const ministryNumber = minister.number && minister.number !== 'Unknown' 
+                  ? minister.number 
+                  : `${String(index + 1).padStart(2, '0')}`;
+                
+                return (
+                  <div key={index} className="bg-slate-50 rounded-lg p-4 border">
+                    <h5 className="font-medium text-slate-800 mb-2">
+                      {`${ministryNumber}. ${minister.name}`}
+                    </h5>
+
+                    {minister.functions && minister.functions.length > 0 && (
+                      <div className="mb-2">
+                        <span className="text-sm font-medium text-slate-600">
+                          Functions:
                         </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {minister.functions.map((func, i) => (
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
+                            >
+                              {func}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-                {minister.departments.length > 0 && (
-                  <div className="mb-2">
-                    <span className="text-sm font-medium text-slate-600">
-                      Departments:
-                    </span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {minister.departments.map((dept, i) => (
-                        <span
-                          key={i}
-                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
-                        >
-                          {dept}
+                    {minister.departments.length > 0 && (
+                      <div className="mb-2">
+                        <span className="text-sm font-medium text-slate-600">
+                          Departments:
                         </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {minister.departments.map((dept, i) => (
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                            >
+                              {dept}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-                {minister.laws.length > 0 && (
-                  <div>
-                    <span className="text-sm font-medium text-slate-600">
-                      Laws:
-                    </span>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {minister.laws.map((law, i) => (
-                        <span
-                          key={i}
-                          className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
-                        >
-                          {law}
+                    {minister.laws.length > 0 && (
+                      <div>
+                        <span className="text-sm font-medium text-slate-600">
+                          Laws:
                         </span>
-                      ))}
-                    </div>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {minister.laws.map((law, i) => (
+                            <span
+                              key={i}
+                              className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
+                            >
+                              {law}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Standalone Departments */}
-      {structure.departments.length > 0 && (
-        <div>
-          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-            <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-            Departments ({structure.departments.length})
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {structure.departments.map((dept, i) => (
-              <span
-                key={i}
-                className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"
-              >
-                {dept}
-              </span>
-            ))}
+        {/* Standalone Departments */}
+        {structure.departments.length > 0 && (
+          <div>
+            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+              <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+              Departments ({structure.departments.length})
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {structure.departments.map((dept, i) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"
+                >
+                  {dept}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Standalone Functions */}
-      {(structure.functions || []).length > 0 && (
-        <div>
-          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-            <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
-            Functions ({(structure.functions || []).length})
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {(structure.functions || []).map((func, i) => (
-              <span
-                key={i}
-                className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded"
-              >
-                {func}
-              </span>
-            ))}
+        {/* Standalone Functions */}
+        {(structure.functions || []).length > 0 && (
+          <div>
+            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+              <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
+              Functions ({(structure.functions || []).length})
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {(structure.functions || []).map((func, i) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded"
+                >
+                  {func}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Standalone Laws */}
-      {structure.laws.length > 0 && (
-        <div>
-          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
-            <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
-            Laws ({structure.laws.length})
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {structure.laws.map((law, i) => (
-              <span
-                key={i}
-                className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded"
-              >
-                {law}
-              </span>
-            ))}
+        {/* Standalone Laws */}
+        {structure.laws.length > 0 && (
+          <div>
+            <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+              <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
+              Laws ({structure.laws.length})
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {structure.laws.map((law, i) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded"
+                >
+                  {law}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Raw Entities Debug */}
-      {structure.raw_entities.length > 0 && (
-        <details className="mt-4">
-          <summary className="text-sm font-medium text-slate-600 cursor-pointer">
-            Debug: Raw Entities ({structure.raw_entities.length})
-          </summary>
-          <div className="mt-2 p-3 bg-gray-100 rounded text-xs">
-            <pre>{JSON.stringify(structure.raw_entities, null, 2)}</pre>
-          </div>
-        </details>
-      )}
-    </div>
-  );
+        {/* Raw Entities Debug */}
+        {structure.raw_entities.length > 0 && (
+          <details className="mt-4">
+            <summary className="text-sm font-medium text-slate-600 cursor-pointer">
+              Debug: Raw Entities ({structure.raw_entities.length})
+            </summary>
+            <div className="mt-2 p-3 bg-gray-100 rounded text-xs">
+              <pre>{JSON.stringify(structure.raw_entities, null, 2)}</pre>
+            </div>
+          </details>
+        )}
+      </div>
+    );
+  };
 
   const renderComparison = (comparison: GazetteComparison) => (
     <div className="space-y-6">
@@ -418,14 +441,19 @@ export default function Dashboard() {
             <div>Ministers: {comparison.changes.added_ministers.length}</div>
             {comparison.changes.added_ministers.length > 0 && (
               <div className="mt-2">
-                {comparison.changes.added_ministers.map((minister, i) => (
-                  <div
-                    key={i}
-                    className="text-xs bg-green-100 px-2 py-1 rounded mb-1"
-                  >
-                    {minister.name}
-                  </div>
-                ))}
+                {sortMinistries(comparison.changes.added_ministers).map((minister, i) => {
+                  const displayNumber = minister.number && minister.number !== "Unknown"
+                    ? minister.number
+                    : String(i + 1).padStart(2, "0");
+                  return (
+                    <div
+                      key={i}
+                      className="text-xs bg-green-100 px-2 py-1 rounded mb-1"
+                    >
+                      {`${displayNumber}. ${minister.name}`}
+                    </div>
+                  );
+                })}
               </div>
             )}
             <div>
@@ -444,14 +472,19 @@ export default function Dashboard() {
             <div>Ministers: {comparison.changes.removed_ministers.length}</div>
             {comparison.changes.removed_ministers.length > 0 && (
               <div className="mt-2 max-h-32 overflow-y-auto">
-                {comparison.changes.removed_ministers.map((minister, i) => (
-                  <div
-                    key={i}
-                    className="text-xs bg-red-100 px-2 py-1 rounded mb-1"
-                  >
-                    {minister.name}
-                  </div>
-                ))}
+                {sortMinistries(comparison.changes.removed_ministers).map((minister, i) => {
+                  const displayNumber = minister.number && minister.number !== "Unknown"
+                    ? minister.number
+                    : String(i + 1).padStart(2, "0");
+                  return (
+                    <div
+                      key={i}
+                      className="text-xs bg-red-100 px-2 py-1 rounded mb-1"
+                    >
+                      {`${displayNumber}. ${minister.name}`}
+                    </div>
+                  );
+                })}
               </div>
             )}
             <div>
@@ -470,14 +503,19 @@ export default function Dashboard() {
             <div>Ministers: {comparison.changes.modified_ministers.length}</div>
             {comparison.changes.modified_ministers.length > 0 && (
               <div className="mt-2">
-                {comparison.changes.modified_ministers.map((minister, i) => (
-                  <div
-                    key={i}
-                    className="text-xs bg-yellow-100 px-2 py-1 rounded mb-1"
-                  >
-                    {minister.name}
-                  </div>
-                ))}
+                {sortMinistries(comparison.changes.modified_ministers).map((minister, i) => {
+                  const displayNumber = minister.number && minister.number !== "Unknown"
+                    ? minister.number
+                    : String(i + 1).padStart(2, "0");
+                  return (
+                    <div
+                      key={i}
+                      className="text-xs bg-yellow-100 px-2 py-1 rounded mb-1"
+                    >
+                      {`${displayNumber}. ${minister.name}`}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

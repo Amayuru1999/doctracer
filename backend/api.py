@@ -468,8 +468,10 @@ def get_gazette_structure(gazette_id):
                 minister = record['m']
                 if minister:
                     minister_name = minister.get('name', 'Unknown')
+                    minister_number = minister.get('number', 'Unknown')
                     ministers_map[minister_name] = {
                         'name': minister_name,
+                        'number': minister_number,
                         'departments': [],
                         'laws': [],
                         'functions': []
@@ -679,16 +681,16 @@ def get_base_gazette_from_neo4j(base_id):
     logger.debug(f"Loading base gazette {base_id} from Neo4j")
 
     with driver.session() as session:
-        # Ministers
+        # Ministers with their numbers
         ministers_result = session.run("""
             MATCH (g:BaseGazette {gazette_id: $gazette_id})
             MATCH (g)-[:HAS_MINISTER]->(m)
             WHERE m:BaseMinister OR m:Minister
-            RETURN DISTINCT m.name as minister_name
+            RETURN DISTINCT m.name as minister_name, m.number as minister_number
         """, gazette_id=base_id)
 
-        ministers = [record['minister_name'] for record in ministers_result]
-        logger.debug(f"Found {len(ministers)} ministers in base gazette")
+        ministers_list = [{'name': record['minister_name'], 'number': record['minister_number']} for record in ministers_result]
+        logger.debug(f"Found {len(ministers_list)} ministers in base gazette")
 
         # Departments
         dept_result = session.run("""
@@ -697,7 +699,7 @@ def get_base_gazette_from_neo4j(base_id):
             WHERE m:BaseMinister OR m:Minister
             OPTIONAL MATCH (m)-[:OVERSEES_DEPARTMENT]->(d)
             WHERE d:BaseDepartment OR d:Department
-            RETURN m.name as minister_name, collect(DISTINCT d.name) as departments
+            RETURN m.name as minister_name, m.number as minister_number, collect(DISTINCT d.name) as departments
         """, gazette_id=base_id)
 
         # Laws
@@ -707,7 +709,7 @@ def get_base_gazette_from_neo4j(base_id):
             WHERE m:BaseMinister OR m:Minister
             OPTIONAL MATCH (m)-[:RESPONSIBLE_FOR_LAW]->(l)
             WHERE l:BaseLaw OR l:Law
-            RETURN m.name as minister_name, collect(DISTINCT l.name) as laws
+            RETURN m.name as minister_name, m.number as minister_number, collect(DISTINCT l.name) as laws
         """, gazette_id=base_id)
 
         # Functions
@@ -717,7 +719,7 @@ def get_base_gazette_from_neo4j(base_id):
             WHERE m:BaseMinister OR m:Minister
             OPTIONAL MATCH (m)-[:HAS_FUNCTION]->(f)
             WHERE f:BaseFunction OR f:Function
-            RETURN m.name as minister_name, collect(DISTINCT f.name) as functions
+            RETURN m.name as minister_name, m.number as minister_number, collect(DISTINCT f.name) as functions
         """, gazette_id=base_id)
 
         ministers_map = {}
@@ -725,9 +727,12 @@ def get_base_gazette_from_neo4j(base_id):
         all_laws = set()
         all_functions = set()
 
-        for minister_name in ministers:
+        for minister_info in ministers_list:
+            minister_name = minister_info['name']
+            minister_number = minister_info['number']
             ministers_map[minister_name] = {
                 'name': minister_name,
+                'number': minister_number,
                 'departments': [],
                 'laws': [],
                 'functions': []
@@ -970,7 +975,13 @@ def simulate_final_structure(base_structure, amendment_changes):
 
     def _ensure_minister(name):
         if name not in ministers_map:
-            ministers_map[name] = {'name': name, 'departments': [], 'laws': [], 'functions': []}
+            ministers_map[name] = {
+                'name': name,
+                'number': 'Unknown',  # Default for new ministers not in base
+                'departments': [],
+                'laws': [],
+                'functions': []
+            }
             final_structure['ministers'].append(ministers_map[name])
         return ministers_map[name]
 
@@ -1147,6 +1158,7 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
 
                     changes = {
                         'name': name,
+                        'number': base_m.get('number') or final_m.get('number'),
                         'base': base_m,
                         'amendment': final_m,
                         'changes': []
