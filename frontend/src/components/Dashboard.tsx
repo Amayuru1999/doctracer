@@ -214,6 +214,24 @@ export default function Dashboard() {
                   {minister.name}
                 </h5>
 
+                {minister.functions && minister.functions.length > 0 && (
+                  <div className="mb-2">
+                    <span className="text-sm font-medium text-slate-600">
+                      Functions:
+                    </span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {minister.functions.map((func, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
+                        >
+                          {func}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {minister.departments.length > 0 && (
                   <div className="mb-2">
                     <span className="text-sm font-medium text-slate-600">
@@ -269,6 +287,26 @@ export default function Dashboard() {
                 className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"
               >
                 {dept}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Standalone Functions */}
+      {(structure.functions || []).length > 0 && (
+        <div>
+          <h4 className="font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
+            Functions ({(structure.functions || []).length})
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {(structure.functions || []).map((func, i) => (
+              <span
+                key={i}
+                className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded"
+              >
+                {func}
               </span>
             ))}
           </div>
@@ -393,6 +431,9 @@ export default function Dashboard() {
             <div>
               Departments: {comparison.changes.added_departments.length}
             </div>
+            <div>
+              Functions: {(comparison.changes.added_functions || []).length}
+            </div>
             <div>Laws: {comparison.changes.added_laws.length}</div>
           </div>
         </div>
@@ -415,6 +456,9 @@ export default function Dashboard() {
             )}
             <div>
               Departments: {comparison.changes.removed_departments.length}
+            </div>
+            <div>
+              Functions: {(comparison.changes.removed_functions || []).length}
             </div>
             <div>Laws: {comparison.changes.removed_laws.length}</div>
           </div>
@@ -450,7 +494,9 @@ export default function Dashboard() {
                 comparison.changes.added_departments.length +
                 comparison.changes.removed_departments.length +
                 comparison.changes.added_laws.length +
-                comparison.changes.removed_laws.length}
+                comparison.changes.removed_laws.length +
+                (comparison.changes.added_functions || []).length +
+                (comparison.changes.removed_functions || []).length}
             </div>
           </div>
         </div>

@@ -84,6 +84,7 @@ export interface MinisterStructure {
   name: string;
   departments: string[];
   laws: string[];
+  functions: string[];
 }
 
 export interface GazetteStructure {
@@ -91,6 +92,7 @@ export interface GazetteStructure {
   ministers: MinisterStructure[];
   departments: string[];
   laws: string[];
+  functions?: string[];
   raw_entities: any[];
 }
 
@@ -115,6 +117,8 @@ export interface GazetteComparison {
     removed_departments: string[];
     added_laws: string[];
     removed_laws: string[];
+    added_functions?: string[];
+    removed_functions?: string[];
   };
 }
 

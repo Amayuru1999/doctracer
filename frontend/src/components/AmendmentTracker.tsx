@@ -23,7 +23,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | undefined>();
   const [viewMode, setViewMode] = useState<'evolution' | 'comparison'>('evolution');
-  const [activeTab, setActiveTab] = useState<'ministries' | 'departments' | 'laws'>('ministries');
+  const [activeTab, setActiveTab] = useState<'ministries' | 'departments' | 'laws' | 'functions'>('ministries');
 
   useEffect(() => {
     loadInitialData();
@@ -708,6 +708,19 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                 </span>
               </button>
               <button
+                onClick={() => setActiveTab('functions')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'functions'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <span>⚙️</span>
+                  Functions ({(comparisonData.base_gazette.structure.functions?.length || 0) + (comparisonData.amendment_gazette.structure.functions?.length || 0)})
+                </span>
+              </button>
+              <button
                 onClick={() => setActiveTab('laws')}
                 className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                   activeTab === 'laws'
@@ -745,18 +758,35 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                                  <h6 className="font-medium text-slate-800 text-sm leading-tight">
                                    {minister.name}
                                  </h6>
+                                 {minister.functions && minister.functions.length > 0 && (
+                                   <div className="mt-2">
+                                     <div className="text-xs font-medium text-slate-600 mb-1">Functions:</div>
+                                     <div className="space-y-1">
+                                       {minister.functions.slice(0, 2).map((func, i) => (
+                                         <div key={i} className="text-xs text-slate-500 bg-white rounded px-2 py-1 border">
+                                           {func}
+                                         </div>
+                                       ))}
+                                       {minister.functions.length > 2 && (
+                                         <div className="text-xs text-slate-400">
+                                           +{minister.functions.length - 2} more
+                                         </div>
+                                       )}
+                                     </div>
+                                   </div>
+                                 )}
                                  {minister.departments && minister.departments.length > 0 && (
                                    <div className="mt-2">
                                      <div className="text-xs font-medium text-slate-600 mb-1">Departments:</div>
                                      <div className="space-y-1">
-                                       {minister.departments.slice(0, 3).map((dept, i) => (
+                                       {minister.departments.slice(0, 2).map((dept, i) => (
                                          <div key={i} className="text-xs text-slate-500 bg-white rounded px-2 py-1 border">
                                            {dept}
                                          </div>
                                        ))}
-                                       {minister.departments.length > 3 && (
+                                       {minister.departments.length > 2 && (
                                          <div className="text-xs text-slate-400">
-                                           +{minister.departments.length - 3} more
+                                           +{minister.departments.length - 2} more
                                          </div>
                                        )}
                                      </div>
@@ -788,18 +818,35 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                                  <h6 className="font-medium text-slate-800 text-sm leading-tight">
                                    {minister.name}
                                  </h6>
+                                 {minister.functions && minister.functions.length > 0 && (
+                                   <div className="mt-2">
+                                     <div className="text-xs font-medium text-slate-600 mb-1">Functions:</div>
+                                     <div className="space-y-1">
+                                       {minister.functions.slice(0, 2).map((func, i) => (
+                                         <div key={i} className="text-xs text-slate-500 bg-white rounded px-2 py-1 border">
+                                           {func}
+                                         </div>
+                                       ))}
+                                       {minister.functions.length > 2 && (
+                                         <div className="text-xs text-slate-400">
+                                           +{minister.functions.length - 2} more
+                                         </div>
+                                       )}
+                                     </div>
+                                   </div>
+                                 )}
                                  {minister.departments && minister.departments.length > 0 && (
                                    <div className="mt-2">
                                      <div className="text-xs font-medium text-slate-600 mb-1">Departments:</div>
                                      <div className="space-y-1">
-                                       {minister.departments.slice(0, 3).map((dept, i) => (
+                                       {minister.departments.slice(0, 2).map((dept, i) => (
                                          <div key={i} className="text-xs text-slate-500 bg-white rounded px-2 py-1 border">
                                            {dept}
                                          </div>
                                        ))}
-                                       {minister.departments.length > 3 && (
+                                       {minister.departments.length > 2 && (
                                          <div className="text-xs text-slate-400">
-                                           +{minister.departments.length - 3} more
+                                           +{minister.departments.length - 2} more
                                          </div>
                                        )}
                                      </div>
@@ -1009,6 +1056,72 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                      <div className="text-center py-8 text-slate-500">
                        <div className="text-lg mb-2">📜</div>
                        <div>No law changes found between these gazettes</div>
+                     </div>
+                   )}
+                 </div>
+               )}
+
+               {/* Functions Tab */}
+               {activeTab === 'functions' && (
+                 <div className="space-y-6">
+                   {/* Added Functions */}
+                   {(comparisonData.changes.added_functions?.length || 0) > 0 && (
+                     <div>
+                       <h5 className="text-md font-semibold text-green-700 mb-4 flex items-center gap-2">
+                         <span className="w-3 h-3 rounded-full bg-green-500"></span>
+                         Added Functions ({comparisonData.changes.added_functions?.length || 0})
+                       </h5>
+                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                         {(comparisonData.changes.added_functions || []).map((func, index) => (
+                           <div key={index} className="bg-green-50 border border-green-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                             <div className="flex items-start gap-3">
+                               <div className="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600 text-lg">
+                                 ➕
+                               </div>
+                               <div className="flex-1 min-w-0">
+                                 <h6 className="font-medium text-slate-800 text-sm leading-tight">
+                                   {func}
+                                 </h6>
+                               </div>
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* Removed Functions */}
+                   {(comparisonData.changes.removed_functions?.length || 0) > 0 && (
+                     <div>
+                       <h5 className="text-md font-semibold text-red-700 mb-4 flex items-center gap-2">
+                         <span className="w-3 h-3 rounded-full bg-red-500"></span>
+                         Removed Functions ({comparisonData.changes.removed_functions?.length || 0})
+                       </h5>
+                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                         {(comparisonData.changes.removed_functions || []).map((func, index) => (
+                           <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                             <div className="flex items-start gap-3">
+                               <div className="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center text-red-600 text-lg">
+                                 ➖
+                               </div>
+                               <div className="flex-1 min-w-0">
+                                 <h6 className="font-medium text-slate-800 text-sm leading-tight">
+                                   {func}
+                                 </h6>
+                               </div>
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* No Changes Message */}
+                   {(!comparisonData.changes.added_functions || comparisonData.changes.added_functions.length === 0) && 
+                    (!comparisonData.changes.removed_functions || comparisonData.changes.removed_functions.length === 0) && (
+                     <div className="text-center py-8 text-slate-500">
+                       <div className="text-lg mb-2">⚙️</div>
+                       <div>No function changes found between these gazettes</div>
                      </div>
                    )}
                  </div>

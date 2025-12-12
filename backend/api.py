@@ -407,6 +407,7 @@ def get_gazette_structure(gazette_id):
                     'ministers': [],
                     'departments': [],
                     'laws': [],
+                    'functions': [],
                     'raw_entities': [],
                     'error': 'Gazette not found or is not a BaseGazette'
                 })
@@ -439,17 +440,29 @@ def get_gazette_structure(gazette_id):
                 RETURN m.name as minister_name, collect(DISTINCT l.name) as laws
             """, gazette_id=decoded_gazette_id)
 
+            # Functions per minister (BaseFunction OR Function)
+            func_result = session.run("""
+                MATCH (g:BaseGazette {gazette_id: $gazette_id})
+                MATCH (g)-[:HAS_MINISTER]->(m)
+                WHERE m:BaseMinister OR m:Minister
+                OPTIONAL MATCH (m)-[:HAS_FUNCTION]->(f)
+                WHERE f:BaseFunction OR f:Function
+                RETURN m.name as minister_name, collect(DISTINCT f.name) as functions
+            """, gazette_id=decoded_gazette_id)
+
             structure = {
                 'gazette_id': decoded_gazette_id,
                 'ministers': [],
                 'departments': [],
                 'laws': [],
+                'functions': [],
                 'raw_entities': []
             }
 
             ministers_map = {}
             departments_set = set()
             laws_set = set()
+            functions_set = set()
 
             for record in result:
                 minister = record['m']
@@ -458,7 +471,8 @@ def get_gazette_structure(gazette_id):
                     ministers_map[minister_name] = {
                         'name': minister_name,
                         'departments': [],
-                        'laws': []
+                        'laws': [],
+                        'functions': []
                     }
 
             for record in dept_result:
@@ -475,9 +489,17 @@ def get_gazette_structure(gazette_id):
                     ministers_map[minister_name]['laws'] = [l for l in laws if l is not None]
                     laws_set.update(ministers_map[minister_name]['laws'])
 
+            for record in func_result:
+                minister_name = record['minister_name']
+                functions = record['functions'] or []
+                if minister_name in ministers_map:
+                    ministers_map[minister_name]['functions'] = [f for f in functions if f is not None]
+                    functions_set.update(ministers_map[minister_name]['functions'])
+
             structure['ministers'] = list(ministers_map.values())
             structure['departments'] = list(departments_set)
             structure['laws'] = list(laws_set)
+            structure['functions'] = list(functions_set)
 
             logger.debug(
                 f"Structure for {decoded_gazette_id}: "
@@ -494,6 +516,7 @@ def get_gazette_structure(gazette_id):
             'ministers': [],
             'departments': [],
             'laws': [],
+            'functions': [],
             'raw_entities': [],
             'error': str(e)
         }), 500
@@ -700,6 +723,7 @@ def get_base_gazette_from_neo4j(base_id):
         ministers_map = {}
         all_departments = set()
         all_laws = set()
+        all_functions = set()
 
         for minister_name in ministers:
             ministers_map[minister_name] = {
@@ -728,11 +752,13 @@ def get_base_gazette_from_neo4j(base_id):
             functions = [f for f in (record['functions'] or []) if f is not None]
             if minister_name in ministers_map:
                 ministers_map[minister_name]['functions'] = functions
+                all_functions.update(functions)
 
         structure = {
             'ministers': list(ministers_map.values()),
             'departments': list(all_departments),
             'laws': list(all_laws),
+            'functions': list(all_functions),
             'raw_entities': []
         }
 
@@ -996,12 +1022,14 @@ def simulate_final_structure(base_structure, amendment_changes):
                 minister[field] = tmp
 
     # Recompute top-level unions
-    all_depts, all_laws = set(), set()
+    all_depts, all_laws, all_funcs = set(), set(), set()
     for m in final_structure['ministers']:
         all_depts.update(m.get('departments', []))
         all_laws.update(m.get('laws', []))
+        all_funcs.update(m.get('functions', []))
     final_structure['departments'] = list(all_depts)
     final_structure['laws'] = list(all_laws)
+    final_structure['functions'] = list(all_funcs)
 
     return final_structure
 
@@ -1174,7 +1202,9 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
                 'added_departments': list(set(amendment_structure.get('departments', [])) - set(base_structure.get('departments', []))),
                 'removed_departments': list(set(base_structure.get('departments', [])) - set(amendment_structure.get('departments', []))),
                 'added_laws': list(set(amendment_structure.get('laws', [])) - set(base_structure.get('laws', []))),
-                'removed_laws': list(set(base_structure.get('laws', [])) - set(amendment_structure.get('laws', [])))
+                'removed_laws': list(set(base_structure.get('laws', [])) - set(amendment_structure.get('laws', []))),
+                'added_functions': list(set(amendment_structure.get('functions', [])) - set(base_structure.get('functions', []))),
+                'removed_functions': list(set(base_structure.get('functions', [])) - set(amendment_structure.get('functions', [])))
             }
         })
 
