@@ -35,6 +35,7 @@ export default function Dashboard() {
   >("structure");
   const [expandedMinisters, setExpandedMinisters] = useState<Record<string, boolean>>({});
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [expandedMinisterSections, setExpandedMinisterSections] = useState<Record<string, Record<string, boolean>>>({});
 
   const { selectedGovernment } = useGovernment();
   const params = useParams<{ presidentId?: string }>();
@@ -204,7 +205,23 @@ export default function Dashboard() {
 
   const renderGovernmentStructure = (
     structure: GazetteStructure,
-    title: string
+    title: string,
+    highlights?: {
+      ministersAdded?: Set<string>;
+      ministersRemoved?: Set<string>;
+      ministersModified?: Set<string>;
+      departmentsAdded?: Set<string>;
+      departmentsRemoved?: Set<string>;
+      functionsAdded?: Set<string>;
+      functionsRemoved?: Set<string>;
+      lawsAdded?: Set<string>;
+      lawsRemoved?: Set<string>;
+    },
+    ministerAlignmentData?: Map<string, {
+      allFunctions: string[];
+      allDepartments: string[];
+      allLaws: string[];
+    }>
   ) => {
     // Sort ministers by their actual number from Neo4j
     const sortedMinisters = [...structure.ministers].sort((a, b) => {
@@ -233,6 +250,9 @@ export default function Dashboard() {
                   : `${String(index + 1).padStart(2, '0')}`;
                 const ministerKey = `${ministryNumber}-${minister.name}`; // shared key so base/amendment expand together
                 const isExpanded = !!expandedMinisters[ministerKey];
+                const isAdded = highlights?.ministersAdded?.has(ministerKey);
+                const isRemoved = highlights?.ministersRemoved?.has(ministerKey);
+                const isModified = highlights?.ministersModified?.has(ministerKey);
 
                 const handleToggle = () => {
                   setExpandedMinisters((prev) => ({ ...prev, [ministerKey]: !prev[ministerKey] }));
@@ -247,7 +267,9 @@ export default function Dashboard() {
                 return (
                   <div
                     key={ministerKey}
-                    className="bg-slate-50 rounded-lg p-4 border cursor-pointer hover:border-sky-200"
+                    className={`rounded-lg p-4 border cursor-pointer hover:border-sky-200 ${
+                      isAdded ? "bg-green-50 border-green-300" : isRemoved ? "bg-red-50 border-red-300" : isModified ? "bg-yellow-50 border-yellow-300" : "bg-slate-50"
+                    }`}
                     onClick={handleToggle}
                     onKeyDown={handleKeyDown}
                     tabIndex={0}
@@ -271,59 +293,233 @@ export default function Dashboard() {
 
                     {isExpanded && (
                       <div className="mt-3 space-y-2">
-                        {minister.functions && minister.functions.length > 0 && (
-                          <div>
-                            <span className="text-sm font-medium text-slate-600">
-                              Functions:
-                            </span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {minister.functions.map((func, i) => (
-                                <span
-                                  key={i}
-                                  className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
-                                >
-                                  {func}
-                                </span>
-                              ))}
+                        {/* Functions (click whole section to toggle) */}
+                        {(() => {
+                          const alignmentData = ministerAlignmentData?.get(ministerKey);
+                          const functionsToShow = alignmentData?.allFunctions || (minister.functions || []);
+                          const actualFunctions = new Set(minister.functions || []);
+                          const actualCount = actualFunctions.size; // Count only actual items, not blanks
+                          
+                          // Count changes
+                          const addedCount = functionsToShow.filter(f => highlights?.functionsAdded?.has(f) && actualFunctions.has(f)).length;
+                          const removedCount = functionsToShow.filter(f => highlights?.functionsRemoved?.has(f) && actualFunctions.has(f)).length;
+                          
+                          // Determine border color based on changes
+                          const hasChanges = addedCount > 0 || removedCount > 0;
+                          const borderColor = !hasChanges ? "border-slate-200" : 
+                                            addedCount > 0 && removedCount > 0 ? "border-yellow-400 border-2" :
+                                            addedCount > 0 ? "border-green-400 border-2" : "border-red-400 border-2";
+                          const bgColor = !hasChanges ? "" : 
+                                         addedCount > 0 && removedCount > 0 ? "bg-yellow-50" :
+                                         addedCount > 0 ? "bg-green-50" : "bg-red-50";
+                          
+                          if (functionsToShow.length === 0) return null;
+                          
+                          const isSubExpanded = !!expandedMinisterSections[ministerKey]?.functions;
+                          const toggle = () =>
+                            setExpandedMinisterSections((prev) => ({
+                              ...prev,
+                              [ministerKey]: { ...(prev[ministerKey] || {}), functions: !isSubExpanded },
+                            }));
+                          
+                          return (
+                            <div
+                              className={`border ${borderColor} ${bgColor} rounded-lg p-2 cursor-pointer hover:border-sky-300`}
+                              onClick={(e) => { e.stopPropagation(); toggle(); }}
+                              role="button"
+                              aria-expanded={isSubExpanded}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-slate-600">Functions ({actualCount})</span>
+                                <span className="text-sm text-slate-600" aria-hidden>{isSubExpanded ? "▾" : "▸"}</span>
+                              </div>
+                              {isSubExpanded && (
+                                <ul className="mt-2 space-y-1">
+                                  {functionsToShow.map((func, i) => {
+                                    const isPresent = actualFunctions.has(func);
+                                    const added = highlights?.functionsAdded?.has(func);
+                                    const removed = highlights?.functionsRemoved?.has(func);
+                                    
+                                    // If not present in this structure, show as blank row
+                                    if (!isPresent && alignmentData) {
+                                      return (
+                                        <li key={i} className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2">
+                                          <span className="font-bold">—</span>
+                                          <span className="italic"></span>
+                                        </li>
+                                      );
+                                    }
+                                    
+                                    const bgClass = added
+                                      ? "bg-green-50 border-l-4 border-green-500"
+                                      : removed
+                                      ? "bg-red-50 border-l-4 border-red-500"
+                                      : "bg-purple-50 border-l-4 border-purple-400";
+                                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-purple-900";
+                                    return (
+                                      <li key={i} className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}>
+                                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                                        <span>{func}</span>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
 
-                        {minister.departments.length > 0 && (
-                          <div>
-                            <span className="text-sm font-medium text-slate-600">
-                              Departments:
-                            </span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {minister.departments.map((dept, i) => (
-                                <span
-                                  key={i}
-                                  className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
-                                >
-                                  {dept}
-                                </span>
-                              ))}
+                        {/* Departments (click whole section to toggle) */}
+                        {(() => {
+                          const alignmentData = ministerAlignmentData?.get(ministerKey);
+                          const departmentsToShow = alignmentData?.allDepartments || (minister.departments || []);
+                          const actualDepartments = new Set(minister.departments || []);
+                          const actualCount = actualDepartments.size; // Count only actual items, not blanks
+                          
+                          // Count changes
+                          const addedCount = departmentsToShow.filter(d => highlights?.departmentsAdded?.has(d) && actualDepartments.has(d)).length;
+                          const removedCount = departmentsToShow.filter(d => highlights?.departmentsRemoved?.has(d) && actualDepartments.has(d)).length;
+                          
+                          // Determine border color based on changes
+                          const hasChanges = addedCount > 0 || removedCount > 0;
+                          const borderColor = !hasChanges ? "border-slate-200" : 
+                                            addedCount > 0 && removedCount > 0 ? "border-yellow-400 border-2" :
+                                            addedCount > 0 ? "border-green-400 border-2" : "border-red-400 border-2";
+                          const bgColor = !hasChanges ? "" : 
+                                         addedCount > 0 && removedCount > 0 ? "bg-yellow-50" :
+                                         addedCount > 0 ? "bg-green-50" : "bg-red-50";
+                          
+                          if (departmentsToShow.length === 0) return null;
+                          
+                          const isSubExpanded = !!expandedMinisterSections[ministerKey]?.departments;
+                          const toggle = () =>
+                            setExpandedMinisterSections((prev) => ({
+                              ...prev,
+                              [ministerKey]: { ...(prev[ministerKey] || {}), departments: !isSubExpanded },
+                            }));
+                          
+                          return (
+                            <div
+                              className={`border ${borderColor} ${bgColor} rounded-lg p-2 cursor-pointer hover:border-sky-300`}
+                              onClick={(e) => { e.stopPropagation(); toggle(); }}
+                              role="button"
+                              aria-expanded={isSubExpanded}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-slate-600">Departments ({actualCount})</span>
+                                <span className="text-sm text-slate-600" aria-hidden>{isSubExpanded ? "▾" : "▸"}</span>
+                              </div>
+                              {isSubExpanded && (
+                                <ul className="mt-2 space-y-1">
+                                  {departmentsToShow.map((dept, i) => {
+                                    const isPresent = actualDepartments.has(dept);
+                                    const added = highlights?.departmentsAdded?.has(dept);
+                                    const removed = highlights?.departmentsRemoved?.has(dept);
+                                    
+                                    // If not present in this structure, show as blank row
+                                    if (!isPresent && alignmentData) {
+                                      return (
+                                        <li key={i} className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2">
+                                          <span className="font-bold">—</span>
+                                          <span className="italic"></span>
+                                        </li>
+                                      );
+                                    }
+                                    
+                                    const bgClass = added
+                                      ? "bg-green-50 border-l-4 border-green-500"
+                                      : removed
+                                      ? "bg-red-50 border-l-4 border-red-500"
+                                      : "bg-blue-50 border-l-4 border-blue-400";
+                                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-blue-900";
+                                    return (
+                                      <li key={i} className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}>
+                                        <span className="text-xs font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                                        <span>{dept}</span>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
 
-                        {minister.laws.length > 0 && (
-                          <div>
-                            <span className="text-sm font-medium text-slate-600">
-                              Laws:
-                            </span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {minister.laws.map((law, i) => (
-                                <span
-                                  key={i}
-                                  className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
-                                >
-                                  {law}
-                                </span>
-                              ))}
+                        {/* Laws (click whole section to toggle) */}
+                        {(() => {
+                          const alignmentData = ministerAlignmentData?.get(ministerKey);
+                          const lawsToShow = alignmentData?.allLaws || (minister.laws || []);
+                          const actualLaws = new Set(minister.laws || []);
+                          const actualCount = actualLaws.size; // Count only actual items, not blanks
+                          
+                          // Count changes
+                          const addedCount = lawsToShow.filter(l => highlights?.lawsAdded?.has(l) && actualLaws.has(l)).length;
+                          const removedCount = lawsToShow.filter(l => highlights?.lawsRemoved?.has(l) && actualLaws.has(l)).length;
+                          
+                          // Determine border color based on changes
+                          const hasChanges = addedCount > 0 || removedCount > 0;
+                          const borderColor = !hasChanges ? "border-slate-200" : 
+                                            addedCount > 0 && removedCount > 0 ? "border-yellow-400 border-2" :
+                                            addedCount > 0 ? "border-green-400 border-2" : "border-red-400 border-2";
+                          const bgColor = !hasChanges ? "" : 
+                                         addedCount > 0 && removedCount > 0 ? "bg-yellow-50" :
+                                         addedCount > 0 ? "bg-green-50" : "bg-red-50";
+                          
+                          if (lawsToShow.length === 0) return null;
+                          
+                          const isSubExpanded = !!expandedMinisterSections[ministerKey]?.laws;
+                          const toggle = () =>
+                            setExpandedMinisterSections((prev) => ({
+                              ...prev,
+                              [ministerKey]: { ...(prev[ministerKey] || {}), laws: !isSubExpanded },
+                            }));
+                          
+                          return (
+                            <div
+                              className={`border ${borderColor} ${bgColor} rounded-lg p-2 cursor-pointer hover:border-sky-300`}
+                              onClick={(e) => { e.stopPropagation(); toggle(); }}
+                              role="button"
+                              aria-expanded={isSubExpanded}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-slate-600">Laws ({actualCount})</span>
+                                <span className="text-sm text-slate-600" aria-hidden>{isSubExpanded ? "▾" : "▸"}</span>
+                              </div>
+                              {isSubExpanded && (
+                                <ul className="mt-2 space-y-1">
+                                  {lawsToShow.map((law, i) => {
+                                    const isPresent = actualLaws.has(law);
+                                    const added = highlights?.lawsAdded?.has(law);
+                                    const removed = highlights?.lawsRemoved?.has(law);
+                                    
+                                    // If not present in this structure, show as blank row
+                                    if (!isPresent && alignmentData) {
+                                      return (
+                                        <li key={i} className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2">
+                                          <span className="font-bold">—</span>
+                                          <span className="italic"></span>
+                                        </li>
+                                      );
+                                    }
+                                    
+                                    const bgClass = added
+                                      ? "bg-green-50 border-l-4 border-green-500"
+                                      : removed
+                                      ? "bg-red-50 border-l-4 border-red-500"
+                                      : "bg-orange-50 border-l-4 border-orange-400";
+                                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-orange-900";
+                                    return (
+                                      <li key={i} className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}>
+                                        <span className="text-xs font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                                        <span>{law}</span>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
                       </div>
                     )}
                   </div>
@@ -358,16 +554,24 @@ export default function Dashboard() {
                 <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
               </div>
               {isExpanded && (
-                <div className="flex flex-wrap gap-2">
-                  {structure.departments.map((dept, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded"
-                    >
-                      {dept}
-                    </span>
-                  ))}
-                </div>
+                <ul className="space-y-1">
+                  {structure.departments.map((dept, i) => {
+                    const added = highlights?.departmentsAdded?.has(dept);
+                    const removed = highlights?.departmentsRemoved?.has(dept);
+                    const bgClass = added
+                      ? "bg-green-50 border-l-4 border-green-500"
+                      : removed
+                      ? "bg-red-50 border-l-4 border-red-500"
+                      : "bg-green-50 border-l-4 border-green-400";
+                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-green-900";
+                    return (
+                      <li key={i} className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}>
+                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                        <span>{dept}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
             </div>
           );
@@ -398,16 +602,24 @@ export default function Dashboard() {
                 <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
               </div>
               {isExpanded && (
-                <div className="flex flex-wrap gap-2">
-                  {(structure.functions || []).map((func, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded"
-                    >
-                      {func}
-                    </span>
-                  ))}
-                </div>
+                <ul className="space-y-1">
+                  {(structure.functions || []).map((func, i) => {
+                    const added = highlights?.functionsAdded?.has(func);
+                    const removed = highlights?.functionsRemoved?.has(func);
+                    const bgClass = added
+                      ? "bg-green-50 border-l-4 border-green-500"
+                      : removed
+                      ? "bg-red-50 border-l-4 border-red-500"
+                      : "bg-purple-50 border-l-4 border-purple-400";
+                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-purple-900";
+                    return (
+                      <li key={i} className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}>
+                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                        <span>{func}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
             </div>
           );
@@ -438,16 +650,24 @@ export default function Dashboard() {
                 <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
               </div>
               {isExpanded && (
-                <div className="flex flex-wrap gap-2">
-                  {structure.laws.map((law, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded"
-                    >
-                      {law}
-                    </span>
-                  ))}
-                </div>
+                <ul className="space-y-1">
+                  {structure.laws.map((law, i) => {
+                    const added = highlights?.lawsAdded?.has(law);
+                    const removed = highlights?.lawsRemoved?.has(law);
+                    const bgClass = added
+                      ? "bg-green-50 border-l-4 border-green-500"
+                      : removed
+                      ? "bg-red-50 border-l-4 border-red-500"
+                      : "bg-orange-50 border-l-4 border-orange-400";
+                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-orange-900";
+                    return (
+                      <li key={i} className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}>
+                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                        <span>{law}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
               )}
             </div>
           );
@@ -470,30 +690,36 @@ export default function Dashboard() {
 
   const renderComparison = (comparison: GazetteComparison) => (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-6 border border-slate-200">
         <div>
-          <h3 className="text-lg font-semibold text-slate-800">
+          <h3 className="text-2xl font-bold text-slate-800 mb-3">
             Government Structure Comparison
           </h3>
-          <div className="text-sm text-slate-600 mt-1">
-            <span className="font-medium">
-              {comparison.base_gazette.president}
-            </span>{" "}
-            →{" "}
-            <span className="font-medium">
-              {comparison.amendment_gazette.president}
-            </span>
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+              <span className="font-semibold text-blue-900">Base:</span>
+              <span className="text-slate-700">{comparison.base_gazette.president}</span>
+              <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                {comparison.base_gazette.id}
+              </span>
+              <span className="text-slate-500 text-xs">
+                {comparison.base_gazette.published_date}
+              </span>
+            </div>
+            <span className="text-2xl text-slate-400">→</span>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+              <span className="font-semibold text-green-900">Amendment:</span>
+              <span className="text-slate-700">{comparison.amendment_gazette.president}</span>
+              <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
+                {comparison.amendment_gazette.id}
+              </span>
+              <span className="text-slate-500 text-xs">
+                {comparison.amendment_gazette.published_date}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded">
-            Base: {comparison.base_gazette.id} (
-            {comparison.base_gazette.published_date})
-          </span>
-          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded">
-            Amendment: {comparison.amendment_gazette.id} (
-            {comparison.amendment_gazette.published_date})
-          </span>
         </div>
       </div>
 
@@ -532,107 +758,159 @@ export default function Dashboard() {
       )}
 
       {/* Changes Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <h4 className="font-medium text-green-800 mb-2">Added</h4>
-          <div className="text-sm text-green-700 space-y-1">
-            <div>Ministers: {comparison.changes.added_ministers.length}</div>
+      <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <span className="w-2 h-2 bg-gradient-to-r from-green-500 to-red-500 rounded-full"></span>
+          Change Summary
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">✓</span>
+              <h4 className="font-bold text-green-900">Added</h4>
+            </div>
+            <div className="space-y-2 text-sm text-green-800">
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Ministers</span>
+                <span className="font-bold">{comparison.changes.added_ministers.length}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Departments</span>
+                <span className="font-bold">{comparison.changes.added_departments.length}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Functions</span>
+                <span className="font-bold">{(comparison.changes.added_functions || []).length}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Laws</span>
+                <span className="font-bold">{comparison.changes.added_laws.length}</span>
+              </div>
+            </div>
             {comparison.changes.added_ministers.length > 0 && (
-              <div className="mt-2">
-                {sortMinistries(comparison.changes.added_ministers).map((minister, i) => {
-                  const displayNumber = minister.number && minister.number !== "Unknown"
-                    ? minister.number
-                    : String(i + 1).padStart(2, "0");
-                  return (
-                    <div
-                      key={i}
-                      className="text-xs bg-green-100 px-2 py-1 rounded mb-1"
-                    >
-                      {`${displayNumber}. ${minister.name}`}
-                    </div>
-                  );
-                })}
-              </div>
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs font-semibold text-green-900 hover:text-green-700">
+                  View Ministers ({comparison.changes.added_ministers.length})
+                </summary>
+                <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
+                  {sortMinistries(comparison.changes.added_ministers).map((minister, i) => {
+                    const displayNumber = minister.number && minister.number !== "Unknown"
+                      ? minister.number
+                      : String(i + 1).padStart(2, "0");
+                    return (
+                      <div
+                        key={i}
+                        className="text-xs bg-white px-2 py-1 rounded border border-green-200"
+                      >
+                        {`${displayNumber}. ${minister.name}`}
+                      </div>
+                    );
+                  })}
+                </div>
+              </details>
             )}
-            <div>
-              Departments: {comparison.changes.added_departments.length}
-            </div>
-            <div>
-              Functions: {(comparison.changes.added_functions || []).length}
-            </div>
-            <div>Laws: {comparison.changes.added_laws.length}</div>
           </div>
-        </div>
 
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <h4 className="font-medium text-red-800 mb-2">Removed</h4>
-          <div className="text-sm text-red-700 space-y-1">
-            <div>Ministers: {comparison.changes.removed_ministers.length}</div>
+          <div className="bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">✗</span>
+              <h4 className="font-bold text-red-900">Removed</h4>
+            </div>
+            <div className="space-y-2 text-sm text-red-800">
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Ministers</span>
+                <span className="font-bold">{comparison.changes.removed_ministers.length}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Departments</span>
+                <span className="font-bold">{comparison.changes.removed_departments.length}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Functions</span>
+                <span className="font-bold">{(comparison.changes.removed_functions || []).length}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Laws</span>
+                <span className="font-bold">{comparison.changes.removed_laws.length}</span>
+              </div>
+            </div>
             {comparison.changes.removed_ministers.length > 0 && (
-              <div className="mt-2 max-h-32 overflow-y-auto">
-                {sortMinistries(comparison.changes.removed_ministers).map((minister, i) => {
-                  const displayNumber = minister.number && minister.number !== "Unknown"
-                    ? minister.number
-                    : String(i + 1).padStart(2, "0");
-                  return (
-                    <div
-                      key={i}
-                      className="text-xs bg-red-100 px-2 py-1 rounded mb-1"
-                    >
-                      {`${displayNumber}. ${minister.name}`}
-                    </div>
-                  );
-                })}
-              </div>
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs font-semibold text-red-900 hover:text-red-700">
+                  View Ministers ({comparison.changes.removed_ministers.length})
+                </summary>
+                <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
+                  {sortMinistries(comparison.changes.removed_ministers).map((minister, i) => {
+                    const displayNumber = minister.number && minister.number !== "Unknown"
+                      ? minister.number
+                      : String(i + 1).padStart(2, "0");
+                    return (
+                      <div
+                        key={i}
+                        className="text-xs bg-white px-2 py-1 rounded border border-red-200"
+                      >
+                        {`${displayNumber}. ${minister.name}`}
+                      </div>
+                    );
+                  })}
+                </div>
+              </details>
             )}
-            <div>
-              Departments: {comparison.changes.removed_departments.length}
-            </div>
-            <div>
-              Functions: {(comparison.changes.removed_functions || []).length}
-            </div>
-            <div>Laws: {comparison.changes.removed_laws.length}</div>
           </div>
-        </div>
 
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h4 className="font-medium text-yellow-800 mb-2">Modified</h4>
-          <div className="text-sm text-yellow-700 space-y-1">
-            <div>Ministers: {comparison.changes.modified_ministers.length}</div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">⚡</span>
+              <h4 className="font-bold text-yellow-900">Modified</h4>
+            </div>
+            <div className="space-y-2 text-sm text-yellow-800">
+              <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
+                <span>Ministers</span>
+                <span className="font-bold">{comparison.changes.modified_ministers.length}</span>
+              </div>
+            </div>
             {comparison.changes.modified_ministers.length > 0 && (
-              <div className="mt-2">
-                {sortMinistries(comparison.changes.modified_ministers).map((minister, i) => {
-                  const displayNumber = minister.number && minister.number !== "Unknown"
-                    ? minister.number
-                    : String(i + 1).padStart(2, "0");
-                  return (
-                    <div
-                      key={i}
-                      className="text-xs bg-yellow-100 px-2 py-1 rounded mb-1"
-                    >
-                      {`${displayNumber}. ${minister.name}`}
-                    </div>
-                  );
-                })}
-              </div>
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs font-semibold text-yellow-900 hover:text-yellow-700">
+                  View Ministers ({comparison.changes.modified_ministers.length})
+                </summary>
+                <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
+                  {sortMinistries(comparison.changes.modified_ministers).map((minister, i) => {
+                    const displayNumber = minister.number && minister.number !== "Unknown"
+                      ? minister.number
+                      : String(i + 1).padStart(2, "0");
+                    return (
+                      <div
+                        key={i}
+                        className="text-xs bg-white px-2 py-1 rounded border border-yellow-200"
+                      >
+                        {`${displayNumber}. ${minister.name}`}
+                      </div>
+                    );
+                  })}
+                </div>
+              </details>
             )}
           </div>
-        </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-medium text-blue-800 mb-2">Total Changes</h4>
-          <div className="text-sm text-blue-700">
-            <div>
-              All Changes:{" "}
-              {comparison.changes.added_ministers.length +
-                comparison.changes.removed_ministers.length +
-                comparison.changes.modified_ministers.length +
-                comparison.changes.added_departments.length +
-                comparison.changes.removed_departments.length +
-                comparison.changes.added_laws.length +
-                comparison.changes.removed_laws.length +
-                (comparison.changes.added_functions || []).length +
-                (comparison.changes.removed_functions || []).length}
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">📊</span>
+              <h4 className="font-bold text-blue-900">Total</h4>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-blue-900">
+                {comparison.changes.added_ministers.length +
+                  comparison.changes.removed_ministers.length +
+                  comparison.changes.modified_ministers.length +
+                  comparison.changes.added_departments.length +
+                  comparison.changes.removed_departments.length +
+                  comparison.changes.added_laws.length +
+                  comparison.changes.removed_laws.length +
+                  (comparison.changes.added_functions || []).length +
+                  (comparison.changes.removed_functions || []).length}
+              </div>
+              <div className="text-xs text-blue-700 mt-1">Changes</div>
             </div>
           </div>
         </div>
@@ -640,42 +918,208 @@ export default function Dashboard() {
 
       {/* Detailed Changes */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div>
-          <div className="mb-3">
-            <h4 className="font-medium text-slate-700">
-              Base Gazette Structure
+        <div className="bg-white rounded-xl border-2 border-blue-200 shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+            <h4 className="font-bold text-white text-lg flex items-center gap-2">
+              <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              Base Gazette
             </h4>
-            <div className="text-sm text-slate-600">
-              <span className="font-medium">
-                {comparison.base_gazette.president}
-              </span>{" "}
-              - {comparison.base_gazette.id} (
-              {comparison.base_gazette.published_date})
+            <div className="text-blue-100 text-sm mt-1">
+              <span className="font-semibold">{comparison.base_gazette.president}</span>
+              {" • "}
+              {comparison.base_gazette.id}
+              {" • "}
+              {comparison.base_gazette.published_date}
             </div>
           </div>
-          {renderGovernmentStructure(
-            comparison.base_gazette.structure,
-            `Base: ${comparison.base_gazette.id}`
-          )}
+          <div className="p-6">
+          {(() => {
+            // Create per-minister alignment data
+            const ministerAlignmentMap = new Map<string, {
+              allFunctions: string[];
+              allDepartments: string[];
+              allLaws: string[];
+            }>();
+            
+            // Build a map of ministers from both sides by their key
+            const baseMinisterMap = new Map(
+              comparison.base_gazette.structure.ministers.map(m => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return [`${number}-${m.name}`, m];
+              })
+            );
+            
+            const amendmentMinisterMap = new Map(
+              comparison.amendment_gazette.structure.ministers.map(m => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return [`${number}-${m.name}`, m];
+              })
+            );
+            
+            // For each unique minister key, create alignment data
+            const allMinisterKeys = new Set([
+              ...baseMinisterMap.keys(),
+              ...amendmentMinisterMap.keys()
+            ]);
+            
+            allMinisterKeys.forEach(key => {
+              const baseMinister = baseMinisterMap.get(key);
+              const amendmentMinister = amendmentMinisterMap.get(key);
+              
+              // Collect functions from both sides for this specific minister
+              const baseFunctions = new Set(baseMinister?.functions || []);
+              const amendmentFunctions = new Set(amendmentMinister?.functions || []);
+              const allFunctions = Array.from(new Set([...baseFunctions, ...amendmentFunctions])).sort();
+              
+              // Collect departments from both sides for this specific minister
+              const baseDepartments = new Set(baseMinister?.departments || []);
+              const amendmentDepartments = new Set(amendmentMinister?.departments || []);
+              const allDepartments = Array.from(new Set([...baseDepartments, ...amendmentDepartments])).sort();
+              
+              // Collect laws from both sides for this specific minister
+              const baseLaws = new Set(baseMinister?.laws || []);
+              const amendmentLaws = new Set(amendmentMinister?.laws || []);
+              const allLaws = Array.from(new Set([...baseLaws, ...amendmentLaws])).sort();
+              
+              ministerAlignmentMap.set(key, {
+                allFunctions,
+                allDepartments,
+                allLaws
+              });
+            });
+            
+            // Build highlight sets for base side (show removed/modified)
+            const ministersRemoved = new Set(
+              comparison.changes.removed_ministers.map((m) => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return `${number}-${m.name}`;
+              })
+            );
+            const ministersModified = new Set(
+              (comparison.changes.modified_ministers || []).map((m: any) => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return `${number}-${m.name}`;
+              })
+            );
+            const departmentsRemoved = new Set(comparison.changes.removed_departments);
+            const functionsRemoved = new Set(comparison.changes.removed_functions || []);
+            const lawsRemoved = new Set(comparison.changes.removed_laws);
+            return renderGovernmentStructure(
+              comparison.base_gazette.structure,
+              `Base: ${comparison.base_gazette.id}`,
+              {
+                ministersRemoved,
+                ministersModified,
+                departmentsRemoved,
+                functionsRemoved,
+                lawsRemoved,
+              },
+              ministerAlignmentMap
+            );
+          })()}
+          </div>
         </div>
 
-        <div>
-          <div className="mb-3">
-            <h4 className="font-medium text-slate-700">
-              Amendment Gazette Structure
+        <div className="bg-white rounded-xl border-2 border-green-200 shadow-lg overflow-hidden">
+          <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
+            <h4 className="font-bold text-white text-lg flex items-center gap-2">
+              <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              Amendment Gazette
             </h4>
-            <div className="text-sm text-slate-600">
-              <span className="font-medium">
-                {comparison.amendment_gazette.president}
-              </span>{" "}
-              - {comparison.amendment_gazette.id} (
-              {comparison.amendment_gazette.published_date})
+            <div className="text-green-100 text-sm mt-1">
+              <span className="font-semibold">{comparison.amendment_gazette.president}</span>
+              {" • "}
+              {comparison.amendment_gazette.id}
+              {" • "}
+              {comparison.amendment_gazette.published_date}
             </div>
           </div>
-          {renderGovernmentStructure(
-            comparison.amendment_gazette.structure,
-            `Amendment: ${comparison.amendment_gazette.id}`
-          )}
+          <div className="p-6">
+          {(() => {
+            // Reuse the same per-minister alignment data
+            const ministerAlignmentMap = new Map<string, {
+              allFunctions: string[];
+              allDepartments: string[];
+              allLaws: string[];
+            }>();
+            
+            // Build a map of ministers from both sides by their key
+            const baseMinisterMap = new Map(
+              comparison.base_gazette.structure.ministers.map(m => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return [`${number}-${m.name}`, m];
+              })
+            );
+            
+            const amendmentMinisterMap = new Map(
+              comparison.amendment_gazette.structure.ministers.map(m => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return [`${number}-${m.name}`, m];
+              })
+            );
+            
+            // For each unique minister key, create alignment data
+            const allMinisterKeys = new Set([
+              ...baseMinisterMap.keys(),
+              ...amendmentMinisterMap.keys()
+            ]);
+            
+            allMinisterKeys.forEach(key => {
+              const baseMinister = baseMinisterMap.get(key);
+              const amendmentMinister = amendmentMinisterMap.get(key);
+              
+              // Collect functions from both sides for this specific minister
+              const baseFunctions = new Set(baseMinister?.functions || []);
+              const amendmentFunctions = new Set(amendmentMinister?.functions || []);
+              const allFunctions = Array.from(new Set([...baseFunctions, ...amendmentFunctions])).sort();
+              
+              // Collect departments from both sides for this specific minister
+              const baseDepartments = new Set(baseMinister?.departments || []);
+              const amendmentDepartments = new Set(amendmentMinister?.departments || []);
+              const allDepartments = Array.from(new Set([...baseDepartments, ...amendmentDepartments])).sort();
+              
+              // Collect laws from both sides for this specific minister
+              const baseLaws = new Set(baseMinister?.laws || []);
+              const amendmentLaws = new Set(amendmentMinister?.laws || []);
+              const allLaws = Array.from(new Set([...baseLaws, ...amendmentLaws])).sort();
+              
+              ministerAlignmentMap.set(key, {
+                allFunctions,
+                allDepartments,
+                allLaws
+              });
+            });
+            
+            // Build highlight sets for amendment side (show added/modified)
+            const ministersAdded = new Set(
+              comparison.changes.added_ministers.map((m) => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return `${number}-${m.name}`;
+              })
+            );
+            const ministersModified = new Set(
+              (comparison.changes.modified_ministers || []).map((m: any) => {
+                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                return `${number}-${m.name}`;
+              })
+            );
+            const departmentsAdded = new Set(comparison.changes.added_departments);
+            const functionsAdded = new Set(comparison.changes.added_functions || []);
+            const lawsAdded = new Set(comparison.changes.added_laws);
+            return renderGovernmentStructure(
+              comparison.amendment_gazette.structure,
+              `Amendment: ${comparison.amendment_gazette.id}`,
+              {
+                ministersAdded,
+                ministersModified,
+                departmentsAdded,
+                functionsAdded,
+                lawsAdded,
+              },
+              ministerAlignmentMap
+            );
+          })()}
+          </div>
         </div>
       </div>
     </div>
