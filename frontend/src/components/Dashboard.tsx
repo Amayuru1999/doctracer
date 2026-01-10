@@ -245,9 +245,8 @@ export default function Dashboard() {
             </h4>
             <div className="space-y-3">
               {sortedMinisters.map((minister, index) => {
-                const ministryNumber = minister.number && minister.number !== 'Unknown' 
-                  ? minister.number 
-                  : `${String(index + 1).padStart(2, '0')}`;
+                const rawNum = minister.number && minister.number !== 'Unknown' ? String(minister.number) : '';
+                const ministryNumber = rawNum ? rawNum.padStart(2, '0') : `${String(index + 1).padStart(2, '0')}`;
                 const ministerKey = `${ministryNumber}-${minister.name}`; // shared key so base/amendment expand together
                 const isExpanded = !!expandedMinisters[ministerKey];
                 const isAdded = highlights?.ministersAdded?.has(ministerKey);
@@ -944,14 +943,16 @@ export default function Dashboard() {
             // Build a map of ministers from both sides by their key
             const baseMinisterMap = new Map(
               comparison.base_gazette.structure.ministers.map(m => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
+                const number = raw ? raw.padStart(2, "0") : "";
                 return [`${number}-${m.name}`, m];
               })
             );
             
             const amendmentMinisterMap = new Map(
               comparison.amendment_gazette.structure.ministers.map(m => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
+                const number = raw ? raw.padStart(2, "0") : "";
                 return [`${number}-${m.name}`, m];
               })
             );
@@ -991,13 +992,15 @@ export default function Dashboard() {
             // Build highlight sets for base side (show removed/modified)
             const ministersRemoved = new Set(
               comparison.changes.removed_ministers.map((m) => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
+                const number = raw ? raw.padStart(2, "0") : "";
                 return `${number}-${m.name}`;
               })
             );
             const ministersModified = new Set(
               (comparison.changes.modified_ministers || []).map((m: any) => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
+                const number = raw ? raw.padStart(2, "0") : "";
                 return `${number}-${m.name}`;
               })
             );
@@ -1093,19 +1096,73 @@ export default function Dashboard() {
             // Build highlight sets for amendment side (show added/modified)
             const ministersAdded = new Set(
               comparison.changes.added_ministers.map((m) => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
+                const number = raw ? raw.padStart(2, "0") : "";
                 return `${number}-${m.name}`;
               })
             );
             const ministersModified = new Set(
               (comparison.changes.modified_ministers || []).map((m: any) => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
+                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
+                const number = raw ? raw.padStart(2, "0") : "";
                 return `${number}-${m.name}`;
               })
             );
             const departmentsAdded = new Set(comparison.changes.added_departments);
             const functionsAdded = new Set(comparison.changes.added_functions || []);
             const lawsAdded = new Set(comparison.changes.added_laws);
+            
+            // Sets for removed items
+            const departmentsRemoved = new Set(comparison.changes.removed_departments || []);
+            const functionsRemoved = new Set(comparison.changes.removed_functions || []);
+            const lawsRemoved = new Set(comparison.changes.removed_laws || []);
+
+            // Also integrate raw_entities from the amendment structure: if Neo4j created
+            // nodes with added_by == amendment id and is_active != false, treat them
+            // as added even if they didn't appear in the flattened change lists.
+            // Also handle removed entities where is_active == false
+            const amendId = comparison.amendment_gazette.id;
+            (comparison.amendment_gazette.structure.raw_entities || []).forEach((ent: any) => {
+              try {
+                const props = ent.properties || {};
+                const labels = ent.labels || [];
+                const name = props.name || props.node_name || props.item_name || '';
+                const isAdded = props.added_by && String(props.added_by) === String(amendId) && (props.is_active === undefined || props.is_active === true);
+                const isRemoved = props.removed_by && String(props.removed_by) === String(amendId) && props.is_active === false;
+                
+                if (!isAdded && !isRemoved || !name) return;
+
+                if (labels.some((l: string) => /Minister$/.test(l))) {
+                  const numRaw = props.number && String(props.number) !== 'Unknown' ? String(props.number) : '';
+                  const num = numRaw ? numRaw.padStart(2, '0') : '';
+                  if (isAdded) {
+                    ministersAdded.add(`${num}-${name}`);
+                  } else if (isRemoved) {
+                    // Handle removed ministers - not typically displayed but could be tracked
+                  }
+                } else if (labels.some((l: string) => /Department$/.test(l))) {
+                  if (isAdded) {
+                    departmentsAdded.add(name);
+                  } else if (isRemoved) {
+                    departmentsRemoved.add(name);
+                  }
+                } else if (labels.some((l: string) => /Function$/.test(l))) {
+                  if (isAdded) {
+                    functionsAdded.add(name);
+                  } else if (isRemoved) {
+                    functionsRemoved.add(name);
+                  }
+                } else if (labels.some((l: string) => /Law$/.test(l))) {
+                  if (isAdded) {
+                    lawsAdded.add(name);
+                  } else if (isRemoved) {
+                    lawsRemoved.add(name);
+                  }
+                }
+              } catch (e) {
+                // ignore malformed entity
+              }
+            });
             return renderGovernmentStructure(
               comparison.amendment_gazette.structure,
               `Amendment: ${comparison.amendment_gazette.id}`,
@@ -1115,6 +1172,9 @@ export default function Dashboard() {
                 departmentsAdded,
                 functionsAdded,
                 lawsAdded,
+                departmentsRemoved,
+                functionsRemoved,
+                lawsRemoved,
               },
               ministerAlignmentMap
             );

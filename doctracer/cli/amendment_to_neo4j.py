@@ -69,7 +69,8 @@ def find_node_and_rel(session, parent_id, minister_number, label, rel, item_numb
     q = f"""
     MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number, gazette_id: $parent_id}})
     OPTIONAL MATCH (m)-[r:{rel}]->(n:{label} {{minister_number: $minister_number, gazette_id: $parent_id}})
-    WHERE ($item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name)
+        WHERE (( $item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name))
+            AND (n.is_active IS NULL OR n.is_active = true)
     RETURN n IS NOT NULL AS node_exists, id(n) AS node_id, r IS NOT NULL AS rel_exists, n.name AS current_name
     LIMIT 1
     """
@@ -82,7 +83,7 @@ def find_node_and_rel(session, parent_id, minister_number, label, rel, item_numb
     return {"node_exists": False, "node_id": None, "rel_exists": False, "current_name": None}
 
 
-def apply_change(session, parent_id, minister_number, column_no, raw_text, amend_id, published_date, action, base_gazette_file=None):
+def apply_change(session, parent_id, minister_number, column_no, raw_text, amend_id, published_date, action, base_gazette_file=None, minister_name=None):
     """
     Apply a single change (added/removed/updated) to Neo4j.
     
@@ -137,6 +138,8 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         "amend_id": amend_id,
         "published_date": published_date
     }
+    # include minister_name for creating/merging amendment Minister node
+    params["minister_name"] = minister_name
 
     # Skip if node exists and content unchanged (for added/updated)
     if found["node_exists"] and action in ["added", "updated"]:
@@ -179,25 +182,39 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         print(f"ℹ️ {action_desc} {label} node for minister {normalized_minister_number} (amendment: {amend_id}).")
     else:
         # Node not found → create new node and relationship with proper tracking
+        # For additions created by an amendment, create the node under the AmendmentGazette
+        # rather than attaching it to the BaseGazette. This preserves the base gazette
+        # original data and keeps amendment-created nodes scoped to the amendment.
+        # Create amendment-scoped Minister (merge) and attach the new node to that Minister
         if item_number:
             q_create = f"""
-            MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MATCH (a:AmendmentGazette {{gazette_id: $amend_id}})
+            OPTIONAL MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(bm:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MERGE (am:Minister {{number: $minister_number, gazette_id: $amend_id}})
+            ON CREATE SET am.name = coalesce(bm.name, $minister_name, $minister_number)
             CREATE (n:{label} {{item_number: $item_number, minister_number: $minister_number, name: $item_name, 
-                                gazette_id: $parent_id, added_by: $amend_id, added_on: $published_date, is_active: true}})
-            CREATE (m)-[rr:{rel}]->(n)
-            SET rr.added_by = $amend_id, rr.added_on = $published_date, rr.is_active = true
+                                gazette_id: $amend_id, added_by: $amend_id, added_on: $published_date, is_active: true}})
+            CREATE (am)-[r_rel:{rel}]->(n)
+            CREATE (a)-[rr:ADDED_IN_AMENDMENT]->(n)
+            SET r_rel.added_by = $amend_id, r_rel.added_on = $published_date, r_rel.is_active = true,
+                rr.added_by = $amend_id, rr.added_on = $published_date, rr.is_active = true
             """
         else:
             q_create = f"""
-            MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number, gazette_id: $parent_id}})
-            CREATE (n:{label} {{name: $item_name, minister_number: $minister_number, gazette_id: $parent_id, 
+            MATCH (a:AmendmentGazette {{gazette_id: $amend_id}})
+            OPTIONAL MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(bm:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MERGE (am:Minister {{number: $minister_number, gazette_id: $amend_id}})
+            ON CREATE SET am.name = coalesce(bm.name, $minister_name, $minister_number)
+            CREATE (n:{label} {{name: $item_name, minister_number: $minister_number, gazette_id: $amend_id, 
                                 added_by: $amend_id, added_on: $published_date, is_active: true}})
-            CREATE (m)-[rr:{rel}]->(n)
-            SET rr.added_by = $amend_id, rr.added_on = $published_date, rr.is_active = true
+            CREATE (am)-[r_rel:{rel}]->(n)
+            CREATE (a)-[rr:ADDED_IN_AMENDMENT]->(n)
+            SET r_rel.added_by = $amend_id, r_rel.added_on = $published_date, r_rel.is_active = true,
+                rr.added_by = $amend_id, rr.added_on = $published_date, rr.is_active = true
             """
-        
+
         session.run(q_create, **params)
-        print(f"ℹ️ Created {label} node for minister {normalized_minister_number} (amendment: {amend_id}).")
+        print(f"ℹ️ Created amendment-scoped {label} node and linked to amendment Minister {normalized_minister_number} (amendment: {amend_id}).")
 
 
 def load_amendment_data(json_path, base_gazette_path=None):
@@ -283,6 +300,7 @@ def load_amendment_data(json_path, base_gazette_path=None):
             op_type = (change.get("operation_type") or "").upper()
             details = change.get("details", {}) or {}
             minister_number = details.get("number") or details.get("minister_number")
+            minister_name = details.get("name") or details.get("minister_name")
             column_no = details.get("column_no") or details.get("column")
 
             if not minister_number or not column_no:
@@ -293,16 +311,16 @@ def load_amendment_data(json_path, base_gazette_path=None):
             if op_type in ["DELETION", "UPDATE"]:
                 for raw in details.get("deleted_sections", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
-                                 amend_gazette_id, published_date, "removed", base_gazette_path)
+                                 amend_gazette_id, published_date, "removed", base_gazette_path, minister_name=minister_name)
 
             # Insertions / updates
             if op_type in ["INSERTION", "UPDATE"]:
                 for raw in details.get("added_content", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
-                                 amend_gazette_id, published_date, "added", base_gazette_path)
+                                 amend_gazette_id, published_date, "added", base_gazette_path, minister_name=minister_name)
                 for raw in details.get("updated_content", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
-                                 amend_gazette_id, published_date, "updated", base_gazette_path)
+                                 amend_gazette_id, published_date, "updated", base_gazette_path, minister_name=minister_name)
 
     print(f"✅ Applied amendment {amend_gazette_id} to parent {parent_gazette_id} with proper change tracking.")
 

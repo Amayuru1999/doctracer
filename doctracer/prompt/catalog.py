@@ -103,7 +103,7 @@ Guidelines for extraction:
     {{
       "number": "4",
       "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-      "column_no": "I",
+      "column_no": "1",
       "deleted_sections": [
         "item 18",
         "item 19"
@@ -121,7 +121,7 @@ Guidelines for extraction:
     {{
       "number": "4",
       "name": "Minister of Public Order, Disaster Management & Christian Affairs",
-      "column_no": "II",
+      "column_no": "2",
       "added_content": [
         "9. Department of Registration of Persons"
       ]
@@ -133,7 +133,7 @@ Guidelines for extraction:
     {{
       "number": "5",
       "name": "Minister of Home Affairs & Fisheries",
-      "column_no": "I",
+      "column_no": "1",
       "deleted_sections": [
         "item 3"
       ]
