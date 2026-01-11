@@ -239,6 +239,19 @@ export default function BaseGazetteVisualization({
       comparison.changes.removed_departments.forEach((d: string) =>
         departmentStatus.set(d, "removed")
       );
+
+      // Integrate per-minister modifications: these may contain added/removed
+      // departments or laws specific to a minister; surface them in the
+      // global department/law status maps so nodes get highlighted.
+      comparison.changes.modified_ministers.forEach((m: any) => {
+        (m.changes || []).forEach((chg: any) => {
+          if (chg.type === "departments") {
+            (chg.added || []).forEach((d: string) => departmentStatus.set(d, "added"));
+            (chg.removed || []).forEach((d: string) => departmentStatus.set(d, "removed"));
+          }
+          // If you later visualize laws as children, apply similar logic for them
+        });
+      });
     }
 
     const baseMinisters = gazetteStructure.ministers;

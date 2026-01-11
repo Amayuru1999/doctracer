@@ -58,15 +58,19 @@ def get_item_name_from_base_file(base_gazette_path, minister_number, column_no, 
 
 
 def find_node_and_rel(session, parent_id, minister_number, label, rel, item_number=None, item_name=None):
-    """Find node and relationship, return dict with existence info and current name."""
-    # Normalize minister number by removing leading zeros and parentheses
+    """Find node and relationship, return dict with existence info and current name.
+    
+    FIX: Now includes gazette_id and minister_number constraint to avoid cross-gazette/minister conflicts.
+    """
+    # Normalize minister number by stripping parentheses but keep leading zeros to match stored data (e.g., "04")
     clean_number = str(minister_number).strip('()')
-    normalized_minister_number = str(int(clean_number)) if clean_number.isdigit() else str(minister_number)
+    normalized_minister_number = clean_number.zfill(2) if clean_number.isdigit() else clean_number
     
     q = f"""
-    MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
-    OPTIONAL MATCH (m)-[r:{rel}]->(n:{label})
-    WHERE ($item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name)
+    MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number, gazette_id: $parent_id}})
+    OPTIONAL MATCH (m)-[r:{rel}]->(n:{label} {{minister_number: $minister_number, gazette_id: $parent_id}})
+        WHERE (( $item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name))
+            AND (n.is_active IS NULL OR n.is_active = true)
     RETURN n IS NOT NULL AS node_exists, id(n) AS node_id, r IS NOT NULL AS rel_exists, n.name AS current_name
     LIMIT 1
     """
@@ -79,10 +83,25 @@ def find_node_and_rel(session, parent_id, minister_number, label, rel, item_numb
     return {"node_exists": False, "node_id": None, "rel_exists": False, "current_name": None}
 
 
-def apply_change(session, parent_id, minister_number, column_no, raw_text, amend_id, published_date, action, base_gazette_file=None):
+def apply_change(session, parent_id, minister_number, column_no, raw_text, amend_id, published_date, action, base_gazette_file=None, minister_name=None):
     """
     Apply a single change (added/removed/updated) to Neo4j.
-    Only modifies nodes if content actually changed.
+    
+    Properly tracks all changes through node and relationship properties:
+    
+    Node Properties:
+    - added_by, added_on: Amendment that first added this item
+    - updated_by, updated_on: Latest amendment that updated this item
+    - removed_by, removed_on: Amendment that removed this item
+    - is_active: Boolean flag (true if active, false if removed)
+    
+    Relationship Properties:
+    - added_by, added_on: When relationship was created
+    - updated_by, updated_on: When relationship was updated
+    - removed_by, removed_on: When relationship was removed
+    - is_active: Boolean flag (true if active, false if removed)
+    
+    This allows complete audit trail of changes through amendments.
     """
     column = normalize_column(column_no)
     label_map = {"1": "Function", "2": "Department", "3": "Law"}
@@ -107,15 +126,9 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
 
     found = find_node_and_rel(session, parent_id, minister_number, label, rel, item_number, item_name)
 
-    # Determine node property names
-    node_prop_by = f"{action}_by"
-    node_prop_on = f"{action}_on"
-    rel_prop_by = f"{action}_by"
-    rel_prop_on = f"{action}_on"
-
-    # Normalize minister number by removing leading zeros and parentheses
+    # Normalize minister number by stripping parentheses but keep leading zeros to match stored data (e.g., "04")
     clean_number = str(minister_number).strip('()')
-    normalized_minister_number = str(int(clean_number)) if clean_number.isdigit() else str(minister_number)
+    normalized_minister_number = clean_number.zfill(2) if clean_number.isdigit() else clean_number
     
     params = {
         "parent_id": parent_id,
@@ -125,47 +138,91 @@ def apply_change(session, parent_id, minister_number, column_no, raw_text, amend
         "amend_id": amend_id,
         "published_date": published_date
     }
+    # include minister_name for creating/merging amendment Minister node
+    params["minister_name"] = minister_name
 
     # Skip if node exists and content unchanged (for added/updated)
     if found["node_exists"] and action in ["added", "updated"]:
         if found["current_name"] == item_name:
-            # Node unchanged → do not overwrite base added_by/added_date
+            # Node unchanged → do not update tracking properties
             return
 
     if found["node_exists"]:
-        # Update node/rel for changed content or removal
-        q_update = f"""
-        MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
-        MATCH (m)-[r:{rel}]->(n:{label})
-        WHERE ($item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name)
-        SET n.{node_prop_by} = $amend_id,
-            n.{node_prop_on} = $published_date
-        MERGE (m)-[rr:{rel}]->(n)
-        SET rr.{rel_prop_by} = $amend_id,
-            rr.{rel_prop_on} = $published_date
-        """
+        # Node exists → update tracking based on action type
+        if action == "removed":
+            # Mark node and relationship as removed, but keep for audit trail
+            q_update = f"""
+            MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MATCH (m)-[r:{rel}]->(n:{label} {{minister_number: $minister_number, gazette_id: $parent_id}})
+            WHERE ($item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name)
+            SET n.removed_by = $amend_id,
+                n.removed_on = $published_date,
+                n.is_active = false
+            SET r.removed_by = $amend_id,
+                r.removed_on = $published_date,
+                r.is_active = false
+            """
+            action_desc = "Removed"
+        else:
+            # Track updates and additions
+            q_update = f"""
+            MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MATCH (m)-[r:{rel}]->(n:{label} {{minister_number: $minister_number, gazette_id: $parent_id}})
+            WHERE ($item_number IS NOT NULL AND n.item_number = $item_number) OR ($item_number IS NULL AND n.name = $item_name)
+            SET n.updated_by = $amend_id,
+                n.updated_on = $published_date,
+                n.is_active = true
+            SET r.updated_by = $amend_id,
+                r.updated_on = $published_date,
+                r.is_active = true
+            """
+            action_desc = "Updated" if action == "updated" else "Restored"
+        
         session.run(q_update, **params)
-        print(f"ℹ️ Updated existing {label} node for minister {normalized_minister_number} (original: {minister_number}).")
+        print(f"ℹ️ {action_desc} {label} node for minister {normalized_minister_number} (amendment: {amend_id}).")
     else:
-        # Node not found → create new node and relationship
-        q_create = f"""
-        MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
-        CREATE (n:{label} {{name: $item_name, {node_prop_by}: $amend_id, {node_prop_on}: $published_date}})
-        """
+        # Node not found → create new node and relationship with proper tracking
+        # For additions created by an amendment, create the node under the AmendmentGazette
+        # rather than attaching it to the BaseGazette. This preserves the base gazette
+        # original data and keeps amendment-created nodes scoped to the amendment.
+        # Create amendment-scoped Minister (merge) and attach the new node to that Minister
         if item_number:
             q_create = f"""
-            MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(m:Minister {{number: $minister_number}})
-            CREATE (n:{label} {{item_number: $item_number, name: $item_name, {node_prop_by}: $amend_id, {node_prop_on}: $published_date}})
+            MATCH (a:AmendmentGazette {{gazette_id: $amend_id}})
+            OPTIONAL MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(bm:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MERGE (am:Minister {{number: $minister_number, gazette_id: $amend_id}})
+            ON CREATE SET am.name = coalesce(bm.name, $minister_name, $minister_number)
+            CREATE (n:{label} {{item_number: $item_number, minister_number: $minister_number, name: $item_name, 
+                                gazette_id: $amend_id, added_by: $amend_id, added_on: $published_date, is_active: true}})
+            CREATE (am)-[r_rel:{rel}]->(n)
+            CREATE (a)-[rr:ADDED_IN_AMENDMENT]->(n)
+            SET r_rel.added_by = $amend_id, r_rel.added_on = $published_date, r_rel.is_active = true,
+                rr.added_by = $amend_id, rr.added_on = $published_date, rr.is_active = true
             """
-        q_create += f"""
-        CREATE (m)-[rr:{rel}]->(n)
-        SET rr.{rel_prop_by} = $amend_id, rr.{rel_prop_on} = $published_date
-        """
+        else:
+            q_create = f"""
+            MATCH (a:AmendmentGazette {{gazette_id: $amend_id}})
+            OPTIONAL MATCH (b:BaseGazette {{gazette_id: $parent_id}})-[:HAS_MINISTER]->(bm:Minister {{number: $minister_number, gazette_id: $parent_id}})
+            MERGE (am:Minister {{number: $minister_number, gazette_id: $amend_id}})
+            ON CREATE SET am.name = coalesce(bm.name, $minister_name, $minister_number)
+            CREATE (n:{label} {{name: $item_name, minister_number: $minister_number, gazette_id: $amend_id, 
+                                added_by: $amend_id, added_on: $published_date, is_active: true}})
+            CREATE (am)-[r_rel:{rel}]->(n)
+            CREATE (a)-[rr:ADDED_IN_AMENDMENT]->(n)
+            SET r_rel.added_by = $amend_id, r_rel.added_on = $published_date, r_rel.is_active = true,
+                rr.added_by = $amend_id, rr.added_on = $published_date, rr.is_active = true
+            """
+
         session.run(q_create, **params)
-        print(f"ℹ️ Created {label} node and relationship for minister {normalized_minister_number} (original: {minister_number}).")
+        print(f"ℹ️ Created amendment-scoped {label} node and linked to amendment Minister {normalized_minister_number} (amendment: {amend_id}).")
 
 
 def load_amendment_data(json_path, base_gazette_path=None):
+    """
+    Load amendment data with proper change tracking.
+    
+    Each change is tracked at both node and relationship level.
+    """
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -177,7 +234,7 @@ def load_amendment_data(json_path, base_gazette_path=None):
     if not amend_gazette_id or not parent_gazette_id:
         raise ValueError("Amendment JSON missing gazette_id or parent_gazette.gazette_id")
 
-        # Fallback base file: prefer an explicitly passed file. If base_gazette_path is a directory,
+    # Fallback base file: prefer an explicitly passed file. If base_gazette_path is a directory,
     # try to find matching base file by gazette id inside that directory.
     def _find_base_in_dir_by_id(base_dir, parent_id):
         if not base_dir or not os.path.isdir(base_dir):
@@ -243,6 +300,7 @@ def load_amendment_data(json_path, base_gazette_path=None):
             op_type = (change.get("operation_type") or "").upper()
             details = change.get("details", {}) or {}
             minister_number = details.get("number") or details.get("minister_number")
+            minister_name = details.get("name") or details.get("minister_name")
             column_no = details.get("column_no") or details.get("column")
 
             if not minister_number or not column_no:
@@ -253,18 +311,18 @@ def load_amendment_data(json_path, base_gazette_path=None):
             if op_type in ["DELETION", "UPDATE"]:
                 for raw in details.get("deleted_sections", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
-                                 amend_gazette_id, published_date, "removed", base_gazette_path)
+                                 amend_gazette_id, published_date, "removed", base_gazette_path, minister_name=minister_name)
 
             # Insertions / updates
             if op_type in ["INSERTION", "UPDATE"]:
                 for raw in details.get("added_content", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
-                                 amend_gazette_id, published_date, "added", base_gazette_path)
+                                 amend_gazette_id, published_date, "added", base_gazette_path, minister_name=minister_name)
                 for raw in details.get("updated_content", []) or []:
                     apply_change(session, parent_gazette_id, minister_number, column_no, raw,
-                                 amend_gazette_id, published_date, "updated", base_gazette_path)
+                                 amend_gazette_id, published_date, "updated", base_gazette_path, minister_name=minister_name)
 
-    print(f"✅ Applied amendment {amend_gazette_id} to parent {parent_gazette_id}.")
+    print(f"✅ Applied amendment {amend_gazette_id} to parent {parent_gazette_id} with proper change tracking.")
 
 
 if __name__ == "__main__":
@@ -273,356 +331,3 @@ if __name__ == "__main__":
     parser.add_argument("--base", required=False, help="Optional path to base gazette JSON")
     args = parser.parse_args()
     load_amendment_data(args.input, args.base)
-
-
-# import json
-# import os
-# import re
-# import argparse
-# from neo4j import GraphDatabase
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# URI = os.getenv("NEO4J_URI")
-# USER = os.getenv("NEO4J_USER")
-# PASSWORD = os.getenv("NEO4J_PASSWORD")
-
-# driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
-
-# def extract_item_number(item_str):
-#     match = re.search(r"(\d+)", item_str)
-#     return match.group(1) if match else None
-
-# def get_item_name_from_base_gazette(base_gazette_path, minister_number, column_no, item_number):
-#     if not os.path.exists(base_gazette_path):
-#         return None
-#     with open(base_gazette_path, "r", encoding="utf-8") as f:
-#         base_data = json.load(f)
-
-#     for minister in base_data.get("ministers", []):
-#         if str(minister.get("number")) == str(minister_number):
-#             items = []
-#             if column_no == "1":
-#                 items = minister.get("functions", [])
-#             elif column_no == "2":
-#                 items = minister.get("departments", [])
-#             for item_str in items:
-#                 match = re.match(r"^\s*(\d+)\.\s*(.+)$", item_str.strip())
-#                 if match and match.group(1) == str(item_number):
-#                     return match.group(2)
-#     return None
-
-# def process_change(session, column_no, item_number, item_name, minister_number, gazette_id, published_date, change_type):
-#     label_map = {"1": "Function", "2": "Department", "3": "Law"}
-#     rel_map = {"1": "HAS_FUNCTION", "2": "OVERSEES_DEPARTMENT", "3": "RESPONSIBLE_FOR_LAW"}
-#     label = label_map.get(column_no)
-#     rel = rel_map.get(column_no)
-#     if not label or not rel:
-#         return
-
-#     cypher = f"""
-#         MERGE (n:{label} {{item_number: coalesce($item_number, 'N/A'), name: $item_name}})
-#         SET n.{change_type} = $gazette_id,
-#             n.{change_type}_date = $published_date
-#         WITH n
-#         MATCH (m:Minister {{number: $minister_number}})
-#         MERGE (m)-[r:{rel}]->(n)
-#         SET r.{change_type} = $gazette_id,
-#             r.{change_type}_date = $published_date
-#     """
-
-#     session.run(cypher,
-#                 item_number=item_number,
-#                 item_name=item_name,
-#                 minister_number=minister_number,
-#                 gazette_id=gazette_id,
-#                 published_date=published_date)
-
-# def load_amendment_data(json_path, base_gazette_path=None):
-#     with open(json_path, "r", encoding="utf-8") as f:
-#         data = json.load(f)
-
-#     meta = data.get("metadata", {})
-#     gazette_id = meta.get("gazette_id")
-#     published_date = meta.get("Gazette Published Date")
-#     parent_gazette_id = meta.get("parent_gazette", {}).get("gazette_id")
-
-#     if not base_gazette_path and parent_gazette_id:
-#         safe_id = parent_gazette_id.replace('/', '-')
-#         amendment_dir = os.path.dirname(os.path.abspath(json_path))
-#         base_dir = amendment_dir.replace('amendment', 'base')
-#         base_gazette_path = os.path.join(base_dir, f"{safe_id}_E.json")
-
-#     with driver.session() as session:
-#         session.run(
-#             """
-#             MERGE (a:AmendmentGazette {gazette_id: $gazette_id})
-#             SET a.published_date = $published_date,
-#                 a.published_by = $published_by,
-#                 a.gazette_type = $gazette_type,
-#                 a.language = $language,
-#                 a.pdf_url = $pdf_url
-#             """,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#             published_by=meta.get("published_by"),
-#             gazette_type=meta.get("gazette_type"),
-#             language=meta.get("language"),
-#             pdf_url=meta.get("pdf_url")
-#         )
-
-#         if parent_gazette_id:
-#             session.run(
-#                 """
-#                 MERGE (b:BaseGazette {gazette_id: $parent_id})
-#                 MERGE (a:AmendmentGazette {gazette_id: $amend_id})
-#                 MERGE (b)-[r:AMENDED_BY]->(a)
-#                 SET r.date = $date
-#                 """,
-#                 parent_id=parent_gazette_id,
-#                 amend_id=gazette_id,
-#                 date=published_date
-#             )
-
-#         for change in data.get("changes", []):
-#             op_type = change.get("operation_type")
-#             details = change.get("details", {})
-#             minister_number = details.get("number")
-#             column_no = details.get("column_no")
-
-#             # Handle deletions
-#             if op_type in ["DELETION", "UPDATE"]:
-#                 for raw in details.get("deleted_sections", []):
-#                     item_number = extract_item_number(raw)
-#                     item_name = get_item_name_from_base_gazette(base_gazette_path, minister_number, column_no, item_number)
-#                     if item_name:
-#                         process_change(session, column_no, item_number, item_name, minister_number, gazette_id, published_date, "removed_in")
-
-#             # Handle insertions
-#             if op_type in ["INSERTION", "UPDATE"]:
-#                 for raw in details.get("added_content", []):
-#                     item_number = extract_item_number(raw)
-#                     item_name = raw.strip()
-#                     process_change(session, column_no, item_number, item_name, minister_number, gazette_id, published_date, "added_in")
-#                 for raw in details.get("updated_content", []):
-#                     item_number = extract_item_number(raw)
-#                     item_name = raw.strip()
-#                     process_change(session, column_no, item_number, item_name, minister_number, gazette_id, published_date, "updated_in")
-
-#     print(f"✅ Amendment Gazette {gazette_id} applied to parent {parent_gazette_id}")
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("--input", required=True, help="Path to amendment JSON file")
-#     parser.add_argument("--base", required=False, help="Path to parent/base gazette JSON file")
-#     args = parser.parse_args()
-
-#     load_amendment_data(args.input, args.base)
-
-
-# import json
-# import os
-# import argparse
-# import re
-# from neo4j import GraphDatabase
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# URI = os.getenv("NEO4J_URI")
-# USER = os.getenv("NEO4J_USER")
-# PASSWORD = os.getenv("NEO4J_PASSWORD")
-
-# driver = GraphDatabase.driver(URI, auth=(USER, PASSWORD))
-
-# def extract_item_number(item_str):
-#     match = re.search(r"(\d+)", item_str)
-#     return match.group(1) if match else None
-
-# def get_item_name_from_base_gazette(base_gazette_path, minister_number, column_no, item_number):
-#     if not os.path.exists(base_gazette_path):
-#         print(f"❌ Base gazette not found: {base_gazette_path}")
-#         return None
-#     with open(base_gazette_path, "r", encoding="utf-8") as f:
-#         base_data = json.load(f)
-#     for minister in base_data.get("ministers", []):
-#         if str(minister.get("number")) == str(minister_number):
-#             if column_no == "1":
-#                 items = minister.get("functions", [])
-#             elif column_no == "2":
-#                 items = minister.get("departments", [])
-#             else:
-#                 return None
-#             for item_str in items:
-#                 match = re.match(r"^\s*(\d+)\.\s*(.+)$", item_str.strip())
-#                 if match and match.group(1) == str(item_number):
-#                     return match.group(2)
-#     return None
-
-# def process_add_or_update(session, column_no, raw, minister_name, gazette_id, published_date, flag):
-#     item_number = extract_item_number(raw)
-#     match = re.match(r"^\s*(\d+)\.\s*(.+)$", raw.strip())
-#     item_name = match.group(2) if match else raw.strip()
-#     if column_no == "1":
-#         session.run(
-#             f"""
-#             MERGE (f:Function {{item_number: $item_number, name: $item_name}})
-#             SET f.{flag} = $gazette_id,
-#                 f.{flag}_date = $published_date
-#             WITH f
-#             MATCH (m:Minister {{name: $minister_name}})
-#             MERGE (m)-[:HAS_FUNCTION]->(f)
-#             """,
-#             item_number=item_number,
-#             item_name=item_name,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#             minister_name=minister_name,
-#         )
-#     elif column_no == "2":
-#         session.run(
-#             f"""
-#             MERGE (d:Department {{item_number: $item_number, name: $item_name}})
-#             SET d.{flag} = $gazette_id,
-#                 d.{flag}_date = $published_date
-#             WITH d
-#             MATCH (m:Minister {{name: $minister_name}})
-#             MERGE (m)-[:OVERSEES_DEPARTMENT]->(d)
-#             """,
-#             item_number=item_number,
-#             item_name=item_name,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#             minister_name=minister_name,
-#         )
-#     elif column_no == "3":
-#         session.run(
-#             f"""
-#             MERGE (l:Law {{name: $item_name}})
-#             SET l.{flag} = $gazette_id,
-#                 l.{flag}_date = $published_date
-#             WITH l
-#             MATCH (m:Minister {{name: $minister_name}})
-#             MERGE (m)-[:RESPONSIBLE_FOR_LAW]->(l)
-#             """,
-#             item_name=item_name,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#             minister_name=minister_name,
-#         )
-
-# def process_deletion(session, column_no, item_number, item_name, minister_name, gazette_id, published_date):
-#     if column_no == "1":
-#         session.run(
-#             """
-#             MATCH (f:Function {item_number: $item_number, name: $item_name})
-#             SET f.removed_in = $gazette_id,
-#                 f.removed_in_date = $published_date
-#             """,
-#             item_number=item_number,
-#             item_name=item_name,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#         )
-#     elif column_no == "2":
-#         session.run(
-#             """
-#             MATCH (d:Department {item_number: $item_number, name: $item_name})
-#             SET d.removed_in = $gazette_id,
-#                 d.removed_in_date = $published_date
-#             """,
-#             item_number=item_number,
-#             item_name=item_name,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#         )
-
-# def load_amendment_data(json_path, base_gazette_path=None):
-#     if not os.path.exists(json_path):
-#         raise FileNotFoundError(f"❌ File not found: {json_path}")
-
-#     with open(json_path, "r", encoding="utf-8") as f:
-#         data = json.load(f)
-
-#     meta = data.get("metadata", {})
-#     gazette_id = meta.get("gazette_id")
-#     published_date = meta.get("Gazette Published Date")
-#     parent_gazette_id = meta.get("Parent Gazette", {}).get("gazette_id")
-
-#     # Dynamically determine base gazette path if not provided
-#     if not base_gazette_path:
-#         if parent_gazette_id:
-#             safe_id = parent_gazette_id.replace('/', '-')
-#             amendment_dir = os.path.dirname(os.path.abspath(json_path))
-#             base_dir = amendment_dir.replace('amendment', 'base')
-#             base_gazette_filename = f"{safe_id}_E.json"
-#             base_gazette_path = os.path.join(base_dir, base_gazette_filename)
-#         else:
-#             base_gazette_path = None
-
-#     with driver.session() as session:
-#         session.run("""
-#             MERGE (a:AmendmentGazette {gazette_id: $gazette_id})
-#             SET a.published_date = $published_date,
-#                 a.published_by = $published_by,
-#                 a.gazette_type = $gazette_type,
-#                 a.language = $language,
-#                 a.pdf_url = $pdf_url
-#         """,
-#             gazette_id=gazette_id,
-#             published_date=published_date,
-#             published_by=meta.get("published_by"),
-#             gazette_type=meta.get("Gazette Type"),
-#             language=meta.get("Language"),
-#             pdf_url=meta.get("PDF URL")
-#         )
-
-#         if parent_gazette_id:
-#             session.run("""
-#                 MERGE (b:BaseGazette {gazette_id: $parent_id})
-#                 MERGE (a:AmendmentGazette {gazette_id: $amend_id})
-#                 MERGE (b)-[r:AMENDED_BY]->(a)
-#                 SET r.date = $date
-#             """, parent_id=parent_gazette_id, amend_id=gazette_id, date=published_date)
-
-#         for change in data.get("changes", []):
-#             op_type = change.get("operation_type")
-#             details = change.get("details", {})
-#             minister_name = details.get("name")
-#             minister_number = details.get("number")
-#             column_no = details.get("column_no")
-
-#             # Handle deletions in DELETION and UPDATE operations
-#             if op_type in ["DELETION", "UPDATE"]:
-#                 for raw in details.get("deleted_sections", []):
-#                     item_number = extract_item_number(raw)
-#                     item_name = None
-#                     if column_no in ["1", "2"] and item_number and parent_gazette_id:
-#                         item_name = get_item_name_from_base_gazette(
-#                             base_gazette_path, minister_number, column_no, item_number
-#                         )
-#                         if item_name:
-#                             process_deletion(session, column_no, item_number, item_name, minister_name, gazette_id, published_date)
-#                         else:
-#                             print(f"⚠️ Could not find item name for Minister {minister_name} ({minister_number}), column {column_no}, item {item_number}")
-#             # Handle insertions
-#             if op_type == "INSERTION":
-#                 for raw in details.get("added_content", []):
-#                     process_add_or_update(session, column_no, raw, minister_name, gazette_id, published_date, "added_in")
-
-#             # Handle updates (added/updated content)
-#             if op_type == "UPDATE":
-#                 for raw in details.get("added_content", []):
-#                     process_add_or_update(session, column_no, raw, minister_name, gazette_id, published_date, "added_in")
-#                 for raw in details.get("updated_content", []):
-#                     process_add_or_update(session, column_no, raw, minister_name, gazette_id, published_date, "updated_in")
-
-#     print(f"✅ Amendment Gazette {gazette_id} applied to parent {parent_gazette_id}")
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(description="Load Amendment Gazette JSON into Neo4j")
-#     parser.add_argument("--input", required=True, help="Path to amendment JSON file")
-#     parser.add_argument("--base", required=True, help="Path to parent/base gazette JSON file")
-#     args = parser.parse_args()
-#     load_amendment_data(args.input, args.base)

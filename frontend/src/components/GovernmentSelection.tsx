@@ -122,7 +122,7 @@ export default function GovernmentSelection() {
                       target.nextElementSibling?.classList.remove('hidden');
                     }}
                   />
-                  <div className="hidden w-full h-full flex items-center justify-center text-4xl font-bold text-white">
+                  <div className="sm:hidden w-full h-full flex items-center justify-center text-4xl font-bold text-white">
                     {president.name.split(' ').map(n => n[0]).join('')}
                   </div>
                 </div>

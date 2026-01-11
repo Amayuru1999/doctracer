@@ -407,6 +407,7 @@ def get_gazette_structure(gazette_id):
                     'ministers': [],
                     'departments': [],
                     'laws': [],
+                    'functions': [],
                     'raw_entities': [],
                     'error': 'Gazette not found or is not a BaseGazette'
                 })
@@ -439,26 +440,41 @@ def get_gazette_structure(gazette_id):
                 RETURN m.name as minister_name, collect(DISTINCT l.name) as laws
             """, gazette_id=decoded_gazette_id)
 
+            # Functions per minister (BaseFunction OR Function)
+            func_result = session.run("""
+                MATCH (g:BaseGazette {gazette_id: $gazette_id})
+                MATCH (g)-[:HAS_MINISTER]->(m)
+                WHERE m:BaseMinister OR m:Minister
+                OPTIONAL MATCH (m)-[:HAS_FUNCTION]->(f)
+                WHERE f:BaseFunction OR f:Function
+                RETURN m.name as minister_name, collect(DISTINCT f.name) as functions
+            """, gazette_id=decoded_gazette_id)
+
             structure = {
                 'gazette_id': decoded_gazette_id,
                 'ministers': [],
                 'departments': [],
                 'laws': [],
+                'functions': [],
                 'raw_entities': []
             }
 
             ministers_map = {}
             departments_set = set()
             laws_set = set()
+            functions_set = set()
 
             for record in result:
                 minister = record['m']
                 if minister:
                     minister_name = minister.get('name', 'Unknown')
+                    minister_number = minister.get('number', 'Unknown')
                     ministers_map[minister_name] = {
                         'name': minister_name,
+                        'number': minister_number,
                         'departments': [],
-                        'laws': []
+                        'laws': [],
+                        'functions': []
                     }
 
             for record in dept_result:
@@ -475,9 +491,17 @@ def get_gazette_structure(gazette_id):
                     ministers_map[minister_name]['laws'] = [l for l in laws if l is not None]
                     laws_set.update(ministers_map[minister_name]['laws'])
 
+            for record in func_result:
+                minister_name = record['minister_name']
+                functions = record['functions'] or []
+                if minister_name in ministers_map:
+                    ministers_map[minister_name]['functions'] = [f for f in functions if f is not None]
+                    functions_set.update(ministers_map[minister_name]['functions'])
+
             structure['ministers'] = list(ministers_map.values())
             structure['departments'] = list(departments_set)
             structure['laws'] = list(laws_set)
+            structure['functions'] = list(functions_set)
 
             logger.debug(
                 f"Structure for {decoded_gazette_id}: "
@@ -494,6 +518,7 @@ def get_gazette_structure(gazette_id):
             'ministers': [],
             'departments': [],
             'laws': [],
+            'functions': [],
             'raw_entities': [],
             'error': str(e)
         }), 500
@@ -656,16 +681,16 @@ def get_base_gazette_from_neo4j(base_id):
     logger.debug(f"Loading base gazette {base_id} from Neo4j")
 
     with driver.session() as session:
-        # Ministers
+        # Ministers with their numbers
         ministers_result = session.run("""
             MATCH (g:BaseGazette {gazette_id: $gazette_id})
             MATCH (g)-[:HAS_MINISTER]->(m)
             WHERE m:BaseMinister OR m:Minister
-            RETURN DISTINCT m.name as minister_name
+            RETURN DISTINCT m.name as minister_name, m.number as minister_number
         """, gazette_id=base_id)
 
-        ministers = [record['minister_name'] for record in ministers_result]
-        logger.debug(f"Found {len(ministers)} ministers in base gazette")
+        ministers_list = [{'name': record['minister_name'], 'number': record['minister_number']} for record in ministers_result]
+        logger.debug(f"Found {len(ministers_list)} ministers in base gazette")
 
         # Departments
         dept_result = session.run("""
@@ -674,7 +699,7 @@ def get_base_gazette_from_neo4j(base_id):
             WHERE m:BaseMinister OR m:Minister
             OPTIONAL MATCH (m)-[:OVERSEES_DEPARTMENT]->(d)
             WHERE d:BaseDepartment OR d:Department
-            RETURN m.name as minister_name, collect(DISTINCT d.name) as departments
+            RETURN m.name as minister_name, m.number as minister_number, collect(DISTINCT d.name) as departments
         """, gazette_id=base_id)
 
         # Laws
@@ -684,7 +709,7 @@ def get_base_gazette_from_neo4j(base_id):
             WHERE m:BaseMinister OR m:Minister
             OPTIONAL MATCH (m)-[:RESPONSIBLE_FOR_LAW]->(l)
             WHERE l:BaseLaw OR l:Law
-            RETURN m.name as minister_name, collect(DISTINCT l.name) as laws
+            RETURN m.name as minister_name, m.number as minister_number, collect(DISTINCT l.name) as laws
         """, gazette_id=base_id)
 
         # Functions
@@ -694,16 +719,20 @@ def get_base_gazette_from_neo4j(base_id):
             WHERE m:BaseMinister OR m:Minister
             OPTIONAL MATCH (m)-[:HAS_FUNCTION]->(f)
             WHERE f:BaseFunction OR f:Function
-            RETURN m.name as minister_name, collect(DISTINCT f.name) as functions
+            RETURN m.name as minister_name, m.number as minister_number, collect(DISTINCT f.name) as functions
         """, gazette_id=base_id)
 
         ministers_map = {}
         all_departments = set()
         all_laws = set()
+        all_functions = set()
 
-        for minister_name in ministers:
+        for minister_info in ministers_list:
+            minister_name = minister_info['name']
+            minister_number = minister_info['number']
             ministers_map[minister_name] = {
                 'name': minister_name,
+                'number': minister_number,
                 'departments': [],
                 'laws': [],
                 'functions': []
@@ -728,11 +757,13 @@ def get_base_gazette_from_neo4j(base_id):
             functions = [f for f in (record['functions'] or []) if f is not None]
             if minister_name in ministers_map:
                 ministers_map[minister_name]['functions'] = functions
+                all_functions.update(functions)
 
         structure = {
             'ministers': list(ministers_map.values()),
             'departments': list(all_departments),
             'laws': list(all_laws),
+            'functions': list(all_functions),
             'raw_entities': []
         }
 
@@ -829,8 +860,7 @@ def get_amendment_changes_from_neo4j(amendment_id):
                         'number': minister_number,
                         'column_no': column_no,
                         'added_content': added_content,
-                        'deleted_sections': deleted_sections,
-                        'substituted_items': added_content  # explicit for simulate_final_structure
+                        'deleted_sections': deleted_sections
                     }
                 })
             elif added_content:
@@ -917,19 +947,41 @@ def get_amendment_changes_from_file(amendment_id):
 
 def get_amendment_changes(amendment_id):
     """Get amendment changes from Neo4j database with fallback for incomplete data."""
-    changes = get_amendment_changes_from_neo4j(amendment_id)
-    if changes is not None and len(changes) > 0:
-        logger.debug(f"Successfully loaded {len(changes)} changes from Neo4j for amendment {amendment_id}")
-        return changes
-    
-    logger.debug(f"No detailed changes found in Neo4j for amendment {amendment_id}, attempting fallback")
-    
+    # Try a few normalized variants of the amendment id to be tolerant of
+    # differences like '1905/4' vs '1905/04' used in files vs UI.
+    candidates = [amendment_id]
+    try:
+        # If matches pattern like YYYY/NN or any number/number, add padded/unpadded variants
+        import re
+        m = re.match(r"^(.*?/)(0?)(\d+)$", amendment_id)
+        if m:
+            prefix = m.group(1)
+            num = m.group(3)
+            # unpadded
+            candidates.append(f"{prefix}{int(num)}")
+            # padded to 2 digits
+            candidates.append(f"{prefix}{str(int(num)).zfill(2)}")
+    except Exception:
+        pass
+
+    tried = set()
+    for cand in candidates:
+        if not cand or cand in tried:
+            continue
+        tried.add(cand)
+        changes = get_amendment_changes_from_neo4j(cand)
+        if changes is not None and len(changes) > 0:
+            logger.debug(f"Successfully loaded {len(changes)} changes from Neo4j for amendment {cand} (original {amendment_id})")
+            return changes
+
+    logger.debug(f"No detailed changes found in Neo4j for any candidate of amendment {amendment_id}, attempting fallback")
+
     # Fallback: try to create basic changes from amendment gazette structure
     fallback_changes = get_amendment_changes_fallback(amendment_id)
     if fallback_changes:
         logger.debug(f"Generated {len(fallback_changes)} fallback changes for amendment {amendment_id}")
         return fallback_changes
-    
+
     logger.debug(f"No changes found for amendment {amendment_id}")
     return []
 
@@ -943,9 +995,11 @@ def simulate_final_structure(base_structure, amendment_changes):
     logger.debug(f"Processing {len(amendment_changes)} changes for {len(ministers_map)} ministers")
 
     def _ensure_minister(name):
+        # FIX: Do not create new ministers from amendments - only update existing ones
+        # All ministers should come from the base gazette structure
         if name not in ministers_map:
-            ministers_map[name] = {'name': name, 'departments': [], 'laws': [], 'functions': []}
-            final_structure['ministers'].append(ministers_map[name])
+            logger.warning(f"Minister '{name}' not found in base structure, skipping change")
+            return None
         return ministers_map[name]
 
     for i, change in enumerate(amendment_changes):
@@ -960,6 +1014,10 @@ def simulate_final_structure(base_structure, amendment_changes):
             continue
 
         minister = _ensure_minister(name)
+        
+        # Skip if minister not found in base structure
+        if minister is None:
+            continue
 
         # Column mapping
         if col == '1':
@@ -982,12 +1040,13 @@ def simulate_final_structure(base_structure, amendment_changes):
             minister[field] = [x for x in current if x not in to_del]
 
         elif op == 'UPDATE':
-            subs = [x for x in details.get('substituted_items', []) if x is not None]
-            dels = set([x for x in details.get('deleted_sections', []) if x is not None])
             adds = [x for x in details.get('added_content', []) if x is not None]
+            dels = set([x for x in details.get('deleted_sections', []) if x is not None])
 
-            if subs:
-                minister[field] = subs
+            # If the amendment both deletes and adds and the counts match,
+            # treat it as a direct substitution (replace existing entries).
+            if adds and dels and len(adds) == len(dels):
+                minister[field] = adds
             else:
                 tmp = [x for x in current if x not in dels]
                 for x in adds:
@@ -996,12 +1055,14 @@ def simulate_final_structure(base_structure, amendment_changes):
                 minister[field] = tmp
 
     # Recompute top-level unions
-    all_depts, all_laws = set(), set()
+    all_depts, all_laws, all_funcs = set(), set(), set()
     for m in final_structure['ministers']:
         all_depts.update(m.get('departments', []))
         all_laws.update(m.get('laws', []))
+        all_funcs.update(m.get('functions', []))
     final_structure['departments'] = list(all_depts)
     final_structure['laws'] = list(all_laws)
+    final_structure['functions'] = list(all_funcs)
 
     return final_structure
 
@@ -1069,8 +1130,12 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
                 'raw_entities': raw_entities
             }
 
-        base_structure = {'ministers': [], 'departments': [], 'laws': []}
-        amendment_structure = {'ministers': [], 'departments': [], 'laws': []}
+        # Extract raw entities lists from the Neo4j cursors for later use in frontend
+        base_raw = process_gazette_data(base_result)
+        amendment_raw = process_gazette_data(amendment_result)
+
+        base_structure = {'ministers': [], 'departments': [], 'laws': [], 'raw_entities': base_raw.get('raw_entities', [])}
+        amendment_structure = {'ministers': [], 'departments': [], 'laws': [], 'raw_entities': amendment_raw.get('raw_entities', [])}
         added_ministers = []
         removed_ministers = []
         modified_ministers = []
@@ -1119,28 +1184,58 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
 
                     changes = {
                         'name': name,
+                        'number': base_m.get('number') or final_m.get('number'),
                         'base': base_m,
                         'amendment': final_m,
-                        'changes': []
+                        'changes': [],
+                        # Backwards-compatible flattened fields for frontend
+                        'departments_added': [],
+                        'departments_removed': [],
+                        'laws_added': [],
+                        'laws_removed': [],
+                        'functions_added': [],
+                        'functions_removed': []
                     }
 
                     base_depts = set(base_m['departments'])
                     final_depts = set(final_m['departments'])
                     if base_depts != final_depts:
+                        added_depts = list(final_depts - base_depts)
+                        removed_depts = list(base_depts - final_depts)
                         changes['changes'].append({
                             'type': 'departments',
-                            'added': list(final_depts - base_depts),
-                            'removed': list(base_depts - final_depts)
+                            'added': added_depts,
+                            'removed': removed_depts
                         })
+                        changes['departments_added'] = added_depts
+                        changes['departments_removed'] = removed_depts
 
                     base_laws = set(base_m['laws'])
                     final_laws = set(final_m['laws'])
                     if base_laws != final_laws:
+                        added_laws = list(final_laws - base_laws)
+                        removed_laws = list(base_laws - final_laws)
                         changes['changes'].append({
                             'type': 'laws',
-                            'added': list(final_laws - base_laws),
-                            'removed': list(base_laws - final_laws)
+                            'added': added_laws,
+                            'removed': removed_laws
                         })
+                        changes['laws_added'] = added_laws
+                        changes['laws_removed'] = removed_laws
+
+                    # Populate function diffs if present
+                    base_funcs = set(base_m.get('functions', []))
+                    final_funcs = set(final_m.get('functions', []))
+                    if base_funcs != final_funcs:
+                        added_funcs = list(final_funcs - base_funcs)
+                        removed_funcs = list(base_funcs - final_funcs)
+                        changes['changes'].append({
+                            'type': 'functions',
+                            'added': added_funcs,
+                            'removed': removed_funcs
+                        })
+                        changes['functions_added'] = added_funcs
+                        changes['functions_removed'] = removed_funcs
 
                     if changes['changes']:
                         modified_ministers.append(changes)
@@ -1154,7 +1249,7 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
             removed_ministers = []
             modified_ministers = []
 
-        return jsonify({
+        response = {
             'base_gazette': {
                 'id': decoded_base_id,
                 'structure': base_structure,
@@ -1174,9 +1269,21 @@ def compare_gazette_structures(base_gazette_id, amendment_gazette_id):
                 'added_departments': list(set(amendment_structure.get('departments', [])) - set(base_structure.get('departments', []))),
                 'removed_departments': list(set(base_structure.get('departments', [])) - set(amendment_structure.get('departments', []))),
                 'added_laws': list(set(amendment_structure.get('laws', [])) - set(base_structure.get('laws', []))),
-                'removed_laws': list(set(base_structure.get('laws', [])) - set(amendment_structure.get('laws', [])))
+                'removed_laws': list(set(base_structure.get('laws', [])) - set(amendment_structure.get('laws', []))),
+                'added_functions': list(set(amendment_structure.get('functions', [])) - set(base_structure.get('functions', []))),
+                'removed_functions': list(set(base_structure.get('functions', [])) - set(amendment_structure.get('functions', [])))
             }
-        })
+        }
+
+        # Optional debug keys to help frontend matching issues
+        if os.getenv('COMPARE_DEBUG') == '1':
+            response['debug_keys'] = {
+                'base_minister_keys': [f"{(m.get('number') or '') if (m.get('number') and m.get('number')!='Unknown') else ''}-{m.get('name')}" for m in base_structure.get('ministers', [])],
+                'amendment_minister_keys': [f"{(m.get('number') or '') if (m.get('number') and m.get('number')!='Unknown') else ''}-{m.get('name')}" for m in amendment_structure.get('ministers', [])],
+                'modified_minister_keys': [f"{(m.get('number') or '') if (m.get('number') and m.get('number')!='Unknown') else ''}-{m.get('name')}" for m in modified_ministers]
+            }
+
+        return jsonify(response)
 
 
 @app.route("/debug/gazettes", methods=["GET"])

@@ -69,10 +69,10 @@ def load_table_data(file_path: str):
                 print(f"⚠️ Skipping minister without number: {minister_name}")
                 continue
 
-            # Minister node
+            # FIX: Add gazette_id to Minister node to avoid cross-gazette conflicts
             session.run(
                 """
-                MERGE (m:Minister {number: $minister_number})
+                MERGE (m:Minister {number: $minister_number, gazette_id: $gazette_id})
                 SET m.name = $minister_name
                 WITH m
                 MATCH (b:BaseGazette {gazette_id: $gazette_id})
@@ -89,8 +89,8 @@ def load_table_data(file_path: str):
                 if item_number:
                     session.run(
                         """
-                        MATCH (m:Minister {number: $minister_number})
-                        MERGE (f:Function {item_number: $item_number})
+                        MATCH (m:Minister {number: $minister_number, gazette_id: $gazette_id})
+                        MERGE (f:Function {item_number: $item_number, minister_number: $minister_number, gazette_id: $gazette_id})
                         ON CREATE SET f.name = $item_name, f.created_in = $gazette_id, f.added_date = $published_date
                         ON MATCH SET f.name = coalesce(f.name, $item_name)
                         MERGE (m)-[:HAS_FUNCTION]->(f)
@@ -104,8 +104,8 @@ def load_table_data(file_path: str):
                 else:
                     session.run(
                         """
-                        MATCH (m:Minister {number: $minister_number})
-                        MERGE (f:Function {name: $item_name, minister_ref: $minister_number})
+                        MATCH (m:Minister {number: $minister_number, gazette_id: $gazette_id})
+                        MERGE (f:Function {name: $item_name, gazette_id: $gazette_id, minister_ref: $minister_number})
                         ON CREATE SET f.created_in = $gazette_id, f.added_date = $published_date
                         MERGE (m)-[:HAS_FUNCTION]->(f)
                         """,
@@ -121,8 +121,8 @@ def load_table_data(file_path: str):
                 if item_number:
                     session.run(
                         """
-                        MATCH (m:Minister {number: $minister_number})
-                        MERGE (d:Department {item_number: $item_number})
+                        MATCH (m:Minister {number: $minister_number, gazette_id: $gazette_id})
+                        MERGE (d:Department {item_number: $item_number, minister_number: $minister_number, gazette_id: $gazette_id})
                         ON CREATE SET d.name = $item_name, d.created_in = $gazette_id, d.added_date = $published_date
                         ON MATCH SET d.name = coalesce(d.name, $item_name)
                         MERGE (m)-[:OVERSEES_DEPARTMENT]->(d)
@@ -136,8 +136,8 @@ def load_table_data(file_path: str):
                 else:
                     session.run(
                         """
-                        MATCH (m:Minister {number: $minister_number})
-                        MERGE (d:Department {name: $item_name, minister_ref: $minister_number})
+                        MATCH (m:Minister {number: $minister_number, gazette_id: $gazette_id})
+                        MERGE (d:Department {name: $item_name, gazette_id: $gazette_id, minister_ref: $minister_number})
                         ON CREATE SET d.created_in = $gazette_id, d.added_date = $published_date
                         MERGE (m)-[:OVERSEES_DEPARTMENT]->(d)
                         """,
@@ -154,8 +154,8 @@ def load_table_data(file_path: str):
                     continue
                 session.run(
                     """
-                    MATCH (m:Minister {number: $minister_number})
-                    MERGE (l:Law {name: $law_name})
+                    MATCH (m:Minister {number: $minister_number, gazette_id: $gazette_id})
+                    MERGE (l:Law {name: $law_name, minister_number: $minister_number, gazette_id: $gazette_id})
                     ON CREATE SET l.created_in = $gazette_id, l.added_date = $published_date
                     MERGE (m)-[:RESPONSIBLE_FOR_LAW]->(l)
                     """,
@@ -165,7 +165,7 @@ def load_table_data(file_path: str):
                     published_date=published_date,
                 )
 
-    print(f"✅ Base Gazette {gazette_id} loaded/updated.")
+    print(f"✅ Base Gazette {gazette_id} loaded/updated (with gazette_id scoping).")
 
 
 if __name__ == "__main__":

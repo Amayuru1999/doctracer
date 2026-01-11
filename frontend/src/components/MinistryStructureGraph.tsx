@@ -69,10 +69,10 @@ export default function MinistryStructureGraph({ gazetteId, showAll = false }: M
 
     // Add minister nodes and their relationships
     structure.ministers.forEach((minister, index) => {
-      const ministerId = `minister_${index}_${minister.name}`;
+      const ministerId = `minister_${minister.number}_${minister.name}`;
       nodes.push({
         id: ministerId,
-        label: minister.name,
+        label: `${minister.number}. ${minister.name}`,
         kind: 'minister',
         type: 'minister',
         departments: minister.departments,

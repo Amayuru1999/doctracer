@@ -1,8 +1,8 @@
 {
   "metadata": {
     "gazette_id": "1905/4",
-    "gazette_published_date": "2015-03-09",
-    "gazette_published_by": "Authority",
+    "published_date": "2015-03-09",
+    "published_by": "Authority",
     "president": "Maithripala Sirisena",
     "gazette_type": "Extraordinary",
     "language": "English",
@@ -20,7 +20,11 @@
         "number": "4",
         "name": "Minister of Public Order, Disaster Management & Christian Affairs",
         "column_no": "1",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 18",
+          "item 19"
+        ],
+        "added_content": [
           "18. Registration of Persons",
           "19. All other subjects that come under the purview of Institutions listed in Column II",
           "20. Supervision of the Institutions listed in Column II"
@@ -56,7 +60,7 @@
         "name": "Minister of Home Affairs & Fisheries",
         "column_no": "1",
         "deleted_sections": [
-          "3"
+          "item 3"
         ]
       }
     },
@@ -67,7 +71,7 @@
         "name": "Minister of Home Affairs & Fisheries",
         "column_no": "2",
         "deleted_sections": [
-          "3"
+          "item 3"
         ]
       }
     },
@@ -89,8 +93,8 @@
         "name": "Minister of Food Security",
         "column_no": "1",
         "deleted_sections": [
-          "2",
-          "4"
+          "item 2",
+          "item 4"
         ]
       }
     },
@@ -100,7 +104,13 @@
         "number": "6",
         "name": "Minister of Food Security",
         "column_no": "1",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 3",
+          "item 5",
+          "item 6",
+          "item 7"
+        ],
+        "added_content": [
           "2. Ensure availability of food and other essential items",
           "3. Ensure purchase of agricultural products at reasonable prices",
           "4. All other subjects that come under the purview of institutions listed in Column II",
@@ -115,10 +125,10 @@
         "name": "Minister of Food Security",
         "column_no": "2",
         "deleted_sections": [
-          "6",
-          "8",
-          "9",
-          "10"
+          "item 6",
+          "item 8",
+          "item 9",
+          "item 10"
         ]
       }
     },
@@ -128,9 +138,14 @@
         "number": "6",
         "name": "Minister of Food Security",
         "column_no": "2",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 7",
+          "item 11",
+          "item 12"
+        ],
+        "added_content": [
           "6. National Institute of Co-operative Development",
-          "7. Regional Economic Centers",
+          "7. Regional Economic Centres",
           "8. Paddy Marketing Board"
         ]
       }
@@ -155,7 +170,7 @@
         "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
         "column_no": "1",
         "deleted_sections": [
-          "5"
+          "item 5"
         ]
       }
     },
@@ -166,7 +181,7 @@
         "name": "Minister of Public Administration, Provincial Councils, Local Government & Democratic Governance",
         "column_no": "2",
         "deleted_sections": [
-          "1"
+          "item 1"
         ]
       }
     },
@@ -176,7 +191,11 @@
         "number": "11",
         "name": "Minister of Finance",
         "column_no": "1",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 17",
+          "item 18"
+        ],
+        "added_content": [
           "17. Cadre management and advisory services and fixing of salaries",
           "18. All other subjects that come under the purview of Institutions listed in Column II",
           "19. Supervision of the institution listed in Column II"
@@ -235,8 +254,8 @@
         "name": "Minister of Tourism & Sports",
         "column_no": "1",
         "deleted_sections": [
-          "8",
-          "12"
+          "item 8",
+          "item 12"
         ]
       }
     },
@@ -246,7 +265,13 @@
         "number": "21",
         "name": "Minister of Tourism & Sports",
         "column_no": "1",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 9",
+          "item 10",
+          "item 11",
+          "item 13"
+        ],
+        "added_content": [
           "8. Encouragement of sports",
           "9. Development of sports facilities",
           "10. Sports education",
@@ -262,9 +287,9 @@
         "name": "Minister of Tourism & Sports",
         "column_no": "2",
         "deleted_sections": [
-          "9",
-          "10",
-          "11"
+          "item 9",
+          "item 10",
+          "item 11"
         ]
       }
     },
@@ -274,7 +299,15 @@
         "number": "21",
         "name": "Minister of Tourism & Sports",
         "column_no": "2",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 12",
+          "item 13",
+          "item 14",
+          "item 15",
+          "item 16",
+          "item 17"
+        ],
+        "added_content": [
           "9. Ape Gama",
           "10. Department of Sports Development",
           "11. Sugathadasa National Sports Complex Authority",
@@ -314,7 +347,11 @@
         "number": "23",
         "name": "Minister of Industry & Commerce",
         "column_no": "1",
-        "substituted_items": [
+        "deleted_sections": [
+          "item 11",
+          "item 12"
+        ],
+        "added_content": [
           "11. Development and promotion of national crafts and arts",
           "12. Development and popularization of designs for Sri Lanka handicraft industry",
           "13. Formulation and implementation of National Price Policy pertaining to consumer goods",
@@ -363,7 +400,7 @@
         "name": "Minister of Education",
         "column_no": "2",
         "deleted_sections": [
-          "11"
+          "item 11"
         ]
       }
     },
@@ -374,7 +411,7 @@
         "name": "Minister of Education",
         "column_no": "3",
         "deleted_sections": [
-          "National Education Commission Act, No. 19 of 1991"
+          "National Education Commission Act No. 19 of 1991"
         ]
       }
     }
