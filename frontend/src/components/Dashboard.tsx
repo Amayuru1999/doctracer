@@ -59,6 +59,8 @@ export default function Dashboard() {
     "2297/78": "Ranil Wickremesinghe",
     "2153/12": "Gotabaya Rajapaksa",
     "1905/4": "Maithripala Sirisena",
+    "1909/54": "Maithripala Sirisena",
+    "1913/4": "Maithripala Sirisena",
     "1897/15": "Maithripala Sirisena",
     "2289/43": "Ranil Wickremesinghe",
     "2412/08": "Anura Kumara Dissanayaka",
@@ -1207,6 +1209,11 @@ export default function Dashboard() {
     president: presidentMapping[g.gazette_id] || "Unknown",
   }));
 
+  // Debug: log each amendment with its president
+  updatedAmendments.forEach((a) => {
+    console.log(`Amendment ${a.gazette_id}: president="${a.president}"`);
+  });
+
   // Filter amendment gazettes by the effective government (context OR route param)
   const filteredAmendments = effectiveGovernment
     ? updatedAmendments.filter(
@@ -1214,7 +1221,9 @@ export default function Dashboard() {
       )
     : updatedAmendments;
 
-  console.log("Updated Amendments:", updatedAmendments);
+  // console.log("effectiveGovernment:", effectiveGovernment);
+  // console.log("govToPresidentName[effectiveGovernment]:", govToPresidentName[effectiveGovernment]);
+  // console.log("Filtered Amendments count:", filteredAmendments.length);
 
   return (
     <section className="space-y-6">

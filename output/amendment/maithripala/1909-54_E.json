@@ -1,0 +1,88 @@
+{
+  "metadata": {
+    "gazette_id": "1909/54",
+    "published_date": "2015-04-10",
+    "published_by": "Authority",
+    "president": "Maithripala Sirisena",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/4/1909-54_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "1897/15",
+      "published_date": "2015-01-18",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "3",
+        "name": "Minister of Policy Planning, Economic Affairs, Child, Youth and Cultural Affairs",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 13",
+          "item 14",
+          "item 15",
+          "item 23",
+          "item 38"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry and Commerce",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 11",
+          "item 12"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry and Commerce",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 8",
+          "item 14",
+          "item 28",
+          "item 33",
+          "item 34",
+          "item 35"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry and Commerce",
+        "column_no": "3",
+        "deleted_sections": [
+          "Textile Training and Services Institute Act, No. 03 of 1984",
+          "National Crafts Council and Allied Institutions Act, No. 35 of 1982",
+          "National Crafts Council and Allied Institutions (Special Provisions) Act, No. 4 of 1996"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "31",
+        "name": "Minister of Muslim Religious Affairs and Posts",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 1"
+        ],
+        "added_content": [
+          "1. Department of Muslim Religious and Cultural Affairs"
+        ]
+      }
+    }
+  ]
+}

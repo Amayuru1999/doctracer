@@ -108,16 +108,17 @@ def get_amendments():
     """Get all amendment gazettes with change tracking status"""
     logger.debug("Received request to get all amendments")
     with driver.session() as session:
-        result = session.run(f"""
+        result = session.run("""
             MATCH (a:AmendmentGazette)
             OPTIONAL MATCH (a)<-[:AMENDED_BY]-(b:BaseGazette)
             OPTIONAL MATCH (n)
             WHERE (n:Function OR n:Department OR n:Law) 
               AND (n.added_by = a.gazette_id OR n.removed_by = a.gazette_id)
+            WITH a, b, count(n) AS change_count
             RETURN a.gazette_id AS gazette_id,
                    a.published_date AS published_date,
                    b.gazette_id AS parent_gazette_id,
-                   count(n) AS change_count
+                   change_count
             ORDER BY a.published_date
         """)
         amendments = []
@@ -126,6 +127,19 @@ def get_amendments():
             amendment['has_detailed_changes'] = amendment['change_count'] > 0
             amendments.append(amendment)
         logger.debug(f"Fetched {len(amendments)} amendments from the database")
+        logger.debug(f"Amendments: {amendments}")
+        return jsonify(amendments)
+
+
+@app.route("/debug/amendments-raw", methods=["GET"])
+def debug_amendments():
+    """Debug endpoint to see raw amendment nodes"""
+    with driver.session() as session:
+        result = session.run("""
+            MATCH (a:AmendmentGazette)
+            RETURN a.gazette_id AS gazette_id, a.published_date AS published_date, properties(a) AS props
+        """)
+        amendments = [record.data() for record in result]
         return jsonify(amendments)
 
 

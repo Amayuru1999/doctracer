@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "gazette_id": "1913/4",
+    "published_date": "2015-05-05",
+    "published_by": "Authority",
+    "president": "Maithripala Sirisena",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/5/1913-04_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "1897/15",
+      "published_date": "2015-01-18",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2015/1/1897-15_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "16",
+        "name": "Minister of Highways and Investment Promotion",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 4",
+          "item 5"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Tourism and Sports",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 9"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Tourism and Sports",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 9"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry and Commerce",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 5"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Industry and Commerce",
+        "column_no": "3",
+        "deleted_sections": [
+          "National Enterprise Development Authority Act, No. 17 of 2006"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "35",
+        "name": "Minister of Higher Education and Research",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 16",
+          "item 17",
+          "item 18"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "35",
+        "name": "Minister of Higher Education and Research",
+        "column_no": "3",
+        "deleted_sections": [
+          "National Institute of Business Management Act, No. 23 of 1976",
+          "Sri Lanka Ocean University Act, No. 31 of 2014",
+          "University of Vocational Technology Act, No. 31 of 2008"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "39",
+        "name": "Minister of Skills Development and Vocational Training",
+        "column_no": "2",
+        "added_content": [
+          "9. National Institute of Business Management",
+          "10. University of Vocational Technology",
+          "11. National Institute of Fisheries and Nautical Engineering (Ocean University)"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "39",
+        "name": "Minister of Skills Development and Vocational Training",
+        "column_no": "3",
+        "added_content": [
+          "National Institute of Business Management Act, No. 23 of 1976",
+          "Sri Lanka Ocean University Act, No. 31 of 2014",
+          "University of Vocational Technology Act, No. 31 of 2008"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "41",
+        "name": "Minister of Rural Economic Affairs",
+        "column_no": "2",
+        "added_content": [
+          "11. Ape Gama",
+          "12. SME Venture Capital Company",
+          "13. SME Authority",
+          "14. National Enterprise Development Authority"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "41",
+        "name": "Minister of Rural Economic Affairs",
+        "column_no": "3",
+        "added_content": [
+          "National Enterprise Development Authority Act, No. 17 of 2006"
+        ]
+      }
+    }
+  ]
+}
