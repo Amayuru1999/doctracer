@@ -33,9 +33,15 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<
     "structure" | "comparison" | "amendment-tracker" | "visualization"
   >("structure");
-  const [expandedMinisters, setExpandedMinisters] = useState<Record<string, boolean>>({});
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
-  const [expandedMinisterSections, setExpandedMinisterSections] = useState<Record<string, Record<string, boolean>>>({});
+  const [expandedMinisters, setExpandedMinisters] = useState<
+    Record<string, boolean>
+  >({});
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({});
+  const [expandedMinisterSections, setExpandedMinisterSections] = useState<
+    Record<string, Record<string, boolean>>
+  >({});
 
   const { selectedGovernment } = useGovernment();
   const params = useParams<{ presidentId?: string }>();
@@ -55,13 +61,15 @@ export default function Dashboard() {
   };
 
   const presidentMapping: { [key: string]: string } = {
-    "2159/15": "Gotabaya Rajapaksa",
-    "2297/78": "Ranil Wickremesinghe",
-    "2153/12": "Gotabaya Rajapaksa",
+    "1897/15": "Maithripala Sirisena",
     "1905/4": "Maithripala Sirisena",
     "1909/54": "Maithripala Sirisena",
     "1913/4": "Maithripala Sirisena",
-    "1897/15": "Maithripala Sirisena",
+    "2159/15": "Gotabaya Rajapaksa",
+    "2167/6": "Gotabaya Rajapaksa",
+    "2170/2": "Gotabaya Rajapaksa",
+    "2297/78": "Ranil Wickremesinghe",
+    "2153/12": "Gotabaya Rajapaksa",
     "2289/43": "Ranil Wickremesinghe",
     "2412/08": "Anura Kumara Dissanayaka",
     "2458/65": "Anura Kumara Dissanayaka",
@@ -197,11 +205,14 @@ export default function Dashboard() {
     );
   }
 
-  const sortMinistries = <T extends { number?: string; name?: string }>(items: T[]) =>
+  const sortMinistries = <T extends { number?: string; name?: string }>(
+    items: T[]
+  ) =>
     [...items].sort((a, b) => {
       const numA = parseInt(a.number || "999", 10);
       const numB = parseInt(b.number || "999", 10);
-      if (!Number.isNaN(numA) && !Number.isNaN(numB) && numA !== numB) return numA - numB;
+      if (!Number.isNaN(numA) && !Number.isNaN(numB) && numA !== numB)
+        return numA - numB;
       return (a.name || "").localeCompare(b.name || "");
     });
 
@@ -219,11 +230,14 @@ export default function Dashboard() {
       lawsAdded?: Set<string>;
       lawsRemoved?: Set<string>;
     },
-    ministerAlignmentData?: Map<string, {
-      allFunctions: string[];
-      allDepartments: string[];
-      allLaws: string[];
-    }>
+    ministerAlignmentData?: Map<
+      string,
+      {
+        allFunctions: string[];
+        allDepartments: string[];
+        allLaws: string[];
+      }
+    >
   ) => {
     // Sort ministers by their actual number from Neo4j
     const sortedMinisters = [...structure.ministers].sort((a, b) => {
@@ -247,36 +261,54 @@ export default function Dashboard() {
             </h4>
             <div className="space-y-3">
               {sortedMinisters.map((minister, index) => {
-                const rawNum = minister.number && minister.number !== 'Unknown' ? String(minister.number) : '';
-                const ministryNumber = rawNum ? rawNum.padStart(2, '0') : `${String(index + 1).padStart(2, '0')}`;
+                const rawNum =
+                  minister.number && minister.number !== "Unknown"
+                    ? String(minister.number)
+                    : "";
+                const ministryNumber = rawNum
+                  ? rawNum.padStart(2, "0")
+                  : `${String(index + 1).padStart(2, "0")}`;
                 const ministerKey = `${ministryNumber}-${minister.name}`; // shared key so base/amendment expand together
                 const isExpanded = !!expandedMinisters[ministerKey];
                 const isAdded = highlights?.ministersAdded?.has(ministerKey);
-                const isRemoved = highlights?.ministersRemoved?.has(ministerKey);
-                const isModified = highlights?.ministersModified?.has(ministerKey);
+                const isRemoved =
+                  highlights?.ministersRemoved?.has(ministerKey);
+                const isModified =
+                  highlights?.ministersModified?.has(ministerKey);
 
                 const handleToggle = () => {
-                  setExpandedMinisters((prev) => ({ ...prev, [ministerKey]: !prev[ministerKey] }));
+                  setExpandedMinisters((prev) => ({
+                    ...prev,
+                    [ministerKey]: !prev[ministerKey],
+                  }));
                 };
                 const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     handleToggle();
                   }
                 };
-                
+
                 return (
                   <div
                     key={ministerKey}
                     className={`rounded-lg p-4 border cursor-pointer hover:border-sky-200 ${
-                      isAdded ? "bg-green-50 border-green-300" : isRemoved ? "bg-red-50 border-red-300" : isModified ? "bg-yellow-50 border-yellow-300" : "bg-slate-50"
+                      isAdded
+                        ? "bg-green-50 border-green-300"
+                        : isRemoved
+                        ? "bg-red-50 border-red-300"
+                        : isModified
+                        ? "bg-yellow-50 border-yellow-300"
+                        : "bg-slate-50"
                     }`}
                     onClick={handleToggle}
                     onKeyDown={handleKeyDown}
                     tabIndex={0}
                     role="button"
                     aria-expanded={isExpanded}
-                    aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${minister.name}`}
+                    aria-label={`${isExpanded ? "Collapse" : "Expand"} ${
+                      minister.name
+                    }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -284,7 +316,9 @@ export default function Dashboard() {
                           {`${ministryNumber}. ${minister.name}`}
                         </h5>
                         {!isExpanded && (
-                          <div className="text-xs text-slate-500">Click to view departments, functions, and laws</div>
+                          <div className="text-xs text-slate-500">
+                            Click to view departments, functions, and laws
+                          </div>
                         )}
                       </div>
                       <div className="text-sm text-slate-600" aria-hidden>
@@ -296,70 +330,120 @@ export default function Dashboard() {
                       <div className="mt-3 space-y-2">
                         {/* Functions (click whole section to toggle) */}
                         {(() => {
-                          const alignmentData = ministerAlignmentData?.get(ministerKey);
-                          const functionsToShow = alignmentData?.allFunctions || (minister.functions || []);
-                          const actualFunctions = new Set(minister.functions || []);
+                          const alignmentData =
+                            ministerAlignmentData?.get(ministerKey);
+                          const functionsToShow =
+                            alignmentData?.allFunctions ||
+                            minister.functions ||
+                            [];
+                          const actualFunctions = new Set(
+                            minister.functions || []
+                          );
                           const actualCount = actualFunctions.size; // Count only actual items, not blanks
-                          
+
                           // Count changes
-                          const addedCount = functionsToShow.filter(f => highlights?.functionsAdded?.has(f) && actualFunctions.has(f)).length;
-                          const removedCount = functionsToShow.filter(f => highlights?.functionsRemoved?.has(f) && actualFunctions.has(f)).length;
-                          
+                          const addedCount = functionsToShow.filter(
+                            (f) =>
+                              highlights?.functionsAdded?.has(f) &&
+                              actualFunctions.has(f)
+                          ).length;
+                          const removedCount = functionsToShow.filter(
+                            (f) =>
+                              highlights?.functionsRemoved?.has(f) &&
+                              actualFunctions.has(f)
+                          ).length;
+
                           // Determine border color based on changes
                           const hasChanges = addedCount > 0 || removedCount > 0;
-                          const borderColor = !hasChanges ? "border-slate-200" : 
-                                            addedCount > 0 && removedCount > 0 ? "border-yellow-400 border-2" :
-                                            addedCount > 0 ? "border-green-400 border-2" : "border-red-400 border-2";
-                          const bgColor = !hasChanges ? "" : 
-                                         addedCount > 0 && removedCount > 0 ? "bg-yellow-50" :
-                                         addedCount > 0 ? "bg-green-50" : "bg-red-50";
-                          
+                          const borderColor = !hasChanges
+                            ? "border-slate-200"
+                            : addedCount > 0 && removedCount > 0
+                            ? "border-yellow-400 border-2"
+                            : addedCount > 0
+                            ? "border-green-400 border-2"
+                            : "border-red-400 border-2";
+                          const bgColor = !hasChanges
+                            ? ""
+                            : addedCount > 0 && removedCount > 0
+                            ? "bg-yellow-50"
+                            : addedCount > 0
+                            ? "bg-green-50"
+                            : "bg-red-50";
+
                           if (functionsToShow.length === 0) return null;
-                          
-                          const isSubExpanded = !!expandedMinisterSections[ministerKey]?.functions;
+
+                          const isSubExpanded =
+                            !!expandedMinisterSections[ministerKey]?.functions;
                           const toggle = () =>
                             setExpandedMinisterSections((prev) => ({
                               ...prev,
-                              [ministerKey]: { ...(prev[ministerKey] || {}), functions: !isSubExpanded },
+                              [ministerKey]: {
+                                ...(prev[ministerKey] || {}),
+                                functions: !isSubExpanded,
+                              },
                             }));
-                          
+
                           return (
                             <div
                               className={`border ${borderColor} ${bgColor} rounded-lg p-2 cursor-pointer hover:border-sky-300`}
-                              onClick={(e) => { e.stopPropagation(); toggle(); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggle();
+                              }}
                               role="button"
                               aria-expanded={isSubExpanded}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-slate-600">Functions ({actualCount})</span>
-                                <span className="text-sm text-slate-600" aria-hidden>{isSubExpanded ? "▾" : "▸"}</span>
+                                <span className="text-sm font-medium text-slate-600">
+                                  Functions ({actualCount})
+                                </span>
+                                <span
+                                  className="text-sm text-slate-600"
+                                  aria-hidden
+                                >
+                                  {isSubExpanded ? "▾" : "▸"}
+                                </span>
                               </div>
                               {isSubExpanded && (
                                 <ul className="mt-2 space-y-1">
                                   {functionsToShow.map((func, i) => {
                                     const isPresent = actualFunctions.has(func);
-                                    const added = highlights?.functionsAdded?.has(func);
-                                    const removed = highlights?.functionsRemoved?.has(func);
-                                    
+                                    const added =
+                                      highlights?.functionsAdded?.has(func);
+                                    const removed =
+                                      highlights?.functionsRemoved?.has(func);
+
                                     // If not present in this structure, show as blank row
                                     if (!isPresent && alignmentData) {
                                       return (
-                                        <li key={i} className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2">
+                                        <li
+                                          key={i}
+                                          className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2"
+                                        >
                                           <span className="font-bold">—</span>
                                           <span className="italic"></span>
                                         </li>
                                       );
                                     }
-                                    
+
                                     const bgClass = added
                                       ? "bg-green-50 border-l-4 border-green-500"
                                       : removed
                                       ? "bg-red-50 border-l-4 border-red-500"
                                       : "bg-purple-50 border-l-4 border-purple-400";
-                                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-purple-900";
+                                    const textClass = added
+                                      ? "text-green-900"
+                                      : removed
+                                      ? "text-red-900"
+                                      : "text-purple-900";
                                     return (
-                                      <li key={i} className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}>
-                                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                                      <li
+                                        key={i}
+                                        className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}
+                                      >
+                                        <span className="font-bold">
+                                          {added ? "✓" : removed ? "✗" : "•"}
+                                        </span>
                                         <span>{func}</span>
                                       </li>
                                     );
@@ -372,70 +456,122 @@ export default function Dashboard() {
 
                         {/* Departments (click whole section to toggle) */}
                         {(() => {
-                          const alignmentData = ministerAlignmentData?.get(ministerKey);
-                          const departmentsToShow = alignmentData?.allDepartments || (minister.departments || []);
-                          const actualDepartments = new Set(minister.departments || []);
+                          const alignmentData =
+                            ministerAlignmentData?.get(ministerKey);
+                          const departmentsToShow =
+                            alignmentData?.allDepartments ||
+                            minister.departments ||
+                            [];
+                          const actualDepartments = new Set(
+                            minister.departments || []
+                          );
                           const actualCount = actualDepartments.size; // Count only actual items, not blanks
-                          
+
                           // Count changes
-                          const addedCount = departmentsToShow.filter(d => highlights?.departmentsAdded?.has(d) && actualDepartments.has(d)).length;
-                          const removedCount = departmentsToShow.filter(d => highlights?.departmentsRemoved?.has(d) && actualDepartments.has(d)).length;
-                          
+                          const addedCount = departmentsToShow.filter(
+                            (d) =>
+                              highlights?.departmentsAdded?.has(d) &&
+                              actualDepartments.has(d)
+                          ).length;
+                          const removedCount = departmentsToShow.filter(
+                            (d) =>
+                              highlights?.departmentsRemoved?.has(d) &&
+                              actualDepartments.has(d)
+                          ).length;
+
                           // Determine border color based on changes
                           const hasChanges = addedCount > 0 || removedCount > 0;
-                          const borderColor = !hasChanges ? "border-slate-200" : 
-                                            addedCount > 0 && removedCount > 0 ? "border-yellow-400 border-2" :
-                                            addedCount > 0 ? "border-green-400 border-2" : "border-red-400 border-2";
-                          const bgColor = !hasChanges ? "" : 
-                                         addedCount > 0 && removedCount > 0 ? "bg-yellow-50" :
-                                         addedCount > 0 ? "bg-green-50" : "bg-red-50";
-                          
+                          const borderColor = !hasChanges
+                            ? "border-slate-200"
+                            : addedCount > 0 && removedCount > 0
+                            ? "border-yellow-400 border-2"
+                            : addedCount > 0
+                            ? "border-green-400 border-2"
+                            : "border-red-400 border-2";
+                          const bgColor = !hasChanges
+                            ? ""
+                            : addedCount > 0 && removedCount > 0
+                            ? "bg-yellow-50"
+                            : addedCount > 0
+                            ? "bg-green-50"
+                            : "bg-red-50";
+
                           if (departmentsToShow.length === 0) return null;
-                          
-                          const isSubExpanded = !!expandedMinisterSections[ministerKey]?.departments;
+
+                          const isSubExpanded =
+                            !!expandedMinisterSections[ministerKey]
+                              ?.departments;
                           const toggle = () =>
                             setExpandedMinisterSections((prev) => ({
                               ...prev,
-                              [ministerKey]: { ...(prev[ministerKey] || {}), departments: !isSubExpanded },
+                              [ministerKey]: {
+                                ...(prev[ministerKey] || {}),
+                                departments: !isSubExpanded,
+                              },
                             }));
-                          
+
                           return (
                             <div
                               className={`border ${borderColor} ${bgColor} rounded-lg p-2 cursor-pointer hover:border-sky-300`}
-                              onClick={(e) => { e.stopPropagation(); toggle(); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggle();
+                              }}
                               role="button"
                               aria-expanded={isSubExpanded}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-slate-600">Departments ({actualCount})</span>
-                                <span className="text-sm text-slate-600" aria-hidden>{isSubExpanded ? "▾" : "▸"}</span>
+                                <span className="text-sm font-medium text-slate-600">
+                                  Departments ({actualCount})
+                                </span>
+                                <span
+                                  className="text-sm text-slate-600"
+                                  aria-hidden
+                                >
+                                  {isSubExpanded ? "▾" : "▸"}
+                                </span>
                               </div>
                               {isSubExpanded && (
                                 <ul className="mt-2 space-y-1">
                                   {departmentsToShow.map((dept, i) => {
-                                    const isPresent = actualDepartments.has(dept);
-                                    const added = highlights?.departmentsAdded?.has(dept);
-                                    const removed = highlights?.departmentsRemoved?.has(dept);
-                                    
+                                    const isPresent =
+                                      actualDepartments.has(dept);
+                                    const added =
+                                      highlights?.departmentsAdded?.has(dept);
+                                    const removed =
+                                      highlights?.departmentsRemoved?.has(dept);
+
                                     // If not present in this structure, show as blank row
                                     if (!isPresent && alignmentData) {
                                       return (
-                                        <li key={i} className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2">
+                                        <li
+                                          key={i}
+                                          className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2"
+                                        >
                                           <span className="font-bold">—</span>
                                           <span className="italic"></span>
                                         </li>
                                       );
                                     }
-                                    
+
                                     const bgClass = added
                                       ? "bg-green-50 border-l-4 border-green-500"
                                       : removed
                                       ? "bg-red-50 border-l-4 border-red-500"
                                       : "bg-blue-50 border-l-4 border-blue-400";
-                                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-blue-900";
+                                    const textClass = added
+                                      ? "text-green-900"
+                                      : removed
+                                      ? "text-red-900"
+                                      : "text-blue-900";
                                     return (
-                                      <li key={i} className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}>
-                                        <span className="text-xs font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                                      <li
+                                        key={i}
+                                        className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}
+                                      >
+                                        <span className="text-xs font-bold">
+                                          {added ? "✓" : removed ? "✗" : "•"}
+                                        </span>
                                         <span>{dept}</span>
                                       </li>
                                     );
@@ -448,70 +584,115 @@ export default function Dashboard() {
 
                         {/* Laws (click whole section to toggle) */}
                         {(() => {
-                          const alignmentData = ministerAlignmentData?.get(ministerKey);
-                          const lawsToShow = alignmentData?.allLaws || (minister.laws || []);
+                          const alignmentData =
+                            ministerAlignmentData?.get(ministerKey);
+                          const lawsToShow =
+                            alignmentData?.allLaws || minister.laws || [];
                           const actualLaws = new Set(minister.laws || []);
                           const actualCount = actualLaws.size; // Count only actual items, not blanks
-                          
+
                           // Count changes
-                          const addedCount = lawsToShow.filter(l => highlights?.lawsAdded?.has(l) && actualLaws.has(l)).length;
-                          const removedCount = lawsToShow.filter(l => highlights?.lawsRemoved?.has(l) && actualLaws.has(l)).length;
-                          
+                          const addedCount = lawsToShow.filter(
+                            (l) =>
+                              highlights?.lawsAdded?.has(l) && actualLaws.has(l)
+                          ).length;
+                          const removedCount = lawsToShow.filter(
+                            (l) =>
+                              highlights?.lawsRemoved?.has(l) &&
+                              actualLaws.has(l)
+                          ).length;
+
                           // Determine border color based on changes
                           const hasChanges = addedCount > 0 || removedCount > 0;
-                          const borderColor = !hasChanges ? "border-slate-200" : 
-                                            addedCount > 0 && removedCount > 0 ? "border-yellow-400 border-2" :
-                                            addedCount > 0 ? "border-green-400 border-2" : "border-red-400 border-2";
-                          const bgColor = !hasChanges ? "" : 
-                                         addedCount > 0 && removedCount > 0 ? "bg-yellow-50" :
-                                         addedCount > 0 ? "bg-green-50" : "bg-red-50";
-                          
+                          const borderColor = !hasChanges
+                            ? "border-slate-200"
+                            : addedCount > 0 && removedCount > 0
+                            ? "border-yellow-400 border-2"
+                            : addedCount > 0
+                            ? "border-green-400 border-2"
+                            : "border-red-400 border-2";
+                          const bgColor = !hasChanges
+                            ? ""
+                            : addedCount > 0 && removedCount > 0
+                            ? "bg-yellow-50"
+                            : addedCount > 0
+                            ? "bg-green-50"
+                            : "bg-red-50";
+
                           if (lawsToShow.length === 0) return null;
-                          
-                          const isSubExpanded = !!expandedMinisterSections[ministerKey]?.laws;
+
+                          const isSubExpanded =
+                            !!expandedMinisterSections[ministerKey]?.laws;
                           const toggle = () =>
                             setExpandedMinisterSections((prev) => ({
                               ...prev,
-                              [ministerKey]: { ...(prev[ministerKey] || {}), laws: !isSubExpanded },
+                              [ministerKey]: {
+                                ...(prev[ministerKey] || {}),
+                                laws: !isSubExpanded,
+                              },
                             }));
-                          
+
                           return (
                             <div
                               className={`border ${borderColor} ${bgColor} rounded-lg p-2 cursor-pointer hover:border-sky-300`}
-                              onClick={(e) => { e.stopPropagation(); toggle(); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggle();
+                              }}
                               role="button"
                               aria-expanded={isSubExpanded}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-slate-600">Laws ({actualCount})</span>
-                                <span className="text-sm text-slate-600" aria-hidden>{isSubExpanded ? "▾" : "▸"}</span>
+                                <span className="text-sm font-medium text-slate-600">
+                                  Laws ({actualCount})
+                                </span>
+                                <span
+                                  className="text-sm text-slate-600"
+                                  aria-hidden
+                                >
+                                  {isSubExpanded ? "▾" : "▸"}
+                                </span>
                               </div>
                               {isSubExpanded && (
                                 <ul className="mt-2 space-y-1">
                                   {lawsToShow.map((law, i) => {
                                     const isPresent = actualLaws.has(law);
-                                    const added = highlights?.lawsAdded?.has(law);
-                                    const removed = highlights?.lawsRemoved?.has(law);
-                                    
+                                    const added =
+                                      highlights?.lawsAdded?.has(law);
+                                    const removed =
+                                      highlights?.lawsRemoved?.has(law);
+
                                     // If not present in this structure, show as blank row
                                     if (!isPresent && alignmentData) {
                                       return (
-                                        <li key={i} className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2">
+                                        <li
+                                          key={i}
+                                          className="bg-slate-100 border border-dashed border-slate-300 px-3 py-2 text-xs rounded text-slate-400 flex items-center gap-2"
+                                        >
                                           <span className="font-bold">—</span>
                                           <span className="italic"></span>
                                         </li>
                                       );
                                     }
-                                    
+
                                     const bgClass = added
                                       ? "bg-green-50 border-l-4 border-green-500"
                                       : removed
                                       ? "bg-red-50 border-l-4 border-red-500"
                                       : "bg-orange-50 border-l-4 border-orange-400";
-                                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-orange-900";
+                                    const textClass = added
+                                      ? "text-green-900"
+                                      : removed
+                                      ? "text-red-900"
+                                      : "text-orange-900";
                                     return (
-                                      <li key={i} className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}>
-                                        <span className="text-xs font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
+                                      <li
+                                        key={i}
+                                        className={`${bgClass} px-3 py-2 text-xs rounded ${textClass} flex items-center gap-2`}
+                                      >
+                                        <span className="text-xs font-bold">
+                                          {added ? "✓" : removed ? "✗" : "•"}
+                                        </span>
                                         <span>{law}</span>
                                       </li>
                                     );
@@ -531,148 +712,211 @@ export default function Dashboard() {
         )}
 
         {/* Standalone Departments */}
-        {structure.departments.length > 0 && (() => {
-          const sectionKey = "departments"; // shared so base/amendment stay in sync
-          const isExpanded = !!expandedSections[sectionKey];
-          const toggle = () => setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
-          const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-          };
-          return (
-            <div
-              className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
-              onClick={toggle}
-              onKeyDown={onKey}
-              tabIndex={0}
-              role="button"
-              aria-expanded={isExpanded}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                  <span className="font-medium text-slate-700">Departments ({structure.departments.length})</span>
+        {structure.departments.length > 0 &&
+          (() => {
+            const sectionKey = "departments"; // shared so base/amendment stay in sync
+            const isExpanded = !!expandedSections[sectionKey];
+            const toggle = () =>
+              setExpandedSections((prev) => ({
+                ...prev,
+                [sectionKey]: !prev[sectionKey],
+              }));
+            const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle();
+              }
+            };
+            return (
+              <div
+                className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
+                onClick={toggle}
+                onKeyDown={onKey}
+                tabIndex={0}
+                role="button"
+                aria-expanded={isExpanded}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                    <span className="font-medium text-slate-700">
+                      Departments ({structure.departments.length})
+                    </span>
+                  </div>
+                  <span className="text-sm text-slate-600" aria-hidden>
+                    {isExpanded ? "▾" : "▸"}
+                  </span>
                 </div>
-                <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
+                {isExpanded && (
+                  <ul className="space-y-1">
+                    {structure.departments.map((dept, i) => {
+                      const added = highlights?.departmentsAdded?.has(dept);
+                      const removed = highlights?.departmentsRemoved?.has(dept);
+                      const bgClass = added
+                        ? "bg-green-50 border-l-4 border-green-500"
+                        : removed
+                        ? "bg-red-50 border-l-4 border-red-500"
+                        : "bg-green-50 border-l-4 border-green-400";
+                      const textClass = added
+                        ? "text-green-900"
+                        : removed
+                        ? "text-red-900"
+                        : "text-green-900";
+                      return (
+                        <li
+                          key={i}
+                          className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}
+                        >
+                          <span className="font-bold">
+                            {added ? "✓" : removed ? "✗" : "•"}
+                          </span>
+                          <span>{dept}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </div>
-              {isExpanded && (
-                <ul className="space-y-1">
-                  {structure.departments.map((dept, i) => {
-                    const added = highlights?.departmentsAdded?.has(dept);
-                    const removed = highlights?.departmentsRemoved?.has(dept);
-                    const bgClass = added
-                      ? "bg-green-50 border-l-4 border-green-500"
-                      : removed
-                      ? "bg-red-50 border-l-4 border-red-500"
-                      : "bg-green-50 border-l-4 border-green-400";
-                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-green-900";
-                    return (
-                      <li key={i} className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}>
-                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
-                        <span>{dept}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          );
-        })()}
+            );
+          })()}
 
         {/* Standalone Functions */}
-        {(structure.functions || []).length > 0 && (() => {
-          const sectionKey = "functions";
-          const isExpanded = !!expandedSections[sectionKey];
-          const toggle = () => setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
-          const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-          };
-          return (
-            <div
-              className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
-              onClick={toggle}
-              onKeyDown={onKey}
-              tabIndex={0}
-              role="button"
-              aria-expanded={isExpanded}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
-                  <span className="font-medium text-slate-700">Functions ({(structure.functions || []).length})</span>
+        {(structure.functions || []).length > 0 &&
+          (() => {
+            const sectionKey = "functions";
+            const isExpanded = !!expandedSections[sectionKey];
+            const toggle = () =>
+              setExpandedSections((prev) => ({
+                ...prev,
+                [sectionKey]: !prev[sectionKey],
+              }));
+            const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle();
+              }
+            };
+            return (
+              <div
+                className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
+                onClick={toggle}
+                onKeyDown={onKey}
+                tabIndex={0}
+                role="button"
+                aria-expanded={isExpanded}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-purple-500 rounded-full"></span>
+                    <span className="font-medium text-slate-700">
+                      Functions ({(structure.functions || []).length})
+                    </span>
+                  </div>
+                  <span className="text-sm text-slate-600" aria-hidden>
+                    {isExpanded ? "▾" : "▸"}
+                  </span>
                 </div>
-                <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
+                {isExpanded && (
+                  <ul className="space-y-1">
+                    {(structure.functions || []).map((func, i) => {
+                      const added = highlights?.functionsAdded?.has(func);
+                      const removed = highlights?.functionsRemoved?.has(func);
+                      const bgClass = added
+                        ? "bg-green-50 border-l-4 border-green-500"
+                        : removed
+                        ? "bg-red-50 border-l-4 border-red-500"
+                        : "bg-purple-50 border-l-4 border-purple-400";
+                      const textClass = added
+                        ? "text-green-900"
+                        : removed
+                        ? "text-red-900"
+                        : "text-purple-900";
+                      return (
+                        <li
+                          key={i}
+                          className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}
+                        >
+                          <span className="font-bold">
+                            {added ? "✓" : removed ? "✗" : "•"}
+                          </span>
+                          <span>{func}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </div>
-              {isExpanded && (
-                <ul className="space-y-1">
-                  {(structure.functions || []).map((func, i) => {
-                    const added = highlights?.functionsAdded?.has(func);
-                    const removed = highlights?.functionsRemoved?.has(func);
-                    const bgClass = added
-                      ? "bg-green-50 border-l-4 border-green-500"
-                      : removed
-                      ? "bg-red-50 border-l-4 border-red-500"
-                      : "bg-purple-50 border-l-4 border-purple-400";
-                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-purple-900";
-                    return (
-                      <li key={i} className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}>
-                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
-                        <span>{func}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          );
-        })()}
+            );
+          })()}
 
         {/* Standalone Laws */}
-        {structure.laws.length > 0 && (() => {
-          const sectionKey = "laws";
-          const isExpanded = !!expandedSections[sectionKey];
-          const toggle = () => setExpandedSections((prev) => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
-          const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
-          };
-          return (
-            <div
-              className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
-              onClick={toggle}
-              onKeyDown={onKey}
-              tabIndex={0}
-              role="button"
-              aria-expanded={isExpanded}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
-                  <span className="font-medium text-slate-700">Laws ({structure.laws.length})</span>
+        {structure.laws.length > 0 &&
+          (() => {
+            const sectionKey = "laws";
+            const isExpanded = !!expandedSections[sectionKey];
+            const toggle = () =>
+              setExpandedSections((prev) => ({
+                ...prev,
+                [sectionKey]: !prev[sectionKey],
+              }));
+            const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggle();
+              }
+            };
+            return (
+              <div
+                className="border border-slate-200 rounded-lg p-3 mb-2 cursor-pointer hover:border-sky-200"
+                onClick={toggle}
+                onKeyDown={onKey}
+                tabIndex={0}
+                role="button"
+                aria-expanded={isExpanded}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-orange-500 rounded-full"></span>
+                    <span className="font-medium text-slate-700">
+                      Laws ({structure.laws.length})
+                    </span>
+                  </div>
+                  <span className="text-sm text-slate-600" aria-hidden>
+                    {isExpanded ? "▾" : "▸"}
+                  </span>
                 </div>
-                <span className="text-sm text-slate-600" aria-hidden>{isExpanded ? "▾" : "▸"}</span>
+                {isExpanded && (
+                  <ul className="space-y-1">
+                    {structure.laws.map((law, i) => {
+                      const added = highlights?.lawsAdded?.has(law);
+                      const removed = highlights?.lawsRemoved?.has(law);
+                      const bgClass = added
+                        ? "bg-green-50 border-l-4 border-green-500"
+                        : removed
+                        ? "bg-red-50 border-l-4 border-red-500"
+                        : "bg-orange-50 border-l-4 border-orange-400";
+                      const textClass = added
+                        ? "text-green-900"
+                        : removed
+                        ? "text-red-900"
+                        : "text-orange-900";
+                      return (
+                        <li
+                          key={i}
+                          className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}
+                        >
+                          <span className="font-bold">
+                            {added ? "✓" : removed ? "✗" : "•"}
+                          </span>
+                          <span>{law}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </div>
-              {isExpanded && (
-                <ul className="space-y-1">
-                  {structure.laws.map((law, i) => {
-                    const added = highlights?.lawsAdded?.has(law);
-                    const removed = highlights?.lawsRemoved?.has(law);
-                    const bgClass = added
-                      ? "bg-green-50 border-l-4 border-green-500"
-                      : removed
-                      ? "bg-red-50 border-l-4 border-red-500"
-                      : "bg-orange-50 border-l-4 border-orange-400";
-                    const textClass = added ? "text-green-900" : removed ? "text-red-900" : "text-orange-900";
-                    return (
-                      <li key={i} className={`${bgClass} px-3 py-2 text-sm rounded ${textClass} flex items-center gap-2`}>
-                        <span className="font-bold">{added ? "✓" : removed ? "✗" : "•"}</span>
-                        <span>{law}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          );
-        })()}
+            );
+          })()}
 
         {/* Raw Entities Debug */}
         {structure.raw_entities.length > 0 && (
@@ -700,7 +944,9 @@ export default function Dashboard() {
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
               <span className="font-semibold text-blue-900">Base:</span>
-              <span className="text-slate-700">{comparison.base_gazette.president}</span>
+              <span className="text-slate-700">
+                {comparison.base_gazette.president}
+              </span>
               <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
                 {comparison.base_gazette.id}
               </span>
@@ -712,7 +958,9 @@ export default function Dashboard() {
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 bg-green-500 rounded-full"></span>
               <span className="font-semibold text-green-900">Amendment:</span>
-              <span className="text-slate-700">{comparison.amendment_gazette.president}</span>
+              <span className="text-slate-700">
+                {comparison.amendment_gazette.president}
+              </span>
               <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
                 {comparison.amendment_gazette.id}
               </span>
@@ -773,19 +1021,27 @@ export default function Dashboard() {
             <div className="space-y-2 text-sm text-green-800">
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Ministers</span>
-                <span className="font-bold">{comparison.changes.added_ministers.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.added_ministers.length}
+                </span>
               </div>
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Departments</span>
-                <span className="font-bold">{comparison.changes.added_departments.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.added_departments.length}
+                </span>
               </div>
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Functions</span>
-                <span className="font-bold">{(comparison.changes.added_functions || []).length}</span>
+                <span className="font-bold">
+                  {(comparison.changes.added_functions || []).length}
+                </span>
               </div>
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Laws</span>
-                <span className="font-bold">{comparison.changes.added_laws.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.added_laws.length}
+                </span>
               </div>
             </div>
             {comparison.changes.added_ministers.length > 0 && (
@@ -794,19 +1050,22 @@ export default function Dashboard() {
                   View Ministers ({comparison.changes.added_ministers.length})
                 </summary>
                 <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
-                  {sortMinistries(comparison.changes.added_ministers).map((minister, i) => {
-                    const displayNumber = minister.number && minister.number !== "Unknown"
-                      ? minister.number
-                      : String(i + 1).padStart(2, "0");
-                    return (
-                      <div
-                        key={i}
-                        className="text-xs bg-white px-2 py-1 rounded border border-green-200"
-                      >
-                        {`${displayNumber}. ${minister.name}`}
-                      </div>
-                    );
-                  })}
+                  {sortMinistries(comparison.changes.added_ministers).map(
+                    (minister, i) => {
+                      const displayNumber =
+                        minister.number && minister.number !== "Unknown"
+                          ? minister.number
+                          : String(i + 1).padStart(2, "0");
+                      return (
+                        <div
+                          key={i}
+                          className="text-xs bg-white px-2 py-1 rounded border border-green-200"
+                        >
+                          {`${displayNumber}. ${minister.name}`}
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </details>
             )}
@@ -820,19 +1079,27 @@ export default function Dashboard() {
             <div className="space-y-2 text-sm text-red-800">
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Ministers</span>
-                <span className="font-bold">{comparison.changes.removed_ministers.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.removed_ministers.length}
+                </span>
               </div>
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Departments</span>
-                <span className="font-bold">{comparison.changes.removed_departments.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.removed_departments.length}
+                </span>
               </div>
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Functions</span>
-                <span className="font-bold">{(comparison.changes.removed_functions || []).length}</span>
+                <span className="font-bold">
+                  {(comparison.changes.removed_functions || []).length}
+                </span>
               </div>
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Laws</span>
-                <span className="font-bold">{comparison.changes.removed_laws.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.removed_laws.length}
+                </span>
               </div>
             </div>
             {comparison.changes.removed_ministers.length > 0 && (
@@ -841,19 +1108,22 @@ export default function Dashboard() {
                   View Ministers ({comparison.changes.removed_ministers.length})
                 </summary>
                 <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
-                  {sortMinistries(comparison.changes.removed_ministers).map((minister, i) => {
-                    const displayNumber = minister.number && minister.number !== "Unknown"
-                      ? minister.number
-                      : String(i + 1).padStart(2, "0");
-                    return (
-                      <div
-                        key={i}
-                        className="text-xs bg-white px-2 py-1 rounded border border-red-200"
-                      >
-                        {`${displayNumber}. ${minister.name}`}
-                      </div>
-                    );
-                  })}
+                  {sortMinistries(comparison.changes.removed_ministers).map(
+                    (minister, i) => {
+                      const displayNumber =
+                        minister.number && minister.number !== "Unknown"
+                          ? minister.number
+                          : String(i + 1).padStart(2, "0");
+                      return (
+                        <div
+                          key={i}
+                          className="text-xs bg-white px-2 py-1 rounded border border-red-200"
+                        >
+                          {`${displayNumber}. ${minister.name}`}
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </details>
             )}
@@ -867,28 +1137,34 @@ export default function Dashboard() {
             <div className="space-y-2 text-sm text-yellow-800">
               <div className="flex justify-between items-center bg-white/50 px-2 py-1 rounded">
                 <span>Ministers</span>
-                <span className="font-bold">{comparison.changes.modified_ministers.length}</span>
+                <span className="font-bold">
+                  {comparison.changes.modified_ministers.length}
+                </span>
               </div>
             </div>
             {comparison.changes.modified_ministers.length > 0 && (
               <details className="mt-2">
                 <summary className="cursor-pointer text-xs font-semibold text-yellow-900 hover:text-yellow-700">
-                  View Ministers ({comparison.changes.modified_ministers.length})
+                  View Ministers ({comparison.changes.modified_ministers.length}
+                  )
                 </summary>
                 <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
-                  {sortMinistries(comparison.changes.modified_ministers).map((minister, i) => {
-                    const displayNumber = minister.number && minister.number !== "Unknown"
-                      ? minister.number
-                      : String(i + 1).padStart(2, "0");
-                    return (
-                      <div
-                        key={i}
-                        className="text-xs bg-white px-2 py-1 rounded border border-yellow-200"
-                      >
-                        {`${displayNumber}. ${minister.name}`}
-                      </div>
-                    );
-                  })}
+                  {sortMinistries(comparison.changes.modified_ministers).map(
+                    (minister, i) => {
+                      const displayNumber =
+                        minister.number && minister.number !== "Unknown"
+                          ? minister.number
+                          : String(i + 1).padStart(2, "0");
+                      return (
+                        <div
+                          key={i}
+                          className="text-xs bg-white px-2 py-1 rounded border border-yellow-200"
+                        >
+                          {`${displayNumber}. ${minister.name}`}
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </details>
             )}
@@ -926,7 +1202,9 @@ export default function Dashboard() {
               Base Gazette
             </h4>
             <div className="text-blue-100 text-sm mt-1">
-              <span className="font-semibold">{comparison.base_gazette.president}</span>
+              <span className="font-semibold">
+                {comparison.base_gazette.president}
+              </span>
               {" • "}
               {comparison.base_gazette.id}
               {" • "}
@@ -934,94 +1212,117 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="p-6">
-          {(() => {
-            // Create per-minister alignment data
-            const ministerAlignmentMap = new Map<string, {
-              allFunctions: string[];
-              allDepartments: string[];
-              allLaws: string[];
-            }>();
-            
-            // Build a map of ministers from both sides by their key
-            const baseMinisterMap = new Map(
-              comparison.base_gazette.structure.ministers.map(m => {
-                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
-                const number = raw ? raw.padStart(2, "0") : "";
-                return [`${number}-${m.name}`, m];
-              })
-            );
-            
-            const amendmentMinisterMap = new Map(
-              comparison.amendment_gazette.structure.ministers.map(m => {
-                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
-                const number = raw ? raw.padStart(2, "0") : "";
-                return [`${number}-${m.name}`, m];
-              })
-            );
-            
-            // For each unique minister key, create alignment data
-            const allMinisterKeys = new Set([
-              ...baseMinisterMap.keys(),
-              ...amendmentMinisterMap.keys()
-            ]);
-            
-            allMinisterKeys.forEach(key => {
-              const baseMinister = baseMinisterMap.get(key);
-              const amendmentMinister = amendmentMinisterMap.get(key);
-              
-              // Collect functions from both sides for this specific minister
-              const baseFunctions = new Set(baseMinister?.functions || []);
-              const amendmentFunctions = new Set(amendmentMinister?.functions || []);
-              const allFunctions = Array.from(new Set([...baseFunctions, ...amendmentFunctions])).sort();
-              
-              // Collect departments from both sides for this specific minister
-              const baseDepartments = new Set(baseMinister?.departments || []);
-              const amendmentDepartments = new Set(amendmentMinister?.departments || []);
-              const allDepartments = Array.from(new Set([...baseDepartments, ...amendmentDepartments])).sort();
-              
-              // Collect laws from both sides for this specific minister
-              const baseLaws = new Set(baseMinister?.laws || []);
-              const amendmentLaws = new Set(amendmentMinister?.laws || []);
-              const allLaws = Array.from(new Set([...baseLaws, ...amendmentLaws])).sort();
-              
-              ministerAlignmentMap.set(key, {
-                allFunctions,
-                allDepartments,
-                allLaws
+            {(() => {
+              // Create per-minister alignment data
+              const ministerAlignmentMap = new Map<
+                string,
+                {
+                  allFunctions: string[];
+                  allDepartments: string[];
+                  allLaws: string[];
+                }
+              >();
+
+              // Build a map of ministers from both sides by their key
+              const baseMinisterMap = new Map(
+                comparison.base_gazette.structure.ministers.map((m) => {
+                  const raw =
+                    m.number && m.number !== "Unknown" ? String(m.number) : "";
+                  const number = raw ? raw.padStart(2, "0") : "";
+                  return [`${number}-${m.name}`, m];
+                })
+              );
+
+              const amendmentMinisterMap = new Map(
+                comparison.amendment_gazette.structure.ministers.map((m) => {
+                  const raw =
+                    m.number && m.number !== "Unknown" ? String(m.number) : "";
+                  const number = raw ? raw.padStart(2, "0") : "";
+                  return [`${number}-${m.name}`, m];
+                })
+              );
+
+              // For each unique minister key, create alignment data
+              const allMinisterKeys = new Set([
+                ...baseMinisterMap.keys(),
+                ...amendmentMinisterMap.keys(),
+              ]);
+
+              allMinisterKeys.forEach((key) => {
+                const baseMinister = baseMinisterMap.get(key);
+                const amendmentMinister = amendmentMinisterMap.get(key);
+
+                // Collect functions from both sides for this specific minister
+                const baseFunctions = new Set(baseMinister?.functions || []);
+                const amendmentFunctions = new Set(
+                  amendmentMinister?.functions || []
+                );
+                const allFunctions = Array.from(
+                  new Set([...baseFunctions, ...amendmentFunctions])
+                ).sort();
+
+                // Collect departments from both sides for this specific minister
+                const baseDepartments = new Set(
+                  baseMinister?.departments || []
+                );
+                const amendmentDepartments = new Set(
+                  amendmentMinister?.departments || []
+                );
+                const allDepartments = Array.from(
+                  new Set([...baseDepartments, ...amendmentDepartments])
+                ).sort();
+
+                // Collect laws from both sides for this specific minister
+                const baseLaws = new Set(baseMinister?.laws || []);
+                const amendmentLaws = new Set(amendmentMinister?.laws || []);
+                const allLaws = Array.from(
+                  new Set([...baseLaws, ...amendmentLaws])
+                ).sort();
+
+                ministerAlignmentMap.set(key, {
+                  allFunctions,
+                  allDepartments,
+                  allLaws,
+                });
               });
-            });
-            
-            // Build highlight sets for base side (show removed/modified)
-            const ministersRemoved = new Set(
-              comparison.changes.removed_ministers.map((m) => {
-                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
-                const number = raw ? raw.padStart(2, "0") : "";
-                return `${number}-${m.name}`;
-              })
-            );
-            const ministersModified = new Set(
-              (comparison.changes.modified_ministers || []).map((m: any) => {
-                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
-                const number = raw ? raw.padStart(2, "0") : "";
-                return `${number}-${m.name}`;
-              })
-            );
-            const departmentsRemoved = new Set(comparison.changes.removed_departments);
-            const functionsRemoved = new Set(comparison.changes.removed_functions || []);
-            const lawsRemoved = new Set(comparison.changes.removed_laws);
-            return renderGovernmentStructure(
-              comparison.base_gazette.structure,
-              `Base: ${comparison.base_gazette.id}`,
-              {
-                ministersRemoved,
-                ministersModified,
-                departmentsRemoved,
-                functionsRemoved,
-                lawsRemoved,
-              },
-              ministerAlignmentMap
-            );
-          })()}
+
+              // Build highlight sets for base side (show removed/modified)
+              const ministersRemoved = new Set(
+                comparison.changes.removed_ministers.map((m) => {
+                  const raw =
+                    m.number && m.number !== "Unknown" ? String(m.number) : "";
+                  const number = raw ? raw.padStart(2, "0") : "";
+                  return `${number}-${m.name}`;
+                })
+              );
+              const ministersModified = new Set(
+                (comparison.changes.modified_ministers || []).map((m: any) => {
+                  const raw =
+                    m.number && m.number !== "Unknown" ? String(m.number) : "";
+                  const number = raw ? raw.padStart(2, "0") : "";
+                  return `${number}-${m.name}`;
+                })
+              );
+              const departmentsRemoved = new Set(
+                comparison.changes.removed_departments
+              );
+              const functionsRemoved = new Set(
+                comparison.changes.removed_functions || []
+              );
+              const lawsRemoved = new Set(comparison.changes.removed_laws);
+              return renderGovernmentStructure(
+                comparison.base_gazette.structure,
+                `Base: ${comparison.base_gazette.id}`,
+                {
+                  ministersRemoved,
+                  ministersModified,
+                  departmentsRemoved,
+                  functionsRemoved,
+                  lawsRemoved,
+                },
+                ministerAlignmentMap
+              );
+            })()}
           </div>
         </div>
 
@@ -1032,7 +1333,9 @@ export default function Dashboard() {
               Amendment Gazette
             </h4>
             <div className="text-green-100 text-sm mt-1">
-              <span className="font-semibold">{comparison.amendment_gazette.president}</span>
+              <span className="font-semibold">
+                {comparison.amendment_gazette.president}
+              </span>
               {" • "}
               {comparison.amendment_gazette.id}
               {" • "}
@@ -1040,147 +1343,190 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="p-6">
-          {(() => {
-            // Reuse the same per-minister alignment data
-            const ministerAlignmentMap = new Map<string, {
-              allFunctions: string[];
-              allDepartments: string[];
-              allLaws: string[];
-            }>();
-            
-            // Build a map of ministers from both sides by their key
-            const baseMinisterMap = new Map(
-              comparison.base_gazette.structure.ministers.map(m => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
-                return [`${number}-${m.name}`, m];
-              })
-            );
-            
-            const amendmentMinisterMap = new Map(
-              comparison.amendment_gazette.structure.ministers.map(m => {
-                const number = m.number && m.number !== "Unknown" ? m.number : "";
-                return [`${number}-${m.name}`, m];
-              })
-            );
-            
-            // For each unique minister key, create alignment data
-            const allMinisterKeys = new Set([
-              ...baseMinisterMap.keys(),
-              ...amendmentMinisterMap.keys()
-            ]);
-            
-            allMinisterKeys.forEach(key => {
-              const baseMinister = baseMinisterMap.get(key);
-              const amendmentMinister = amendmentMinisterMap.get(key);
-              
-              // Collect functions from both sides for this specific minister
-              const baseFunctions = new Set(baseMinister?.functions || []);
-              const amendmentFunctions = new Set(amendmentMinister?.functions || []);
-              const allFunctions = Array.from(new Set([...baseFunctions, ...amendmentFunctions])).sort();
-              
-              // Collect departments from both sides for this specific minister
-              const baseDepartments = new Set(baseMinister?.departments || []);
-              const amendmentDepartments = new Set(amendmentMinister?.departments || []);
-              const allDepartments = Array.from(new Set([...baseDepartments, ...amendmentDepartments])).sort();
-              
-              // Collect laws from both sides for this specific minister
-              const baseLaws = new Set(baseMinister?.laws || []);
-              const amendmentLaws = new Set(amendmentMinister?.laws || []);
-              const allLaws = Array.from(new Set([...baseLaws, ...amendmentLaws])).sort();
-              
-              ministerAlignmentMap.set(key, {
-                allFunctions,
-                allDepartments,
-                allLaws
-              });
-            });
-            
-            // Build highlight sets for amendment side (show added/modified)
-            const ministersAdded = new Set(
-              comparison.changes.added_ministers.map((m) => {
-                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
-                const number = raw ? raw.padStart(2, "0") : "";
-                return `${number}-${m.name}`;
-              })
-            );
-            const ministersModified = new Set(
-              (comparison.changes.modified_ministers || []).map((m: any) => {
-                const raw = m.number && m.number !== "Unknown" ? String(m.number) : "";
-                const number = raw ? raw.padStart(2, "0") : "";
-                return `${number}-${m.name}`;
-              })
-            );
-            const departmentsAdded = new Set(comparison.changes.added_departments);
-            const functionsAdded = new Set(comparison.changes.added_functions || []);
-            const lawsAdded = new Set(comparison.changes.added_laws);
-            
-            // Sets for removed items
-            const departmentsRemoved = new Set(comparison.changes.removed_departments || []);
-            const functionsRemoved = new Set(comparison.changes.removed_functions || []);
-            const lawsRemoved = new Set(comparison.changes.removed_laws || []);
-
-            // Also integrate raw_entities from the amendment structure: if Neo4j created
-            // nodes with added_by == amendment id and is_active != false, treat them
-            // as added even if they didn't appear in the flattened change lists.
-            // Also handle removed entities where is_active == false
-            const amendId = comparison.amendment_gazette.id;
-            (comparison.amendment_gazette.structure.raw_entities || []).forEach((ent: any) => {
-              try {
-                const props = ent.properties || {};
-                const labels = ent.labels || [];
-                const name = props.name || props.node_name || props.item_name || '';
-                const isAdded = props.added_by && String(props.added_by) === String(amendId) && (props.is_active === undefined || props.is_active === true);
-                const isRemoved = props.removed_by && String(props.removed_by) === String(amendId) && props.is_active === false;
-                
-                if (!isAdded && !isRemoved || !name) return;
-
-                if (labels.some((l: string) => /Minister$/.test(l))) {
-                  const numRaw = props.number && String(props.number) !== 'Unknown' ? String(props.number) : '';
-                  const num = numRaw ? numRaw.padStart(2, '0') : '';
-                  if (isAdded) {
-                    ministersAdded.add(`${num}-${name}`);
-                  } else if (isRemoved) {
-                    // Handle removed ministers - not typically displayed but could be tracked
-                  }
-                } else if (labels.some((l: string) => /Department$/.test(l))) {
-                  if (isAdded) {
-                    departmentsAdded.add(name);
-                  } else if (isRemoved) {
-                    departmentsRemoved.add(name);
-                  }
-                } else if (labels.some((l: string) => /Function$/.test(l))) {
-                  if (isAdded) {
-                    functionsAdded.add(name);
-                  } else if (isRemoved) {
-                    functionsRemoved.add(name);
-                  }
-                } else if (labels.some((l: string) => /Law$/.test(l))) {
-                  if (isAdded) {
-                    lawsAdded.add(name);
-                  } else if (isRemoved) {
-                    lawsRemoved.add(name);
-                  }
+            {(() => {
+              // Reuse the same per-minister alignment data
+              const ministerAlignmentMap = new Map<
+                string,
+                {
+                  allFunctions: string[];
+                  allDepartments: string[];
+                  allLaws: string[];
                 }
-              } catch (e) {
-                // ignore malformed entity
-              }
-            });
-            return renderGovernmentStructure(
-              comparison.amendment_gazette.structure,
-              `Amendment: ${comparison.amendment_gazette.id}`,
-              {
-                ministersAdded,
-                ministersModified,
-                departmentsAdded,
-                functionsAdded,
-                lawsAdded,
-                departmentsRemoved,
-                functionsRemoved,
-                lawsRemoved,
-              },
-              ministerAlignmentMap
-            );
-          })()}
+              >();
+
+              // Build a map of ministers from both sides by their key
+              const baseMinisterMap = new Map(
+                comparison.base_gazette.structure.ministers.map((m) => {
+                  const number =
+                    m.number && m.number !== "Unknown" ? m.number : "";
+                  return [`${number}-${m.name}`, m];
+                })
+              );
+
+              const amendmentMinisterMap = new Map(
+                comparison.amendment_gazette.structure.ministers.map((m) => {
+                  const number =
+                    m.number && m.number !== "Unknown" ? m.number : "";
+                  return [`${number}-${m.name}`, m];
+                })
+              );
+
+              // For each unique minister key, create alignment data
+              const allMinisterKeys = new Set([
+                ...baseMinisterMap.keys(),
+                ...amendmentMinisterMap.keys(),
+              ]);
+
+              allMinisterKeys.forEach((key) => {
+                const baseMinister = baseMinisterMap.get(key);
+                const amendmentMinister = amendmentMinisterMap.get(key);
+
+                // Collect functions from both sides for this specific minister
+                const baseFunctions = new Set(baseMinister?.functions || []);
+                const amendmentFunctions = new Set(
+                  amendmentMinister?.functions || []
+                );
+                const allFunctions = Array.from(
+                  new Set([...baseFunctions, ...amendmentFunctions])
+                ).sort();
+
+                // Collect departments from both sides for this specific minister
+                const baseDepartments = new Set(
+                  baseMinister?.departments || []
+                );
+                const amendmentDepartments = new Set(
+                  amendmentMinister?.departments || []
+                );
+                const allDepartments = Array.from(
+                  new Set([...baseDepartments, ...amendmentDepartments])
+                ).sort();
+
+                // Collect laws from both sides for this specific minister
+                const baseLaws = new Set(baseMinister?.laws || []);
+                const amendmentLaws = new Set(amendmentMinister?.laws || []);
+                const allLaws = Array.from(
+                  new Set([...baseLaws, ...amendmentLaws])
+                ).sort();
+
+                ministerAlignmentMap.set(key, {
+                  allFunctions,
+                  allDepartments,
+                  allLaws,
+                });
+              });
+
+              // Build highlight sets for amendment side (show added/modified)
+              const ministersAdded = new Set(
+                comparison.changes.added_ministers.map((m) => {
+                  const raw =
+                    m.number && m.number !== "Unknown" ? String(m.number) : "";
+                  const number = raw ? raw.padStart(2, "0") : "";
+                  return `${number}-${m.name}`;
+                })
+              );
+              const ministersModified = new Set(
+                (comparison.changes.modified_ministers || []).map((m: any) => {
+                  const raw =
+                    m.number && m.number !== "Unknown" ? String(m.number) : "";
+                  const number = raw ? raw.padStart(2, "0") : "";
+                  return `${number}-${m.name}`;
+                })
+              );
+              const departmentsAdded = new Set(
+                comparison.changes.added_departments
+              );
+              const functionsAdded = new Set(
+                comparison.changes.added_functions || []
+              );
+              const lawsAdded = new Set(comparison.changes.added_laws);
+
+              // Sets for removed items
+              const departmentsRemoved = new Set(
+                comparison.changes.removed_departments || []
+              );
+              const functionsRemoved = new Set(
+                comparison.changes.removed_functions || []
+              );
+              const lawsRemoved = new Set(
+                comparison.changes.removed_laws || []
+              );
+
+              // Also integrate raw_entities from the amendment structure: if Neo4j created
+              // nodes with added_by == amendment id and is_active != false, treat them
+              // as added even if they didn't appear in the flattened change lists.
+              // Also handle removed entities where is_active == false
+              const amendId = comparison.amendment_gazette.id;
+              (
+                comparison.amendment_gazette.structure.raw_entities || []
+              ).forEach((ent: any) => {
+                try {
+                  const props = ent.properties || {};
+                  const labels = ent.labels || [];
+                  const name =
+                    props.name || props.node_name || props.item_name || "";
+                  const isAdded =
+                    props.added_by &&
+                    String(props.added_by) === String(amendId) &&
+                    (props.is_active === undefined || props.is_active === true);
+                  const isRemoved =
+                    props.removed_by &&
+                    String(props.removed_by) === String(amendId) &&
+                    props.is_active === false;
+
+                  if ((!isAdded && !isRemoved) || !name) return;
+
+                  if (labels.some((l: string) => /Minister$/.test(l))) {
+                    const numRaw =
+                      props.number && String(props.number) !== "Unknown"
+                        ? String(props.number)
+                        : "";
+                    const num = numRaw ? numRaw.padStart(2, "0") : "";
+                    if (isAdded) {
+                      ministersAdded.add(`${num}-${name}`);
+                    } else if (isRemoved) {
+                      // Handle removed ministers - not typically displayed but could be tracked
+                    }
+                  } else if (
+                    labels.some((l: string) => /Department$/.test(l))
+                  ) {
+                    if (isAdded) {
+                      departmentsAdded.add(name);
+                    } else if (isRemoved) {
+                      departmentsRemoved.add(name);
+                    }
+                  } else if (labels.some((l: string) => /Function$/.test(l))) {
+                    if (isAdded) {
+                      functionsAdded.add(name);
+                    } else if (isRemoved) {
+                      functionsRemoved.add(name);
+                    }
+                  } else if (labels.some((l: string) => /Law$/.test(l))) {
+                    if (isAdded) {
+                      lawsAdded.add(name);
+                    } else if (isRemoved) {
+                      lawsRemoved.add(name);
+                    }
+                  }
+                } catch (e) {
+                  // ignore malformed entity
+                }
+              });
+              return renderGovernmentStructure(
+                comparison.amendment_gazette.structure,
+                `Amendment: ${comparison.amendment_gazette.id}`,
+                {
+                  ministersAdded,
+                  ministersModified,
+                  departmentsAdded,
+                  functionsAdded,
+                  lawsAdded,
+                  departmentsRemoved,
+                  functionsRemoved,
+                  lawsRemoved,
+                },
+                ministerAlignmentMap
+              );
+            })()}
           </div>
         </div>
       </div>

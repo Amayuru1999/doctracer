@@ -15,30 +15,10 @@
   },
   "changes": [
     {
-      "operation_type": "UPDATE",
-      "details": {
-        "number": "(12)",
-        "name": "Minister of Information and Mass Media",
-        "previous_number": "(12)",
-        "previous_name": "Minister of Information and Communication Technology"
-      }
-    },
-    {
-      "operation_type": "INSERTION",
-      "details": {
-        "number": "(12)",
-        "name": "Minister of Information and Mass Media",
-        "column_no": "I",
-        "added_content": [
-          "1. Formulation, implementation, monitoring and evaluation of policies, programmes and projects ; in relation to subject of information and mass media and the subjects of the Departments, Statutory Institutions referred to in Column II and laws and regulations referred to in Column III"
-        ]
-      }
-    },
-    {
       "operation_type": "DELETION",
       "details": {
-        "number": "(12)",
-        "name": "Minister of Information and Mass Media",
+        "number": "12",
+        "name": "Minister of Information and Communication Technology",
         "column_no": "I",
         "deleted_sections": [
           "item 8"
@@ -46,21 +26,10 @@
       }
     },
     {
-      "operation_type": "RENUMBERING",
-      "details": {
-        "number": "(12)",
-        "name": "Minister of Information and Mass Media",
-        "column_no": "I",
-        "renumbered_from": [
-          "item 7"
-        ]
-      }
-    },
-    {
       "operation_type": "DELETION",
       "details": {
-        "number": "(12)",
-        "name": "Minister of Information and Mass Media",
+        "number": "12",
+        "name": "Minister of Information and Communication Technology",
         "column_no": "II",
         "deleted_sections": [
           "item 3"
@@ -68,20 +37,9 @@
       }
     },
     {
-      "operation_type": "RENUMBERING",
-      "details": {
-        "number": "(12)",
-        "name": "Minister of Information and Mass Media",
-        "column_no": "II",
-        "renumbered_from": [
-          "item 2"
-        ]
-      }
-    },
-    {
       "operation_type": "INSERTION",
       "details": {
-        "number": "(1)",
+        "number": "1",
         "name": "Minister of Defence",
         "column_no": "I",
         "added_content": [
@@ -90,35 +48,13 @@
       }
     },
     {
-      "operation_type": "RENUMBERING",
-      "details": {
-        "number": "(1)",
-        "name": "Minister of Defence",
-        "column_no": "I",
-        "renumbered_from": [
-          "item 19"
-        ]
-      }
-    },
-    {
       "operation_type": "INSERTION",
       "details": {
-        "number": "(1)",
+        "number": "1",
         "name": "Minister of Defence",
         "column_no": "II",
         "added_content": [
           "27. All information technology Parks"
-        ]
-      }
-    },
-    {
-      "operation_type": "RENUMBERING",
-      "details": {
-        "number": "(1)",
-        "name": "Minister of Defence",
-        "column_no": "II",
-        "renumbered_from": [
-          "item 27"
         ]
       }
     }

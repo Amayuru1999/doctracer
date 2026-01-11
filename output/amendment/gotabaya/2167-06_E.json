@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "gazette_id": "2167/6",
+    "published_date": "2020-03-17",
+    "published_by": "Authority",
+    "president": "GOTABAYA RAJAPAKSA",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2020/3/2167-06_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2153/12",
+      "published_date": "2019-12-10",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2019/12/2153-12_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "1",
+        "name": "Minister of Defence",
+        "column_no": "1",
+        "added_content": [
+          "36. Matters relating to Immigration and Emigration",
+          "37. Matters relating to Sri Lankan Citizenship"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "1",
+        "name": "Minister of Defence",
+        "column_no": "2",
+        "added_content": [
+          "32. Department of Immigration and Emigration"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "1",
+        "name": "Minister of Defence",
+        "column_no": "3",
+        "added_content": [
+          "Immigrants and Emigrants Act, No. 20 of 1948",
+          "Citizenship Act, No. 18 of 1948",
+          "Grant of Citizenship to Persons of Indian Origin Act, No. 35 of 2003",
+          "Grant Citizenship to Stateless Persons Act, No. 5 of 1986",
+          "Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "24",
+        "name": "Minister of Power & Energy",
+        "column_no": "1",
+        "added_content": [
+          "11. Implementation of Solar Power Projects",
+          "12. Rural Electrification",
+          "13. Expedite implementation of Liquefied Natural Gas (LNG) Power and Coal Power Constructions Projects, identified as special priorities."
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "24",
+        "name": "Minister of Power & Energy",
+        "column_no": "2",
+        "added_content": [
+          "9. Lanka Electricity Company",
+          "10. Lanka Coal Company (Pvt.) Ltd",
+          "11. Sri Lanka Sustainable Energy Authority"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "24",
+        "name": "Minister of Power & Energy",
+        "column_no": "3",
+        "added_content": [
+          "Sri Lanka Sustainable Energy Authority Act, No. 35 of 2007"
+        ]
+      }
+    }
+  ]
+}

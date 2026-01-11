@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "gazette_id": "2170/2",
+    "published_date": "2020-04-08",
+    "published_by": "Authority",
+    "president": "GOTABAYA RAJAPAKSA",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2020/4/2170-02_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2153/12",
+      "published_date": "2019-12-10",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2019/12/2153-12_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "1",
+        "name": "Minister of Defence",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 36",
+          "item 37"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "1",
+        "name": "Minister of Defence",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 32"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "1",
+        "name": "Minister of Defence",
+        "column_no": "3",
+        "deleted_sections": [
+          "Immigrants and Emigrants Act, No. 20 of 1948",
+          "Citizenship Act, No. 18 of 1948",
+          "Grant of Citizenship to Persons of Indian Origin Act, No. 35 of 2003",
+          "Grant Citizenship to Stateless Persons Act, No. 5 of 1986",
+          "Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "15",
+        "name": "Minister of Mahaweli, Agriculture, Irrigation and Rural Development",
+        "column_no": "1",
+        "added_content": [
+          "39. Matters relating to Immigration and Emigration",
+          "40. Matters relating to Sri Lankan Citizenship"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "15",
+        "name": "Minister of Mahaweli, Agriculture, Irrigation and Rural Development",
+        "column_no": "2",
+        "added_content": [
+          "27. Department of Immigration and Emigration"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "15",
+        "name": "Minister of Mahaweli, Agriculture, Irrigation and Rural Development",
+        "column_no": "3",
+        "added_content": [
+          "Immigrants and Emigrants Act, No. 20 of 1948",
+          "Citizenship Act, No. 18 of 1948",
+          "Grant of Citizenship to Persons of Indian Origin Act, No. 35 of 2003",
+          "Grant Citizenship to Stateless Persons Act, No. 5 of 1986",
+          "Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988"
+        ]
+      }
+    }
+  ]
+}
