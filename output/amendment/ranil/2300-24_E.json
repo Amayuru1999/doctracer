@@ -1,0 +1,192 @@
+{
+  "metadata": {
+    "gazette_id": "2300/24",
+    "published_date": "2022-10-05",
+    "published_by": "Authority",
+    "president": "Ranil Wickremesinghe",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/10/2300-24_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2289/43",
+      "published_date": "2022-07-22",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/7/2289-43_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 16"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 19"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "3",
+        "deleted_sections": [
+          "Convention against Illicit Traffic in Narcotic Drugs and Psychotropic Substances Act, No. 1 of 2008",
+          "Drug Dependent Persons (Treatment and Rehabilitation) Act, No. 54 of 2007",
+          "National Dangerous Drugs Control Board Act, No. 11 of 1984"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Technology",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 11"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Technology",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 1",
+          "item 5"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Technology",
+        "column_no": "3",
+        "deleted_sections": [
+          "Registration of Persons Act, No. 32 of 1968",
+          "Science and Technology Development Act, No. 11 of 1994"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 7"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 1"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "06",
+        "name": "Minister of Investment Promotion",
+        "column_no": "3",
+        "deleted_sections": [
+          "Immigrants and Emigrants Act, No. 20 of 1948",
+          "Citizenship Act, No. 18 of 1948",
+          "Grant of Citizenship to Persons of Indian Origin Act, No. 35 of 2003",
+          "Grant of Citizenship to Stateless Persons Act, No. 5 of 1986",
+          "Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Industries",
+        "column_no": "2",
+        "added_content": [
+          "28. Industrial Technology Institute"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Industries",
+        "column_no": "3",
+        "added_content": [
+          "Science and Technology Development Act, No. 11 of 1994"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "28",
+        "name": "Minister of Public Security",
+        "column_no": "1",
+        "added_content": [
+          "10. Registration of persons",
+          "11. Matters relating to Immigration and Emigration",
+          "12. Prevention and control of the use of dangerous drugs"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "28",
+        "name": "Minister of Public Security",
+        "column_no": "2",
+        "added_content": [
+          "4. Department of Registration of Persons",
+          "5. Department of Immigration and Emigration",
+          "6. National Dangerous Drugs Control Board"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "28",
+        "name": "Minister of Public Security",
+        "column_no": "3",
+        "added_content": [
+          "Registration of Persons Act, No. 32 of 1968",
+          "Immigrants and Emigrants Act, No. 20 of 1948",
+          "Citizenship Act, No. 18 of 1948",
+          "Grant of Citizenship to Persons of Indian Origin Act, No. 35 of 2003",
+          "Grant of Citizenship to Stateless Persons Act, No. 5 of 1986",
+          "Grant of Citizenship to Stateless Persons (Special Provisions) Act, No. 39 of 1988",
+          "Convention against Illicit Traffic in Narcotic Drugs and Psychotropic Substances Act, No. 1 of 2008",
+          "Drug Dependent Persons (Treatment and Rehabilitation) Act, No. 54 of 2007",
+          "National Dangerous Drugs Control Board Act, No. 11 of 1984"
+        ]
+      }
+    }
+  ]
+}

@@ -61,16 +61,23 @@ export default function Dashboard() {
   };
 
   const presidentMapping: { [key: string]: string } = {
+
     "1897/15": "Maithripala Sirisena",
     "1905/4": "Maithripala Sirisena",
     "1909/54": "Maithripala Sirisena",
     "1913/4": "Maithripala Sirisena",
+
+    "2153/12": "Gotabaya Rajapaksa",
     "2159/15": "Gotabaya Rajapaksa",
     "2167/6": "Gotabaya Rajapaksa",
     "2170/2": "Gotabaya Rajapaksa",
-    "2297/78": "Ranil Wickremesinghe",
-    "2153/12": "Gotabaya Rajapaksa",
+
     "2289/43": "Ranil Wickremesinghe",
+    "2297/78": "Ranil Wickremesinghe",
+    "2300/24": "Ranil Wickremesinghe",
+    "2303/17": "Ranil Wickremesinghe",
+    "2311/42": "Ranil Wickremesinghe",
+
     "2412/08": "Anura Kumara Dissanayaka",
     "2458/65": "Anura Kumara Dissanayaka",
   };

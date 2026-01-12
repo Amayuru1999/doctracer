@@ -1,0 +1,163 @@
+{
+  "metadata": {
+    "gazette_id": "2303/17",
+    "published_date": "2022-10-26",
+    "published_by": "Authority",
+    "president": "Ranil WickRemesinghe",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/10/2303-17_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2289/43",
+      "published_date": "2022-07-22",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/7/2289-43_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 25"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 27"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "3",
+        "deleted_sections": [
+          "Sri Lanka Telecommunications Act, No. 25 of 1991"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Economic Stabilization and National Policy",
+        "column_no": "2",
+        "deleted_sections": [
+          "32. Department of the Registrar of Companies"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Economic Stabilization and National Policy",
+        "column_no": "3",
+        "deleted_sections": [
+          "Business Names Act, No. 07 of 1987",
+          "Companies Act, No. 07 of 2007",
+          "Trade Marks Act, No. 30 of 1964",
+          "Cheetus Ordinance No. 61 of 1935",
+          "Public Contract Act, No. 03 0f 1987"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Agriculture",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 8"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Industries",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 7"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Industries",
+        "column_no": "2",
+        "added_content": [
+          "28. Department of the Registrar of Companies",
+          "29. Lanka Posphate Limited"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Industries",
+        "column_no": "3",
+        "added_content": [
+          "Business Names Act, No. 07 of 1987",
+          "Companies Act, No. 07 of 2007",
+          "Trade Marks Act, No. 30 of 1964",
+          "Cheetus Ordinance No. 61 of 1935",
+          "Public Contract Act, No. 03 0f 1987"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Technology",
+        "column_no": "1",
+        "added_content": [
+          "11. Promote sustained development in the telecommunication industry by shaping the regulatory process, protecting public interest and being responsive to challenges in an increasingly competitive market",
+          "12. Matters relating to expansion of digital technology ventures.",
+          "13. Providing technical assistance to relevant Ministries for developing Green Technology Projects."
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Technology",
+        "column_no": "2",
+        "added_content": [
+          "5. Telecommunication Regulatory Commission of Sri Lanka and Allied Institutions",
+          "6. Centre of Excellence for Robotic Applications"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Technology",
+        "column_no": "3",
+        "added_content": [
+          "Sri Lanka Telecommunications Act, No. 25 of 1991",
+          "Personal Data Protection Act, No. 9 of 2022"
+        ]
+      }
+    }
+  ]
+}

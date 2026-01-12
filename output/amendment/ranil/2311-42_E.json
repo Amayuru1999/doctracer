@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "gazette_id": "2311/42",
+    "published_date": "2022-12-22",
+    "published_by": "Authority",
+    "president": "Ranil WickRemesinghe",
+    "gazette_type": "Extraordinary",
+    "language": "English",
+    "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/12/2311-42_E.pdf",
+    "parent_gazette": {
+      "gazette_id": "2289/43",
+      "published_date": "2022-07-22",
+      "pdf_url": "https://documents.gov.lk/view/extra-gazettes/2022/7/2289-43_E.pdf"
+    }
+  },
+  "changes": [
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "01",
+        "name": "Minister of Defence",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 7"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "04",
+        "name": "Minister of Women, Child Affairs and Social empowerment",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 15"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "07",
+        "name": "Minister of Public Administration, home Affairs, Provincial Councils and Local Government",
+        "column_no": "2",
+        "added_content": [
+          "16. Department of Multipurpose Development Task Force"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "09",
+        "name": "Minister of Education",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 34"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "12",
+        "name": "Minister of health",
+        "column_no": "2",
+        "added_content": [
+          "28. Kidney Fund"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Agriculture",
+        "column_no": "1",
+        "added_content": [
+          "40. Broadening the market for local farm products"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Agriculture",
+        "column_no": "2",
+        "added_content": [
+          "17. Regional economic Centres"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Industries",
+        "column_no": "2",
+        "added_content": [
+          "30. Vidatha Centres"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "29",
+        "name": "Minister of Trade, Commerce and Food Security",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 7"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "29",
+        "name": "Minister of Trade, Commerce and Food Security",
+        "column_no": "2",
+        "deleted_sections": [
+          "item 6"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "29",
+        "name": "Minister of Trade, Commerce and Food Security",
+        "column_no": "3",
+        "added_content": [
+          "Anti-Dumping and Countervailing Duties Act, No. 2 of 2018",
+          "Safeguard Measures Act, No. 3 of 2018"
+        ]
+      }
+    }
+  ]
+}
