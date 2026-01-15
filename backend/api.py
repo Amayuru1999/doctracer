@@ -71,6 +71,7 @@ def get_gazettes():
             RETURN g.gazette_id AS gazette_id,
                    g.published_date AS published_date,
                    {PARENT_PROP},
+                   coalesce(g.president, 'Unknown') AS president,
                    labels(g) AS labels
             ORDER BY published_date
         """)
@@ -118,6 +119,7 @@ def get_amendments():
             RETURN a.gazette_id AS gazette_id,
                    a.published_date AS published_date,
                    b.gazette_id AS parent_gazette_id,
+                   coalesce(a.president, b.president, 'Unknown') AS president,
                    change_count
             ORDER BY a.published_date
         """)
@@ -141,6 +143,48 @@ def debug_amendments():
         """)
         amendments = [record.data() for record in result]
         return jsonify(amendments)
+
+
+@app.route("/ministries", methods=["GET"])
+def get_ministries():
+    """Get all unique ministries from the database"""
+    logger.debug("Received request to get all ministries")
+    with driver.session() as session:
+        result = session.run("""
+            MATCH (m:Minister)
+            RETURN DISTINCT m.name AS name
+            ORDER BY m.name
+        """)
+        ministries = [record.data()['name'] for record in result]
+        logger.debug(f"Fetched {len(ministries)} ministries from the database")
+        return jsonify(ministries)
+
+
+@app.route("/ministries/<path:minister_name>/gazettes", methods=["GET"])
+def get_gazettes_by_minister(minister_name):
+    """Get all gazettes related to a specific minister"""
+    decoded_minister = unquote(minister_name)
+    logger.debug(f"Received request to get gazettes for minister: {decoded_minister}")
+    
+    with driver.session() as session:
+        result = session.run("""
+            MATCH (m:Minister {name: $minister_name})
+            MATCH (m)-[:MANAGES]->(d:Department)
+            MATCH (d)<-[:HAS_DEPARTMENT]-(g:Gazette)
+            WITH g, labels(g) AS gazette_labels
+            RETURN DISTINCT g.gazette_id AS gazette_id,
+                            g.published_date AS published_date,
+                            gazette_labels AS labels
+            ORDER BY g.published_date
+        """, minister_name=decoded_minister)
+        
+        gazettes = []
+        for record in result:
+            data = record.data()
+            gazettes.append(data)
+        
+        logger.debug(f"Fetched {len(gazettes)} gazettes for minister: {decoded_minister}")
+        return jsonify(gazettes)
 
 
 @app.route("/amendments/<path:amendment_id>/graph", methods=["GET"])
@@ -376,13 +420,15 @@ def get_dashboard_summary():
         """)
         counts = {record['label']: record['total'] for record in result}
 
-        # Recent (distinct)
+        # Recent (distinct) with president info
         recent_result = session.run(f"""
             MATCH (g)
             WHERE g:BaseGazette OR g:AmendmentGazette
+            OPTIONAL MATCH (g)<-[:AMENDED_BY]-(b:BaseGazette)
             RETURN DISTINCT g.gazette_id AS gazette_id,
                    g.published_date AS published_date,
                    {PARENT_PROP},
+                   coalesce(g.president, b.president, 'Unknown') AS president,
                    labels(g) AS labels
             ORDER BY g.published_date DESC
             LIMIT 10

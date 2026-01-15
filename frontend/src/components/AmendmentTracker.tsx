@@ -33,7 +33,7 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
     maithripala: "Maithripala Sirisena",
     gotabaya: "Gotabaya Rajapaksa",
     ranil: "Ranil Wickremesinghe",
-    anura: "Anura Kumara Dissanayaka",
+    anura: "Anura Kumara Dissanayake",
   };
 
   const presidentMapping: { [key: string]: string } = {
@@ -53,8 +53,8 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
     "2303/17": "Ranil Wickremesinghe",
     "2311/42": "Ranil Wickremesinghe",
 
-    "2412/08": "Anura Kumara Dissanayaka",
-    "2458/65": "Anura Kumara Dissanayaka",
+    "2412/08": "Anura Kumara Dissanayake",
+    "2458/65": "Anura Kumara Dissanayake",
   };
 
   // Filter gazettes and amendments by selected president

@@ -57,29 +57,7 @@ export default function Dashboard() {
     maithripala: "Maithripala Sirisena",
     gotabaya: "Gotabaya Rajapaksa",
     ranil: "Ranil Wickremesinghe",
-    anura: "Anura Kumara Dissanayaka",
-  };
-
-  const presidentMapping: { [key: string]: string } = {
-
-    "1897/15": "Maithripala Sirisena",
-    "1905/4": "Maithripala Sirisena",
-    "1909/54": "Maithripala Sirisena",
-    "1913/4": "Maithripala Sirisena",
-
-    "2153/12": "Gotabaya Rajapaksa",
-    "2159/15": "Gotabaya Rajapaksa",
-    "2167/6": "Gotabaya Rajapaksa",
-    "2170/2": "Gotabaya Rajapaksa",
-
-    "2289/43": "Ranil Wickremesinghe",
-    "2297/78": "Ranil Wickremesinghe",
-    "2300/24": "Ranil Wickremesinghe",
-    "2303/17": "Ranil Wickremesinghe",
-    "2311/42": "Ranil Wickremesinghe",
-
-    "2412/08": "Anura Kumara Dissanayaka",
-    "2458/65": "Anura Kumara Dissanayaka",
+    anura: "Anura Kumara Dissanayake",
   };
 
   useEffect(() => {
@@ -106,24 +84,22 @@ export default function Dashboard() {
   };
 
   const getFilteredSummary = (rawSummary: DashboardSummary | null) => {
-    if (!rawSummary || !effectiveGovernment) return rawSummary;
+    if (!rawSummary) return rawSummary;
 
-    const presidentName = govToPresidentName[effectiveGovernment];
-    if (!presidentName) return rawSummary;
+    const presidentName = effectiveGovernment ? govToPresidentName[effectiveGovernment] : null;
 
-    // Filter recent gazettes by president
-    const filteredRecent = rawSummary.recent_gazettes.filter((g: any) => {
-      const gPresident = presidentMapping[g.gazette_id];
-      return gPresident === presidentName;
-    });
+    // Count base & amendment gazettes, filtered by president if selected
+    const baseCount = rawSummary.recent_gazettes.filter((g: any) => {
+      const isBase = g.labels?.includes("BaseGazette");
+      const matchesPresident = !presidentName || g.president === presidentName;
+      return isBase && matchesPresident;
+    }).length;
 
-    // Count base & amendment gazettes for this president
-    const baseCount = filteredRecent.filter((g: any) =>
-      g.labels?.includes("BaseGazette")
-    ).length;
-    const amendmentCount = filteredRecent.filter((g: any) =>
-      g.labels?.includes("AmendmentGazette")
-    ).length;
+    const amendmentCount = rawSummary.recent_gazettes.filter((g: any) => {
+      const isAmendment = g.labels?.includes("AmendmentGazette");
+      const matchesPresident = !presidentName || g.president === presidentName;
+      return isAmendment && matchesPresident;
+    }).length;
 
     return {
       ...rawSummary,
@@ -131,7 +107,6 @@ export default function Dashboard() {
         BaseGazette: baseCount,
         AmendmentGazette: amendmentCount,
       },
-      recent_gazettes: filteredRecent,
     };
   };
 
@@ -1540,43 +1515,22 @@ export default function Dashboard() {
     </div>
   );
 
-  console.log("Gazette are:", gazettes);
-  console.log("Amendments", amendments);
-
-  const updatedGazettesAll = gazettes
-    .filter((g) => g.labels.includes("BaseGazette")) // ← filters only BaseGazette
-    .map((g) => ({
-      ...g,
-      president: presidentMapping[g.gazette_id] || "Unknown",
-    }));
-
-  // If a government is selected, filter base gazettes to only those matching the selected president
+  // Filter base gazettes by selected government/president
+  const allBaseGazettes = gazettes.filter((g) => g.labels.includes("BaseGazette"));
   const filteredGazettes = effectiveGovernment
-    ? updatedGazettesAll.filter(
-        (g) => g.president === govToPresidentName[effectiveGovernment]
-      )
-    : updatedGazettesAll;
+    ? allBaseGazettes.filter((g) => {
+        const presidentName = govToPresidentName[effectiveGovernment];
+        return g.president === presidentName;
+      })
+    : allBaseGazettes;
 
-  const updatedAmendments = amendments.map((g) => ({
-    ...g,
-    president: presidentMapping[g.gazette_id] || "Unknown",
-  }));
-
-  // Debug: log each amendment with its president
-  updatedAmendments.forEach((a) => {
-    console.log(`Amendment ${a.gazette_id}: president="${a.president}"`);
-  });
-
-  // Filter amendment gazettes by the effective government (context OR route param)
+  // Filter amendment gazettes by selected government/president
   const filteredAmendments = effectiveGovernment
-    ? updatedAmendments.filter(
-        (a) => a.president === govToPresidentName[effectiveGovernment]
-      )
-    : updatedAmendments;
-
-  // console.log("effectiveGovernment:", effectiveGovernment);
-  // console.log("govToPresidentName[effectiveGovernment]:", govToPresidentName[effectiveGovernment]);
-  // console.log("Filtered Amendments count:", filteredAmendments.length);
+    ? amendments.filter((a) => {
+        const presidentName = govToPresidentName[effectiveGovernment];
+        return a.president === presidentName;
+      })
+    : amendments;
 
   return (
     <section className="space-y-6">
@@ -1647,7 +1601,7 @@ export default function Dashboard() {
       <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2 ">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
               Select Base Gazette
             </label>
             <select
@@ -1658,7 +1612,7 @@ export default function Dashboard() {
               <option value="">Select a base gazette...</option>
               {filteredGazettes.map((g) => (
                 <option key={g.gazette_id} value={g.gazette_id}>
-                  {g.gazette_id} — {g.published_date || "N/A"} — {g.president}
+                  {g.gazette_id} — {g.published_date || "N/A"}
                 </option>
               ))}
             </select>
@@ -1676,7 +1630,7 @@ export default function Dashboard() {
               <option value="">Select an amendment gazette...</option>
               {filteredAmendments.map((a) => (
                 <option key={a.gazette_id} value={a.gazette_id}>
-                  {a.gazette_id} — {a.published_date || "N/A"} — {a.president}
+                  {a.gazette_id} — {a.published_date || "N/A"}
                 </option>
               ))}
             </select>

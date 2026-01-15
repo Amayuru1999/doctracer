@@ -38,6 +38,18 @@ export async function getAmendments(): Promise<Amendment[]> {
   return r.json();
 }
 
+export async function getMinistries(): Promise<string[]> {
+  const r = await fetch(`${API_URL}/ministries`);
+  if (!r.ok) throw new Error(`/ministries ${r.status}`);
+  return r.json();
+}
+
+export async function getGazettesByMinister(ministerName: string): Promise<Gazette[]> {
+  const r = await fetch(`${API_URL}/ministries/${encodeURIComponent(ministerName)}/gazettes`);
+  if (!r.ok) throw new Error(`/ministries/:name/gazettes ${r.status}`);
+  return r.json();
+}
+
 export async function getAmendmentGraph(id: string): Promise<GraphData> {
   const r = await fetch(
     `${API_URL}/amendments/${encodeURIComponent(id)}/graph`
