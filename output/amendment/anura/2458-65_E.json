@@ -15,18 +15,14 @@
   },
   "changes": [
     {
-      "operation_type": "RENUMBERING",
+      "operation_type": "UPDATE",
       "details": {
         "number": "01",
         "name": "Minister of Defence",
-        "previous_number": "",
-        "previous_name": "",
-        "column_no": "I",
-        "deleted_sections": [
-          "item 28"
-        ],
+        "column_no": "1",
+        "deleted_sections": ["item 28"],
         "added_content": [
-          "28. Ensuring safety of navigation through conducting hydrographic surveys, producing nautical charts, and updating navigation information for maritime safety, and regulating hydrographic related activities in accordance with the International Convention for the Safety of Life at Sea 1974, within waters under the jurisdiction of Sri Lanka"
+          "28. Ensuring safety of navigation through conducting hydrographic surveys, producing nautical charts, and updating navigation information for maritime safety, and regulating hydrographic related activities in accordance with the International Convention for the Safety of Life at Sea 1974, within waters under the jurisdiction of Sri Lanka."
         ]
       }
     },
@@ -35,7 +31,7 @@
       "details": {
         "number": "01",
         "name": "Minister of Defence",
-        "column_no": "II",
+        "column_no": "2",
         "added_content": [
           "26. National Hydrographic Council",
           "27. Sri Lanka National Hydrographic Office"
@@ -47,10 +43,8 @@
       "details": {
         "number": "01",
         "name": "Minister of Defence",
-        "column_no": "II",
-        "deleted_sections": [
-          "item 6"
-        ]
+        "column_no": "2",
+        "deleted_sections": ["item 6"]
       }
     },
     {
@@ -58,10 +52,730 @@
       "details": {
         "number": "01",
         "name": "Minister of Defence",
-        "column_no": "III",
+        "column_no": "3",
         "deleted_sections": [
           "Sri Lanka Telecommunications Act, No. 25 of 1991 and its Amendments"
         ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Planning and Economic Development",
+        "column_no": "1",
+        "added_content": [
+          "39. Supervision of all Institutions listed in Column II"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Planning and Economic Development",
+        "column_no": "1",
+        "deleted_sections": ["item 37"],
+        "added_content": [
+          "37. Institutions from 57 to 63 in Column II are reviewed."
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Planning and Economic Development",
+        "column_no": "1",
+        "deleted_sections": ["item 11"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Planning and Economic Development",
+        "column_no": "2",
+        "deleted_sections": ["item 52"],
+        "added_content": ["52. Hotel Developers (Lanka) PLC (PQ 143)"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Planning and Economic Development",
+        "column_no": "2",
+        "added_content": ["56. Gambling Regulatory Authority"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "02",
+        "name": "Minister of Finance, Planning and Economic Development",
+        "column_no": "3",
+        "added_content": [
+          "Social Security Contribution Levy Act, No. 25 of 2022",
+          "Secured Transactions Act, No. 17 of 2024",
+          "Gambling Regulatory Authority Act, No. 17 of 2025"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "03",
+        "name": "Minister of Energy",
+        "column_no": "2",
+        "deleted_sections": ["item 2"],
+        "added_content": ["2. Lanka Electricity Company (Pvt) Ltd"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Energy",
+        "column_no": "2",
+        "added_content": [
+          "13. National System Operator (Pvt) Ltd",
+          "14. National Transmission Network Service Provider (Pvt) Ltd",
+          "15. Electricity Distribution Lanka (Pvt) Ltd",
+          "16. Electricity Generation Lanka (Pvt) Ltd"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Energy",
+        "column_no": "2",
+        "deleted_sections": ["item 10", "item 11"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "03",
+        "name": "Minister of Energy",
+        "column_no": "3",
+        "deleted_sections": [
+          "Petroleum Products (Special Provisions) Act, No. 33 of 2022"
+        ],
+        "added_content": [
+          "Petroleum Products (Special Provisions) Act, No. 33 of 2002"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "03",
+        "name": "Minister of Energy",
+        "column_no": "3",
+        "deleted_sections": ["Sri Lanka Atomic Energy Act, No. 40 of 2014"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "04",
+        "name": "Minister of Agriculture, Livestock, Land, and Irrigation",
+        "column_no": "2",
+        "added_content": ["item 12"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "04",
+        "name": "Minister of Agriculture, Livestock, Land, and Irrigation",
+        "column_no": "3",
+        "deleted_sections": [
+          "National Hunger Eradication Campaign Board of Sri Lanka Act, No. 18 of 1973"
+        ],
+        "added_content": [
+          "National Hunger Eradication Campaign Board of Sri Lanka Act, No. 15 of 1973"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "04",
+        "name": "Minister of Agriculture, Livestock, Land, and Irrigation",
+        "column_no": "3",
+        "added_content": ["Promotion of Export Agriculture Act, No. 46 of 1992"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "05",
+        "name": "Minister of Justice and National Integration",
+        "column_no": "2",
+        "deleted_sections": ["item 12", "item 17", "item 26"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "05",
+        "name": "Minister of Justice and National Integration",
+        "column_no": "3",
+        "deleted_sections": [
+          "Assistance to and Protection of Victims of Crime and Witnesses Act, No. 4 of 2015"
+        ],
+        "added_content": [
+          "Assistance to and Protection of Victims of Crime and Witnesses Act, No. 10 of 2023"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "05",
+        "name": "Minister of Justice and National Integration",
+        "column_no": "3",
+        "added_content": [
+          "International Convention for the Protection of All Persons from Enforced Disappearance Act, No. 5 of 2018",
+          "Recovery of Damages for the Death of a Person Act, No. 2 of 2019",
+          "Recovery of Possession of Premises Given on Lease Act, No. 1 of 2023",
+          "The Recognition and Enforcement of International Settlement Agreements Resulting from Mediation Act, No. 5 of 2024",
+          "Contempt of a Court, Tribunal, or Institution Act, No. 8 of 2024",
+          "Proceeds of Crime Act, No. 5 of 2025"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "05",
+        "name": "Minister of Justice and National Integration",
+        "column_no": "3",
+        "deleted_sections": ["Bureau of Rehabilitation Act, No. 2 of 2023"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "06",
+        "name": "Minister of Education, Higher Education and Vocational Education",
+        "column_no": "2",
+        "deleted_sections": ["item 6"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "06",
+        "name": "Minister of Education, Higher Education and Vocational Education",
+        "column_no": "2",
+        "deleted_sections": ["item 15"],
+        "added_content": ["15. Ocean University of Sri Lanka"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "06",
+        "name": "Minister of Education, Higher Education and Vocational Education",
+        "column_no": "3",
+        "deleted_sections": [
+          "National Library and Documentation Services Board Act, No. 51 of 1988"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "08",
+        "name": "Minister of Trade, Commerce, Food Security and Co-operative Development",
+        "column_no": "1",
+        "added_content": [
+          "4. Function as the focal point for facilitation and coordination of international and regional trade integration including bilateral and multilateral trade agreements and resolution of disputes arising from these agreements."
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "08",
+        "name": "Minister of Trade, Commerce, Food Security and Co-operative Development",
+        "column_no": "1",
+        "added_content": [
+          "8. Copyright matters relating to the administration of the International convention on Intellectual Property and the World Intellectual Property Office",
+          "9. Making the process of patent granting efficient"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "08",
+        "name": "Minister of Trade, Commerce, Food Security and Co-operative Development",
+        "column_no": "2",
+        "added_content": ["18. Sri Lanka Thriposha Ltd"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "08",
+        "name": "Minister of Trade, Commerce, Food Security and Co-operative Development",
+        "column_no": "2",
+        "deleted_sections": ["item 13"],
+        "added_content": [
+          "13. Sri Lanka State Trading (General) Corporation Ltd"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "08",
+        "name": "Minister of Trade, Commerce, Food Security and Co-operative Development",
+        "column_no": "2",
+        "deleted_sections": ["item 17"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "08",
+        "name": "Minister of Trade, Commerce, Food Security and Co-operative Development",
+        "column_no": "3",
+        "added_content": [
+          "Safeguard Measures Act, No. 3 of 2018",
+          "Societies Ordinance No. 16 of 1891"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "2",
+        "added_content": ["42. Selacine Media Solutions (Pvt) Ltd"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "2",
+        "deleted_sections": ["item 24"],
+        "added_content": ["24. Ayurveda Education and Hospital Board"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "2",
+        "deleted_sections": ["item 8"],
+        "added_content": ["8. Sri Lanka Nursing Council"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "2",
+        "deleted_sections": ["item 29"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "3",
+        "deleted_sections": [
+          "Homeopathy Act, No. 07 of 2070 (Sinhala)",
+          "Homeopathy Act, No. 7 of 1970 (English)"
+        ],
+        "added_content": ["Homeopathy Act, No. 10 of 2016"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "3",
+        "deleted_sections": ["Right to Information Act No. 12 of 2006"],
+        "added_content": ["Right to Information Act, No. 12 of 2016"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "09",
+        "name": "Minister of Health and Mass Media",
+        "column_no": "3",
+        "deleted_sections": ["Online Safety Act, No 9 of 2024"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "10",
+        "name": "Minister of Buddhasasana, Religious and Cultural Affairs",
+        "column_no": "2",
+        "deleted_sections": ["item 25"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "10",
+        "name": "Minister of Buddhasasana, Religious and Cultural Affairs",
+        "column_no": "3",
+        "added_content": ["National Museums Ordinance No. 31 of 1942"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "10",
+        "name": "Minister of Buddhasasana, Religious and Cultural Affairs",
+        "column_no": "3",
+        "deleted_sections": [
+          "National Library and Documentation Services Board Act No. 51 of 1988"
+        ],
+        "added_content": [
+          "National Library and Documentation Services Board Act No. 51 of 1998"
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "12",
+        "name": "Minister of Public Security and Parliamentary Affairs",
+        "column_no": "1",
+        "deleted_sections": ["item 9"],
+        "added_content": [
+          "9. Rehabilitation of drug dependent persons and referring to rehabilitation of those who are deemed to be rehabilitated by any other law"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "12",
+        "name": "Minister of Public Security and Parliamentary Affairs",
+        "column_no": "2",
+        "added_content": [
+          "6. Civil Security Department",
+          "7. Bureau of Rehabilitation"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "12",
+        "name": "Minister of Public Security and Parliamentary Affairs",
+        "column_no": "2",
+        "deleted_sections": ["item 5"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "12",
+        "name": "Minister of Public Security and Parliamentary Affairs",
+        "column_no": "3",
+        "added_content": [
+          "Bureau of Rehabilitation Act No. 2 of 2023",
+          "Computer Crime Act No. 24 of 2007",
+          "Passport (Regulation) and Exit Permit Act No. 53 of 1971"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "12",
+        "name": "Minister of Public Security and Parliamentary Affairs",
+        "column_no": "3",
+        "deleted_sections": ["Online Safety Act, No. 9 of 2024"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Environment",
+        "column_no": "2",
+        "deleted_sections": ["item 2", "item 3"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Environment",
+        "column_no": "3",
+        "added_content": ["Forest Ordinance No. 16 of 1907"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "14",
+        "name": "Minister of Environment",
+        "column_no": "3",
+        "deleted_sections": ["Mines and Minerals Act No. 33 of 1992"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "17",
+        "name": "Minister of Public Administration, Provincial Councils and Local Government",
+        "column_no": "1",
+        "deleted_sections": ["item 26"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "17",
+        "name": "Minister of Public Administration, Provincial Councils and Local Government",
+        "column_no": "3",
+        "deleted_sections": ["Adoption of Children Ordinance No. 24 of 1941"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "18",
+        "name": "Minister of Labour",
+        "column_no": "3",
+        "added_content": [
+          "Budgetary Relief Allowance of Workers Act No. 36 of 2005",
+          "Budgetary Relief Allowance of Workers Act No. 04 of 2016",
+          "National Minimum Wage of Workers Act No. 03 of 2016",
+          "Minimum Retirement Age of Workers Act No. 28 of 2021",
+          "Industrial Disputes (Special Provisions) Act No. 19 of 2022",
+          "Indian Immigrant Labour Ordinance No. 01 of 1923",
+          "Estate Labour (Indian) Ordinance No. 13 of 1889",
+          "Employment of Trainees (Private Sector) Act No. 8 of 1978",
+          "National Institute of Labour Studies Act No. 12 of 2010"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Science and Technology",
+        "column_no": "1",
+        "deleted_sections": [
+          "item 8",
+          "item 9",
+          "item 10",
+          "item 11",
+          "item 12",
+          "item 13",
+          "item 15",
+          "item 18",
+          "item 19"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "19",
+        "name": "Minister of Science and Technology",
+        "column_no": "2",
+        "added_content": [
+          "17. Sri Lanka Atomic Energy Board",
+          "18. Sri Lanka Atomic Energy Regulatory Council."
+        ]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "19",
+        "name": "Minister of Science and Technology",
+        "column_no": "3",
+        "deleted_sections": ["Electronic Transactions Act No. 19 of 2006"],
+        "added_content": ["Sri Lanka Atomic Energy Act No. 40 of 2014"]
+      }
+    },
+    {
+      "operation_type": "UPDATE",
+      "details": {
+        "number": "20",
+        "name": "Minister of Rural Development, Social Security, and Community Empowerment",
+        "column_no": "1",
+        "deleted_sections": ["items 06, item 10, item 11, item 12, item 13"],
+        "added_content": [
+          "06. Identification of persons with disabilities and fulfilling their needs,",
+          "10. Matters relating to internationally recognized Conventions in relation to persons with disabilities,",
+          "11. Implementation of required programmes in coordination with relevant institutions for providing vocational training and creating employment opportunities for persons with disabilities,",
+          "12. Effecting policy changes, provision of facilities and implementation of programmes required to integrate persons with disabilities into the mainstream,",
+          "13. Implementation of social insurance schemes for persons with disabilities."
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "20",
+        "name": "Minister of Rural Development, Social Security, and Community Empowerment",
+        "column_no": "1",
+        "added_content": [
+          "15. Implementing community empowerment activities that include multiple approaches for poverty eradication,",
+          "16. Developing and implementing integrated approaches for rural development,",
+          "17. Socializing social work education and professional skills,",
+          "18. Promotion of community empowerment, social protection, and rural development,",
+          "19. Coordinating the functions of Non-Governmental Organizations within the national policy framework and providing opportunities to contribute towards the development process of the country,",
+          "20. Managing and facilitating cooperation with the World Food Programme."
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "20",
+        "name": "Minister of Rural Development, Social Security, and Community Empowerment",
+        "column_no": "2",
+        "added_content": [
+          "11. National Secretariat for Non-Governmental Organizations,",
+          "12. Partnership Secretariat for WFP Co-operation,"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "1",
+        "added_content": [
+          "34. Provision of required infrastructure facilities for export of goods and services,",
+          "35. Encouraging producers and exported by providing necessary credit, insurance and other facilities,"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "1",
+        "deleted_sections": ["item 7", "item 8"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "1",
+        "deleted_sections": ["item No.7, No.8, No.35 and No. 36"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "2",
+        "added_content": [
+          "35. Geological Survey and Mines Bureau,",
+          "36. GSMB Technical Services (Pvt) Ltd"
+        ]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "2",
+        "deleted_sections": ["item 14"]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "3",
+        "added_content": ["Mines and Minerals Act, No. 33 of 1992"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "21",
+        "name": "Minister of Industry and Entrepreneurship Development",
+        "column_no": "3",
+        "deleted_sections": [
+          "Anti-Dumping and Countervailing Duties Act No. 2 of 2018,",
+          "Safeguard Measures Act No. 3 of 2018,"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "22",
+        "name": "Minister of Digital Economy",
+        "column_no": "1",
+        "added_content": [
+          "9. Regulating telecommunication affairs to promote sustainable development of telecommunication industry by ensuring public interest in the increasingly competitive market,",
+          "10. Taking necessary measures for the provision of information and communication technology facilities for all by adoption of modern technologies,",
+          "11. Facilitating and supervising information technology initiatives for inter government agencies for promoting productivity and efficiency in the delivery of services,",
+          "12. Implementation of programmes for promotion of information and communication technology literacy,",
+          "13. Building a centralized backbone network to expand the communication facilities for rural areas,",
+          "14. Giving priority for technology with high efficiency in the frequency range such as 5G and LTE+,",
+          "15. Introducing and regulating personal data protection provisions."
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "22",
+        "name": "Minister of Digital Economy",
+        "column_no": "2",
+        "added_content": [
+          "8. Colombo Lotus Tower Management Company (Pvt) Ltd",
+          "9. Online Safety Commission"
+        ]
+      }
+    },
+    {
+      "operation_type": "INSERTION",
+      "details": {
+        "number": "22",
+        "name": "Minister of Digital Economy",
+        "column_no": "3",
+        "added_content": ["Online Safety Act No. 9 of 2024"]
+      }
+    },
+    {
+      "operation_type": "DELETION",
+      "details": {
+        "number": "23",
+        "name": "Minister of Plantation and Community Infrastructure",
+        "column_no": "2",
+        "deleted_sections": ["item 23"]
       }
     }
   ]

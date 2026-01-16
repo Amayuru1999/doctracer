@@ -46,8 +46,8 @@ const presidents: President[] = [
   },
   {
     id: 'anura',
-    name: 'Anura Kumara Dissanayaka',
-    fullName: 'Anura Kumara Dissanayaka',
+    name: 'Anura Kumara Dissanayake',
+    fullName: 'Anura Kumara Dissanayake',
     period: '2024-Present',
     image: '/presidents/anura.png',
     description: '10th President of Sri Lanka',

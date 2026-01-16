@@ -29,7 +29,7 @@ const governmentData = {
     color: 'from-purple-500 to-purple-700'
   },
   anura: {
-    name: 'Anura Kumara Dissanayaka',
+    name: 'Anura Kumara Dissanayake',
     period: '2024-Present',
     color: 'from-orange-500 to-orange-700'
   }

@@ -19,7 +19,7 @@
       "details": {
         "number": "02",
         "name": "Minister of Finance, Economic Stabilization and National Policies",
-        "column_no": "I",
+        "column_no": "1",
         "deleted_sections": [
           "item 32"
         ]
@@ -30,7 +30,7 @@
       "details": {
         "number": "02",
         "name": "Minister of Finance, Economic Stabilization and National Policies",
-        "column_no": "II",
+        "column_no": "2",
         "deleted_sections": [
           "item 26",
           "item 50",
@@ -43,7 +43,7 @@
       "details": {
         "number": "02",
         "name": "Minister of Finance, Economic Stabilization and National Policies",
-        "column_no": "III",
+        "column_no": "3",
         "deleted_sections": [
           "Sri Lanka Export Development Act No. 40 of 1979",
           "Greater Colombo Economic Commission Law No. 4 of 1978 (Board of Investment of Sri Lanka Law)",
@@ -56,30 +56,10 @@
       "details": {
         "number": "06",
         "name": "Minister of Investment Promotion",
-        "column_no": "I",
+        "column_no": "1",
         "added_content": [
           "11. Development of Colombo Port City Special Economic Zone as an International Business and Services Hub with specialized infrastructure and other facilities aimed at national interest and economic advancement."
         ]
-      }
-    },
-    {
-      "operation_type": "RENUMBERING",
-      "details": {
-        "number": "06",
-        "name": "Minister of Investment Promotion",
-        "column_no": "I",
-        "previous_number": "11",
-        "new_number": "12"
-      }
-    },
-    {
-      "operation_type": "RENUMBERING",
-      "details": {
-        "number": "06",
-        "name": "Minister of Investment Promotion",
-        "column_no": "I",
-        "previous_number": "12",
-        "new_number": "13"
       }
     },
     {
@@ -87,7 +67,7 @@
       "details": {
         "number": "06",
         "name": "Minister of Investment Promotion",
-        "column_no": "II",
+        "column_no": "2",
         "added_content": [
           "5. Sri Lanka Export Development Board",
           "6. Board of Investment of Sri Lanka",

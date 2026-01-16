@@ -8,6 +8,7 @@ import {
   type GazetteComparison,
   type Gazette
 } from "../services/api";
+import { useGovernment } from "../contexts/GovernmentContext";
 
 interface AmendmentTrackerProps {
   baseGazetteId?: string;
@@ -24,6 +25,65 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
   const [error, setError] = useState<string | undefined>();
   const [viewMode, setViewMode] = useState<'evolution' | 'comparison'>('evolution');
   const [activeTab, setActiveTab] = useState<'ministries' | 'departments' | 'laws' | 'functions'>('ministries');
+
+  const { selectedGovernment } = useGovernment();
+
+  // President mapping for filtering
+  const govToPresidentName: { [key: string]: string } = {
+    maithripala: "Maithripala Sirisena",
+    gotabaya: "Gotabaya Rajapaksa",
+    ranil: "Ranil Wickremesinghe",
+    anura: "Anura Kumara Dissanayake",
+  };
+
+  const presidentMapping: { [key: string]: string } = {
+    "1897/15": "Maithripala Sirisena",
+    "1905/4": "Maithripala Sirisena",
+    "1909/54": "Maithripala Sirisena",
+    "1913/4": "Maithripala Sirisena",
+
+    "2153/12": "Gotabaya Rajapaksa",
+    "2159/15": "Gotabaya Rajapaksa",
+    "2167/6": "Gotabaya Rajapaksa",
+    "2170/2": "Gotabaya Rajapaksa",
+
+    "2289/43": "Ranil Wickremesinghe",
+    "2297/78": "Ranil Wickremesinghe",
+    "2300/24": "Ranil Wickremesinghe",
+    "2303/17": "Ranil Wickremesinghe",
+    "2311/42": "Ranil Wickremesinghe",
+
+    "2412/08": "Anura Kumara Dissanayake",
+    "2458/65": "Anura Kumara Dissanayake",
+  };
+
+  // Filter gazettes and amendments by selected president
+  const updatedGazettes = gazettes.map((g) => ({
+    ...g,
+    president: presidentMapping[g.gazette_id] || "Unknown",
+  }));
+
+  // Filter to only show BASE gazettes (not amendments) in the base gazette dropdown
+  const baseGazettesOnly = updatedGazettes.filter((g) => 
+    g.labels?.includes("BaseGazette")
+  );
+
+  const filteredGazettes = selectedGovernment
+    ? baseGazettesOnly.filter(
+        (g) => g.president === govToPresidentName[selectedGovernment]
+      )
+    : baseGazettesOnly;
+
+  const updatedAmendments = amendments.map((a) => ({
+    ...a,
+    president: presidentMapping[a.gazette_id] || "Unknown",
+  }));
+
+  const filteredAmendments = selectedGovernment
+    ? updatedAmendments.filter(
+        (a) => a.president === govToPresidentName[selectedGovernment]
+      )
+    : updatedAmendments;
 
   useEffect(() => {
     loadInitialData();
@@ -246,9 +306,9 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
               onChange={(e) => setSelectedBase(e.target.value)}
             >
               <option value="">Select base gazette...</option>
-              {gazettes.map(gazette => (
+              {filteredGazettes.map(gazette => (
                 <option key={gazette.gazette_id} value={gazette.gazette_id}>
-                  {gazette.gazette_id} — {gazette.published_date}
+                  {gazette.gazette_id} — {gazette.published_date} — {gazette.president}
                 </option>
               ))}
             </select>
@@ -263,9 +323,9 @@ export default function AmendmentTracker({ baseGazetteId }: AmendmentTrackerProp
                 onChange={(e) => setSelectedAmendment(e.target.value)}
               >
                 <option value="">Select amendment gazette...</option>
-                {amendments.map(amendment => (
+                {filteredAmendments.map(amendment => (
                   <option key={amendment.gazette_id} value={amendment.gazette_id}>
-                    {amendment.gazette_id} — {amendment.published_date}
+                    {amendment.gazette_id} — {amendment.published_date} — {amendment.president}
                   </option>
                 ))}
               </select>
